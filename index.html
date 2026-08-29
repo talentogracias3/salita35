@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>Salita 3.5 — MEGA HACKER</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#0a0a0a;color:#ff3333;font-family:'Courier New',monospace;padding:12px;touch-action:manipulation}
+#matrixCanvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;opacity:.25;pointer-events:none}
+.page{position:relative;z-index:1}
+.hdr{text-align:center;padding:20px 14px;border:2px solid #ff003c;border-radius:12px;background:linear-gradient(135deg,#1a0000,#0a0a0a);margin-bottom:12px}
+.hdr h1{font-size:1.8rem;color:#ff003c;text-shadow:0 0 20px rgba(255,0,60,.5);letter-spacing:2px}
+.hdr .sub{color:#ff6666;font-size:.75rem;margin-top:6px}
+.hdr .ver{display:inline-block;background:#330000;color:#ff003c;padding:2px 10px;border-radius:4px;font-size:.65rem;margin-top:8px;border:1px solid #ff003c}
+.sbar{display:flex;justify-content:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:4px;background:rgba(255,0,60,.1);border:1px solid #ff003c;border-radius:20px;padding:3px 10px;font-size:.62rem;color:#ff003c}
+.pill.danger{border-color:#ff0000;color:#ff0000}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:p 1.5s infinite}
+@keyframes p{50%{opacity:.2}}
+.purple-btn{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:10px 16px;background:linear-gradient(135deg,#4c1d95,#8b5cf6,#a855f7);border:none;border-radius:8px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.purple-btn:active{transform:scale(.97)}
+.cfg{background:#0f0a0a;border:2px solid #330000;border-radius:12px;padding:16px;margin-bottom:12px}
+.cfg h2{color:#ff003c;font-size:.95rem;margin-bottom:12px;border-bottom:1px solid #330000;padding-bottom:6px}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.cg{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-size:.62rem;color:#ff6666;text-transform:uppercase;letter-spacing:1px}
+.f input,.f select{background:#0a0a0a;border:1px solid #330000;color:#ff6666;padding:9px 10px;border-radius:6px;font-family:inherit;font-size:.82rem;outline:none;width:100%}
+.f input:focus,.f select:focus{border-color:#ff003c}
+.f select option{background:#0f0a0a}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:12px 8px;text-align:center;border:2px solid #330000;border-radius:10px;background:#0a0a0a;color:#666;cursor:pointer;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;touch-action:manipulation}
+.tab.act.red{border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.1)}
+.tab.act.grn{border-color:#00ff41;color:#00ff41;background:rgba(0,255,65,.08)}
+.tab .ic{font-size:1.2rem;display:block;margin-bottom:4px}
+.tab .ds{font-size:.55rem;font-weight:normal;opacity:.7;text-transform:none}
+.warn-box{background:rgba(255,0,0,.08);border:1px solid #ff0000;border-radius:8px;padding:10px;margin-top:10px;font-size:.68rem;color:#ff6666;text-align:center}
+.gbtn{width:100%;padding:16px;background:linear-gradient(135deg,#660000,#ff003c,#ff0000);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.gbtn:active{transform:scale(.98)}
+.gbtn.grn{background:linear-gradient(135deg,#003300,#00ff41);color:#000}
+.gbtn.gold{background:linear-gradient(135deg,#aa8800,#ffd700);color:#000}
+.ld{text-align:center;padding:24px;color:#ff003c;display:none}
+.ld.on{display:block}
+.lbar{width:100%;height:5px;background:#330000;border-radius:3px;overflow:hidden;margin:10px 0}
+.lbf{height:100%;background:linear-gradient(90deg,#660000,#ff003c);width:0%;animation:lb 1.5s ease-out}
+@keyframes lb{0%{width:0}100%{width:100%}}
+.lt{font-size:.72rem;color:#ff6666;margin-top:6px}
+.res{display:none}
+.res.on{display:block}
+.rc{background:#0f0a0a;border:2px solid #330000;border-radius:12px;padding:16px;margin-bottom:12px}
+.rc.red{border-color:#ff003c}
+.rc.grn{border-color:#00aa2a}
+.rc.purple{border-color:#a855f7}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #330000;flex-wrap:wrap;gap:6px}
+.rh h3{font-size:1rem;letter-spacing:1px}
+.rc.red .rh h3{color:#ff003c}
+.rc.grn .rh h3{color:#00ff41}
+.rc.purple .rh h3{color:#a855f7}
+.badge{font-size:.6rem;padding:3px 8px;border-radius:20px;font-weight:bold}
+.badge.red{background:rgba(255,0,60,.2);color:#ff003c;border:1px solid #ff003c}
+.badge.grn{background:rgba(0,255,65,.15);color:#00ff41;border:1px solid #00aa2a}
+.badge.purple{background:rgba(168,85,247,.2);color:#a855f7;border:1px solid #a855f7}
+.pinfo{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:.62rem;color:#ff6666;flex-wrap:wrap}
+.sp{padding:2px 6px;background:#330000;border-radius:4px;color:#ff6666}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:480px){.sg{grid-template-columns:1fr}}
+.si{background:#0a0a0a;border:1px solid #330000;border-radius:8px;padding:12px}
+.si.hl{border:2px solid #ffd700;background:rgba(255,215,0,.05)}
+.si.crit{border:2px solid #ff003c;background:rgba(255,0,60,.05)}
+.sl{font-size:.6rem;color:#ff6666;text-transform:uppercase;margin-bottom:3px}
+.sv{font-size:2rem;font-weight:bold;color:#ff003c;line-height:1}
+.si.hl .sv{color:#ffd700}
+.si.crit .sv{color:#ff0000}
+.rc.grn .sv{color:#00ff41}
+.rc.purple .sv{color:#a855f7}
+.sb{height:5px;background:#330000;border-radius:3px;margin-top:8px;overflow:hidden}
+.sbf{height:100%;border-radius:3px;transition:width 1s ease-out;width:0%}
+.rc.red .sbf{background:linear-gradient(90deg,#660000,#ff003c)}
+.rc.grn .sbf{background:linear-gradient(90deg,#003300,#00ff41)}
+.rc.purple .sbf{background:linear-gradient(90deg,#4c1d95,#a855f7)}
+.si.hl .sbf{background:linear-gradient(90deg,#aa8800,#ffd700)}
+.si.crit .sbf{background:linear-gradient(90deg,#660000,#ff003c)}
+.st{display:inline-block;font-size:.52rem;padding:1px 6px;border-radius:3px;margin-top:5px;background:rgba(255,0,60,.15);color:#ff003c}
+.si.hl .st{background:rgba(255,215,0,.15);color:#ffd700}
+.si.crit .st{background:rgba(255,0,0,.2);color:#ff0000;font-weight:bold}
+.rc.grn .st{background:rgba(0,255,65,.1);color:#00ff41}
+.rc.purple .st{background:rgba(168,85,247,.15);color:#a855f7}
+.ai{background:#0a0a0a;border:1px dashed #660000;border-radius:8px;padding:12px;margin-top:12px;font-size:.66rem;color:#ff6666;line-height:1.5}
+.ai b{color:#ff003c}
+.rc.purple .ai b{color:#a855f7}
+.fm{display:block;margin-top:6px;padding:6px;background:rgba(255,0,0,.1);border-radius:4px;font-size:.6rem;color:#ff9999}
+.rc.purple .fm{background:rgba(168,85,247,.1);color:#c8a8e8}
+.wi{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.wc{padding:5px 8px;border-radius:6px;font-size:.65rem;border:1px solid;font-weight:bold}
+.wc.red{border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.08)}
+.wc.grn{border-color:#00aa2a;color:#00ff41;background:rgba(0,255,65,.06)}
+.wc.purple{border-color:#a855f7;color:#a855f7;background:rgba(168,85,247,.08)}
+.cp{width:100%;padding:10px;background:transparent;border:1px solid #ff003c;border-radius:8px;color:#ff003c;font-family:inherit;font-size:.75rem;cursor:pointer;margin-top:10px;font-weight:bold;touch-action:manipulation}
+.rc.purple .cp{border-color:#a855f7;color:#a855f7}
+.cp:active{opacity:.7}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:#0f0a0a;border:1px solid #ff003c;color:#ff003c;padding:10px 24px;border-radius:8px;font-size:.8rem;z-index:9999;transition:transform .3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.ft{text-align:center;padding:14px;color:#660000;font-size:.6rem}
+.pm{text-align:center;margin-top:12px;padding:10px;border:1px solid #ff003c;border-radius:8px;background:rgba(255,0,60,.05)}
+.pm-label{font-size:.65rem;color:#ff6666}
+.pm-bar{width:100%;height:7px;background:#330000;border-radius:4px;margin:6px 0;overflow:hidden}
+.pm-fill{height:100%;background:linear-gradient(90deg,#660000,#ff003c,#ff0000,#ffd700);border-radius:4px;width:0%;transition:width 1.5s}
+.pm-val{font-size:1.3rem;font-weight:bold;color:#ff003c}
+.hs-tag{display:inline-block;margin-top:8px;padding:5px 12px;background:rgba(255,0,0,.1);border:1px solid #ff003c;border-radius:6px;font-size:.65rem;color:#ff003c;font-weight:bold}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9998;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;padding-top:44px}
+.overlay.on{display:block}
+.ov-close{position:fixed;top:10px;right:10px;width:34px;height:34px;background:#1a0a1a;border:2px solid #a855f7;border-radius:50%;color:#a855f7;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.ov-close:active{background:#a855f7;color:#000}
+.ov-hdr{text-align:center;padding:16px 12px;border:2px solid #a855f7;border-radius:12px;background:linear-gradient(135deg,#1a0a2e,#0a0a0a);margin-bottom:12px}
+.ov-hdr h1{font-size:1.4rem;color:#a855f7;text-shadow:0 0 20px rgba(168,85,247,.4)}
+.ov-hdr .sub{color:#c8a8e8;font-size:.7rem;margin-top:4px}
+.ov-hdr .ver{display:inline-block;background:#2d1a4e;color:#a855f7;padding:2px 8px;border-radius:4px;font-size:.6rem;margin-top:6px;border:1px solid #a855f7}
+.ov-cfg{background:#0f0a1a;border:2px solid #2d1a4e;border-radius:12px;padding:14px;margin-bottom:12px}
+.ov-cfg h2{color:#a855f7;font-size:.9rem;margin-bottom:10px;border-bottom:1px solid #2d1a4e;padding-bottom:6px}
+.ov-cfg .f label{color:#c8a8e8}
+.ov-cfg .f input,.ov-cfg .f select{background:#0a0a0a;border:1px solid #2d1a4e;color:#c8a8e8}
+.ov-cfg .f input:focus,.ov-cfg .f select:focus{border-color:#a855f7}
+.ov-cfg .f select option{background:#0f0a1a}
+.ov-cfg .tab{border-color:#2d1a4e}
+.ov-warn{background:rgba(168,85,247,.08);border:1px solid #a855f7;border-radius:8px;padding:10px;margin-top:10px;font-size:.65rem;color:#c8a8e8;text-align:center}
+.ov-btn{width:100%;padding:16px;background:linear-gradient(135deg,#4c1d95,#8b5cf6,#a855f7);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:10px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.ov-btn:active{transform:scale(.98)}
+
+.live-box{position:fixed;top:8px;right:8px;z-index:9999;display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(0,20,0,.9);border:1px solid #00ff41;border-radius:20px;font-size:.6rem;color:#00ff41;font-family:'Courier New',monospace;touch-action:manipulation;cursor:pointer}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#00ff41;animation:livePulse 1s infinite}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 8px #00ff41}50%{opacity:.4;box-shadow:0 0 4px #00ff41}}
+.live-box.off{border-color:#660000;color:#660000;background:rgba(20,0,0,.9)}
+.live-box.off .live-dot{background:#660000;animation:none}
+.live-ts{font-size:.55rem;color:#00aa2a;margin-left:4px}
+.live-box.off .live-ts{color:#660000}
+@media(max-width:480px){.live-box{font-size:.55rem;padding:4px 8px}}
+
+
+.phone-adjust{margin-top:14px;border:1px solid #00aaff;border-radius:10px;background:rgba(0,80,160,.06);padding:14px}
+.phone-adjust .pa-title{font-size:.72rem;color:#00ccff;font-weight:bold;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(0,170,255,.2);padding-bottom:6px}
+.phone-adjust .pa-item{display:flex;align-items:flex-start;gap:6px;padding:6px 0;font-size:.65rem;color:#88ccff;line-height:1.5;border-bottom:1px solid rgba(0,170,255,.08)}
+.phone-adjust .pa-item:last-child{border-bottom:none}
+.phone-adjust .pa-num{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;background:rgba(0,170,255,.15);color:#00ccff;border-radius:4px;font-size:.55rem;font-weight:bold;flex-shrink:0;margin-top:1px}
+.phone-adjust .pa-val{color:#00aaff;font-weight:bold}
+.phone-adjust .pa-section{font-size:.62rem;color:#0088cc;font-weight:bold;letter-spacing:.5px;margin:8px 0 4px;text-transform:uppercase}
+.rc.purple .phone-adjust{border-color:#a855f7;background:rgba(168,85,247,.05)}
+.rc.purple .phone-adjust .pa-title{color:#c8a8e8;border-bottom-color:rgba(168,85,247,.2)}
+.rc.purple .phone-adjust .pa-item{color:#c8a8e8;border-bottom-color:rgba(168,85,247,.08)}
+.rc.purple .phone-adjust .pa-num{background:rgba(168,85,247,.15);color:#a855f7}
+.rc.purple .phone-adjust .pa-val{color:#a855f7}
+.rc.purple .phone-adjust .pa-section{color:#a855f7}
+
+</style>
+</head>
+<body>
+<canvas id="matrixCanvas"></canvas>
+<div class="live-box" id="liveBox"><span class="live-dot"></span>LIVE 24/7<span class="live-ts" id="liveTs">00:00</span></div>
+
+<div class="page">
+<div class="hdr">
+<h1>SALITA 3.5</h1>
+<div class="sub">// MEGA HACKER PVP AGGRESSIVE ENGINE</div>
+<div class="ver">v3.5.1 — ULTRA HACKER MODE</div>
+<div class="sbar">
+<span class="pill"><span class="dot"></span> ENGINE: MAX</span>
+<span class="pill"><span class="dot"></span> 90HZ</span>
+<span class="pill danger"><span class="dot"></span> HACK MODE: ULTRA</span>
+<span class="pill danger"><span class="dot"></span> PVP: AGGRESSIVE</span>
+</div>
+</div>
+
+<button class="purple-btn" id="openWpn">🎯 GENERADOR POR ARMA — HACKER PRECISO</button>
+
+<div class="cfg">
+<h2>⚙ CONFIG DEL DISPOSITIVO</h2>
+<div class="cg">
+<div class="f"><label>Marca</label><select id="brand"><option value="samsung">Samsung</option><option value="xiaomi">Xiaomi/Redmi/POCO</option><option value="apple">iPhone</option><option value="motorola">Motorola</option><option value="huawei">Huawei</option><option value="oppo">OPPO</option><option value="vivo">Vivo</option><option value="realme">Realme</option><option value="oneplus">OnePlus</option><option value="tecno">Tecno</option><option value="infinix">Infinix</option><option value="zte">ZTE</option><option value="asus">ASUS ROG</option><option value="nubia">Nubia Red Magic</option><option value="google">Google Pixel</option><option value="honor">Honor</option><option value="otra">Otra</option></select></div>
+<div class="f"><label>Modelo</label><input type="text" id="model" placeholder="Ej: Redmi Note 12"></div>
+<div class="f"><label>Refresh Rate</label><select id="hz"><option value="60">60 Hz</option><option value="90" selected>90 Hz</option><option value="120">120 Hz</option><option value="144">144 Hz</option><option value="165">165 Hz</option></select></div>
+</div>
+<div style="margin-top:14px">
+<h2 style="font-size:.82rem;color:#ff6666;margin-bottom:8px">🎯 MODO DE JUEGO</h2>
+<div class="tabs">
+<div class="tab act red" id="tabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Deagle·Shotgun·M1014</div></div>
+<div class="tab grn" id="tabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta distancia</div></div>
+</div>
+<div class="tab" id="tabDual" style="border:2px solid #ffd700;background:rgba(255,215,0,.05);color:#ffd700;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER</div>
+</div>
+<div class="warn-box">⚠ ZONA HACKER ACTIVADA — SENSIBILIDADES EXTREMAS HASTA 200 ⚠</div>
+<button class="gbtn" id="genBtn">⚡⚡ GENERAR MEGA HACKER PVP ⚡⚡</button>
+</div>
+
+<div class="ld" id="loading">
+<div style="font-size:.9rem;letter-spacing:2px">⚡ CALCULANDO...</div>
+<div class="lbar"><div class="lbf"></div></div>
+<div class="lt" id="loadText">Iniciando...</div>
+</div>
+
+<div class="res" id="results"></div>
+<div class="ft"><p>SALITA 3.5 — MEGA HACKER · Valores hasta 200 · FreeFire</p></div>
+</div>
+
+<div class="toast" id="toast">✅ Copiado</div>
+
+<div class="overlay" id="overlay">
+<button class="ov-close" id="closeOv">✕</button>
+<div class="ov-hdr">
+<h1>🎯 ARMA HACKER</h1>
+<div class="sub">// SENSIBILIDAD PRECISA POR ARMA</div>
+<div class="ver">SALITA 3.5 — WEAPON ENGINE</div>
+</div>
+<div class="ov-cfg">
+<h2>🔫 SELECCIONA TU ARMA</h2>
+<div class="f" style="margin-bottom:10px">
+<label>Arma de FreeFire</label>
+<select id="weapon" style="width:100%">
+<optgroup label="🔫 Pistolas">
+<option value="deagle">Desert Eagle (Deagle)</option>
+<option value="usp">USP</option>
+<option value="m500">M500</option>
+<option value="g18">G18</option>
+<option value="walther">Walther PPK</option>
+</optgroup>
+<optgroup label="💥 Shotguns">
+<option value="m1887">Shotgun M1887</option>
+<option value="m1014">M1014</option>
+<option value="spas12">SPAS-12</option>
+<option value="m1873">Double Barrel (M1873)</option>
+</optgroup>
+<optgroup label="🔫 SMGs">
+<option value="mp40">MP40</option>
+<option value="ump">UMP</option>
+<option value="p90">P90</option>
+<option value="vector">Vector</option>
+<option value="mp5">MP5</option>
+<option value="thompson">Thompson</option>
+<option value="cg15">CG15</option>
+<option value="m10">M10</option>
+</optgroup>
+<optgroup label="🎯 Assault Rifles">
+<option value="ak">AK47</option>
+<option value="m4a1">M4A1</option>
+<option value="groza">Groza</option>
+<option value="scar">SCAR</option>
+<option value="xm8">XM8</option>
+<option value="famas">FAMAS</option>
+<option value="an94">AN94</option>
+<option value="aug">AUG</option>
+<option value="ac80">AC80</option>
+<option value="m16a1">M16A1</option>
+<option value="parafal">Parafal</option>
+</optgroup>
+<optgroup label="🔭 DMRs / Marksman">
+<option value="m14">M14</option>
+<option value="sks">SKS</option>
+<option value="svd">SVD Dragunov</option>
+<option value="sr">SR-DMR</option>
+</optgroup>
+<optgroup label="🎯 Snipers">
+<option value="awm">AWM</option>
+<option value="kar98k">Kar98k</option>
+<option value="m82b">M82B</option>
+<option value="s24">S24</option>
+<option value="m1903">M1903</option>
+</optgroup>
+<optgroup label="🔫 LMGs">
+<option value="m249">M249</option>
+<option value="ac80lmg">AC80 LMG</option>
+</optgroup>
+<optgroup label="⚙️ Especiales">
+<option value="chargegun">Charge Gun</option>
+<option value="treatment">Treatment Gun</option>
+<option value="paintgun">Paint Gun</option>
+<option value="grenade">Grenade Launcher</option>
+<option value="rpg">RPG-7</option>
+<option value="flamethrower">Flamethrower</option>
+</optgroup>
+</select>
+</div>
+<h2 style="font-size:.82rem;color:#c8a8e8;margin-top:10px">📱 TU DISPOSITIVO</h2>
+<div class="cg" style="margin-top:8px">
+<div class="f"><label>Marca</label><select id="wpnBrand"><option value="samsung">Samsung</option><option value="xiaomi">Xiaomi/Redmi/POCO</option><option value="apple">iPhone</option><option value="motorola">Motorola</option><option value="huawei">Huawei</option><option value="oppo">OPPO</option><option value="vivo">Vivo</option><option value="realme">Realme</option><option value="oneplus">OnePlus</option><option value="tecno">Tecno</option><option value="infinix">Infinix</option><option value="zte">ZTE</option><option value="asus">ASUS ROG</option><option value="nubia">Nubia Red Magic</option><option value="google">Google Pixel</option><option value="honor">Honor</option><option value="otra">Otra</option></select></div>
+<div class="f"><label>Modelo</label><input type="text" id="wpnModel" placeholder="Ej: Redmi Note 12"></div>
+<div class="f"><label>Refresh Rate</label><select id="wpnHz"><option value="60">60 Hz</option><option value="90" selected>90 Hz</option><option value="120">120 Hz</option><option value="144">144 Hz</option><option value="165">165 Hz</option></select></div>
+</div>
+<div style="margin-top:12px">
+<h2 style="font-size:.82rem;color:#c8a8e8;margin-bottom:8px">🎮 MODO</h2>
+<div class="tabs">
+<div class="tab act red" id="wpnTabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Headshots precisos</div></div>
+<div class="tab grn" id="wpnTabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta</div></div>
+</div>
+</div>
+<div class="ov-warn">🎯 CALIBRACION PRECISA — TODO ROJO A LA CABEZA SIN TEMBLAR</div>
+<button class="ov-btn" id="wpnGen">⚡ GENERAR SENSIBILIDAD POR ARMA ⚡</button>
+
+<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+<button class="fb-btn" id="fbSmall" style="padding:6px 14px;font-size:.62rem;border:1px solid #a855f7;background:rgba(168,85,247,.1);color:#a855f7;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton CHICO</button>
+<button class="fb-btn" id="fbNormal" style="padding:6px 14px;font-size:.62rem;border:1px solid #2d1a4e;background:transparent;color:#666;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton NORMAL</button>
+<button class="fb-btn" id="fbBig" style="padding:6px 14px;font-size:.62rem;border:1px solid #2d1a4e;background:transparent;color:#666;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton GRANDE</button>
+</div>
+</div>
+<div class="ld" id="wpnLoading" style="color:#a855f7">
+<div style="font-size:.9rem;letter-spacing:2px">⚡ CALIBRANDO ARMA...</div>
+<div class="lbar"><div class="lbf" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div>
+<div class="lt" id="wpnLoadText" style="color:#c8a8e8">Analizando arma...</div>
+</div>
+<div class="res" id="wpnResults"></div>
+</div>
+
+<script>
+// ===== MATRIX RAIN =====
+(function(){
+var c=document.getElementById('matrixCanvas');
+if(!c)return;
+var ctx=c.getContext('2d');
+var fontSize=14;
+var drops=[];
+function resize(){
+c.width=window.innerWidth;
+c.height=window.innerHeight;
+var cols=Math.floor(c.width/fontSize);
+while(drops.length<cols)drops.push(Math.random()*-100);
+drops.length=cols;
+}
+resize();
+window.addEventListener('resize',resize);
+var chars='ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎ0123456789ABCDEF';
+var charArr=chars.split('');
+var colors=['#00ff41','#00aa2a','#003300','#33ff33','#006600'];
+function draw(){
+ctx.fillStyle='rgba(10,10,10,0.06)';
+ctx.fillRect(0,0,c.width,c.height);
+ctx.font=fontSize+'px monospace';
+for(var i=0;i<drops.length;i++){
+var text=charArr[Math.floor(Math.random()*charArr.length)];
+var x=i*fontSize;
+var y=drops[i]*fontSize;
+var color=colors[Math.floor(Math.random()*colors.length)];
+ctx.fillStyle=color;
+ctx.shadowBlur=8;
+ctx.shadowColor=color;
+ctx.fillText(text,x,y);
+ctx.shadowBlur=0;
+if(y>c.height&&Math.random()>0.975)drops[i]=0;
+drops[i]++;
+}
+}
+setInterval(draw,50);
+})();
+
+// ===== HELPERS =====
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function showToast(){
+var t=document.getElementById('toast');
+if(!t)return;
+t.classList.add('show');
+setTimeout(function(){t.classList.remove('show')},2000);
+}
+function copyText(txt){
+try{
+navigator.clipboard.writeText(txt).then(showToast).catch(function(){
+var ta=document.createElement('textarea');
+ta.value=txt;document.body.appendChild(ta);ta.select();
+document.execCommand('copy');document.body.removeChild(ta);showToast();
+});
+}catch(e){
+var ta=document.createElement('textarea');
+ta.value=txt;document.body.appendChild(ta);ta.select();
+document.execCommand('copy');document.body.removeChild(ta);showToast();
+}
+}
+
+// ===== MAIN GENERATOR =====
+var mode='pvp';
+var tabPVP=document.getElementById('tabPVP');
+var tabBR=document.getElementById('tabBR');
+var tabDual=document.getElementById('tabDual');
+var genBtn=document.getElementById('genBtn');
+
+tabPVP.addEventListener('click',function(){
+mode='pvp';
+tabPVP.classList.add('act');
+tabBR.classList.remove('act');
+genBtn.className='gbtn';
+genBtn.innerHTML='⚡⚡ GENERAR MEGA HACKER PVP ⚡⚡';
+tabDual.style.display='none';
+});
+tabBR.addEventListener('click',function(){
+mode='brdecla';
+tabBR.classList.add('act');
+tabPVP.classList.remove('act');
+genBtn.className='gbtn grn';
+genBtn.innerHTML='⚡ GENERAR BR+DECLA';
+tabDual.style.display='block';
+});
+tabDual.addEventListener('click',function(){
+mode='dual';
+genBtn.className='gbtn gold';
+genBtn.innerHTML='⚡⚡ GENERAR AMBAS — DUAL ULTRA ⚡⚡';
+});
+
+var brandMap={samsung:1,xiaomi:1.02,apple:1.08,motorola:0.97,huawei:0.99,oppo:0.98,vivo:0.98,realme:1,oneplus:1.06,tecno:0.93,infinix:0.92,zte:0.95,asus:1.1,nubia:1.09,google:1.05,honor:1,otra:0.95};
+
+function calcMain(m){
+var hz=+document.getElementById('hz').value;
+var brand=document.getElementById('brand').value;
+var model=document.getElementById('model').value||'Desconocido';
+var hzF=Math.log2(hz/60)+0.85;
+var bf=brandMap[brand]||0.95;
+var base=hzF*bf;
+var r={};
+if(m==='pvp'){
+var pb=185,pm=base*1.25;
+r={general:clamp(Math.round(pb*pm*1.08),100,200),redDot:clamp(Math.round(pb*pm*1.12),100,200),scope2x:clamp(Math.round(pb*pm*1.02),100,200),scope4x:clamp(Math.round(pb*pm*0.92),80,200),sniper:clamp(Math.round(pb*pm*0.82),60,200),freeLook:clamp(Math.round(pb*pm*1.2),100,200),fireBtn:clamp(Math.round(pb*pm*1.25),100,200),dragHead:clamp(Math.round(pb*pm*1.3),100,200)};
+r.weapons=['Deagle Headshot Machine','Shotgun M1887 One Shot','M1014 Spam Headshots'];
+r.modeName='PVP MEGA HACKER TODO ROJO';r.color='red';
+r.strategy='MEGA AGGRESSIVE: Boton y drag head al maximo. Flick preciso con Deagle, head drag con M1014.';
+r.formula='Base=185 Hz('+hzF.toFixed(2)+') Brand('+bf.toFixed(2)+') PVP(1.25)';
+r.powerLevel='ULTRA AGGRESSIVE 95%';
+}else{
+var bb=140,bm2=base*1.05;
+r={general:clamp(Math.round(bb*bm2*1.1),100,200),redDot:clamp(Math.round(bb*bm2*1.05),100,200),scope2x:clamp(Math.round(bb*bm2*1.02),100,200),scope4x:clamp(Math.round(bb*bm2*0.96),90,200),sniper:clamp(Math.round(bb*bm2*0.9),80,200),freeLook:clamp(Math.round(bb*bm2*1.12),100,200),fireBtn:clamp(Math.round(bb*bm2*1.08),100,200),dragHead:clamp(Math.round(bb*bm2*1.14),100,200)};
+r.weapons=['Larga: AWM/Kar98k/M82B','Corta: MP40/AK/SCAR','Versatil: M4A1/Groza/XM8'];
+r.modeName='BR+DECLA Larga/Corta';r.color='green';
+r.strategy='Hibrido. Sens alta para corta, scopes calibrados para larga.';
+r.formula='Base=140 Hz('+hzF.toFixed(2)+') Brand('+bf.toFixed(2)+') BR(1.05)';
+r.powerLevel='BALANCED 75%';
+}
+r.id='SX-'+Math.random().toString(36).substr(2,6).toUpperCase();
+r.dev={hz:hz,brand:brand,model:model,mult:base.toFixed(4)};
+return r;
+}
+
+function renderMain(r){
+var red=r.color==='red';
+var cc=red?'rc red':'rc grn';
+var bc=red?'badge red':'badge grn';
+var wc=red?'wc red':'wc grn';
+var items=[{l:'General',v:r.general,t:'BASE /200'},{l:'Punto Rojo',v:r.redDot,t:'RED DOT /200'},{l:'Mira 2x',v:r.scope2x,t:'2X /200'},{l:'Mira 4x',v:r.scope4x,t:'4X /200'},{l:'Mira Sniper',v:r.sniper,t:'SNIPER /200'},{l:'Vista Libre',v:r.freeLook,t:'FREE /200'},{l:'Boton Disparo',v:r.fireBtn,t:'FIRE /200',h:'crit'},{l:'Drag Head',v:r.dragHead,t:'HEAD DRAG /200',h:'crit'}];
+var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
+var wH=r.weapons.map(function(w){return '<span class="'+wc+'">'+w+'</span>'}).join('');
+var d=r.dev;
+var pHTML=red?'<div class="pm"><div class="pm-label">NIVEL HACKER</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.powerLevel+'</div></div>':'';
+return '<div class="'+cc+'"><div class="rh"><h3>'+(red?'🔴':'🟢')+' '+r.modeName+'</h3><span class="'+bc+'">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+d.brand.toUpperCase()+'</span><span class="sp">'+d.model+'</span><span class="sp">'+d.hz+'Hz</span></div><div class="wi">'+wH+'</div>'+pHTML+'<div class="sg">'+sH+'</div><div class="ai"><b>ALGORITMO:</b> '+r.strategy+'<span class="fm">'+r.formula+'</span><span class="fm">Mult:'+d.mult+' Max:200</span></div>'+getPhoneAdjustments(r.dev.brand,r.dev.model,r.dev.hz)+'<button class="cp" data-copy="'+r.id+'">📋 COPIAR</button></div>';
+}
+
+genBtn.addEventListener('click',function(){
+var ld=document.getElementById('loading');
+var res=document.getElementById('results');
+var lt=document.getElementById('loadText');
+ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
+var steps=['Iniciando motor...','Leyendo specs...','Algoritmo agresivo...','Refresh rate...','Optimizando armas...','Boton a 200...','Drag head a 200...','Completado!'];
+var s=0;
+var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
+setTimeout(function(){
+clearInterval(iv);
+ld.classList.remove('on');
+if(mode==='dual'){res.innerHTML=renderMain(calcMain('pvp'))+renderMain(calcMain('brdecla'))}
+else{res.innerHTML=renderMain(calcMain(mode==='pvp'?'pvp':'brdecla'))}
+res.classList.add('on');
+setTimeout(function(){
+var bars=res.querySelectorAll('.sbf');
+for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
+var fills=res.querySelectorAll('.pm-fill');
+for(var i=0;i<fills.length;i++)fills[i].style.width='95%';
+},100);
+// Bind copy buttons
+var cps=res.querySelectorAll('.cp');
+for(var i=0;i<cps.length;i++){
+(function(btn){
+btn.addEventListener('click',function(){
+var card=btn.closest('.rc');
+var id=btn.getAttribute('data-copy');
+var txt='SALITA 3.5\n'+card.querySelector('h3').textContent+'\n';
+var sis=card.querySelectorAll('.si');
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+copyText(txt);
+});
+})(cps[i]);
+}
+res.scrollIntoView({behavior:'smooth',block:'start'});
+},1800);
+});
+
+// ===== WEAPON GENERATOR =====
+var wpnData={
+deagle:{name:'Desert Eagle',type:'Pistola',range:'Corta',recoil:'Alto',fireRate:'Lento',pvp:{gen:142,rd:138,s2:128,s4:112,sn:95,fl:155,fb:148,dh:162},br:{gen:130,rd:128,s2:120,s4:108,sn:92,fl:140,fb:138,dh:148},tip:'Flick preciso a la cabeza. Drag Head 162 exacto al craneo. Cada tiro cuenta.'},
+usp:{name:'USP',type:'Pistola',range:'Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:135,rd:132,s2:120,s4:105,sn:88,fl:148,fb:140,dh:152},br:{gen:122,rd:120,s2:112,s4:100,sn:85,fl:132,fb:128,dh:138},tip:'Pistola rapida. Tracking de cabeza suave. No pasarse del craneo.'},
+m500:{name:'M500',type:'Pistola',range:'Corta',recoil:'Medio',fireRate:'Lento',pvp:{gen:138,rd:135,s2:122,s4:108,sn:90,fl:150,fb:142,dh:155},br:{gen:125,rd:122,s2:115,s4:102,sn:87,fl:135,fb:130,dh:140},tip:'Pistola de precision media. Flick controlado a craneo.'},
+g18:{name:'G18',type:'Pistola',range:'Muy Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:132,rd:128,s2:115,s4:100,sn:82,fl:145,fb:135,dh:148},br:{gen:118,rd:115,s2:108,s4:95,sn:78,fl:128,fb:122,dh:132},tip:'Rafaga rapida. NO tiemble. Tracking de craneo estable.'},
+walther:{name:'Walther PPK',type:'Pistola',range:'Muy Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:134,rd:130,s2:118,s4:102,sn:85,fl:146,fb:138,dh:150},br:{gen:120,rd:118,s2:110,s4:97,sn:80,fl:130,fb:125,dh:135},tip:'Pistola ligera. Sens controlada para headshots precisos.'},
+m1887:{name:'Shotgun M1887',type:'Shotgun',range:'Muy Corta',recoil:'Medio',fireRate:'Lento',pvp:{gen:158,rd:148,s2:125,s4:105,sn:88,fl:168,fb:155,dh:170},br:{gen:145,rd:138,s2:118,s4:100,sn:85,fl:152,fb:145,dh:155},tip:'One-shot corta distancia. General 158 para girar. Drag Head 170 al craneo.'},
+m1014:{name:'M1014',type:'Shotgun',range:'Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:152,rd:145,s2:132,s4:115,sn:95,fl:162,fb:158,dh:165},br:{gen:138,rd:132,s2:122,s4:108,sn:90,fl:145,fb:140,dh:148},tip:'Spam shotgun. Tracking de cabeza sin temblar. Drag Head 165.'},
+spas12:{name:'SPAS-12',type:'Shotgun',range:'Corta-Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:148,rd:142,s2:130,s4:112,sn:92,fl:158,fb:150,dh:160},br:{gen:135,rd:130,s2:120,s4:105,sn:88,fl:142,fb:138,dh:148},tip:'Balance potencia/precision. Headshots consistentes sin temblar.'},
+m1873:{name:'Double Barrel (M1873)',type:'Shotgun',range:'Muy Corta',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:155,rd:145,s2:120,s4:100,sn:85,fl:165,fb:152,dh:168},br:{gen:142,rd:135,s2:115,s4:98,sn:82,fl:148,fb:140,dh:152},tip:'Dos tiros letales. Flick rapido a craneo. Cada tiro al craneo.'},
+mp40:{name:'MP40',type:'SMG',range:'Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:138,rd:135,s2:122,s4:105,sn:85,fl:148,fb:145,dh:155},br:{gen:125,rd:122,s2:115,s4:100,sn:82,fl:132,fb:130,dh:138},tip:'Fire rate brutal. NO tiemble. Tracking suave de cabeza.'},
+ump:{name:'UMP',type:'SMG',range:'Corta-Media',recoil:'Medio',fireRate:'Rapido',pvp:{gen:140,rd:136,s2:124,s4:108,sn:88,fl:150,fb:142,dh:158},br:{gen:128,rd:124,s2:116,s4:102,sn:85,fl:135,fb:132,dh:142},tip:'Recoil medio. Tracking estable. Response time preciso.'},
+p90:{name:'P90',type:'SMG',range:'Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:135,rd:132,s2:118,s4:102,sn:82,fl:145,fb:140,dh:150},br:{gen:122,rd:118,s2:112,s4:98,sn:80,fl:128,fb:125,dh:135},tip:'Dispara rapidisimo. NO tiemble. Linea en craneo.'},
+vector:{name:'Vector',type:'SMG',range:'Corta',recoil:'Muy Bajo',fireRate:'Extremo',pvp:{gen:132,rd:128,s2:115,s4:98,sn:78,fl:142,fb:135,dh:148},br:{gen:118,rd:115,s2:108,s4:95,sn:75,fl:122,fb:120,dh:130},tip:'Fire rate extremo. General 132 BAJA para no temblar. Precision > velocidad.'},
+mp5:{name:'MP5',type:'SMG',range:'Corta-Media',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:136,rd:133,s2:120,s4:103,sn:83,fl:146,fb:138,dh:152},br:{gen:123,rd:120,s2:113,s4:98,sn:80,fl:130,fb:126,dh:136},tip:'SMG clasica. Tracking estable de craneo sin pasarse.'},
+thompson:{name:'Thompson',type:'SMG',range:'Corta',recoil:'Medio',fireRate:'Muy Rapido',pvp:{gen:137,rd:134,s2:121,s4:104,sn:84,fl:147,fb:140,dh:154},br:{gen:124,rd:121,s2:114,s4:99,sn:81,fl:131,fb:127,dh:137},tip:'SMG retro. Recoil medio. Drag Head para mantener en craneo.'},
+cg15:{name:'CG15',type:'SMG',range:'Corta-Media',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:134,rd:131,s2:119,s4:102,sn:82,fl:144,fb:136,dh:150},br:{gen:121,rd:118,s2:111,s4:97,sn:79,fl:129,fb:124,dh:134},tip:'SMG con cargas. Tracking de craneo preciso. Sin temblar.'},
+m10:{name:'M10',type:'SMG',range:'Muy Corta',recoil:'Medio',fireRate:'Muy Rapido',pvp:{gen:133,rd:130,s2:117,s4:100,sn:80,fl:143,fb:134,dh:146},br:{gen:120,rd:117,s2:110,s4:95,sn:77,fl:127,fb:122,dh:130},tip:'SMG agresiva corta distancia. Flick a craneo sin pasarse.'},
+ak:{name:'AK47',type:'Assault Rifle',range:'Media',recoil:'Alto',fireRate:'Medio',pvp:{gen:128,rd:125,s2:115,s4:100,sn:82,fl:138,fb:132,dh:145},br:{gen:118,rd:115,s2:108,s4:95,sn:80,fl:125,fb:122,dh:132},tip:'Recoil alto. CONTROL no velocidad. Drag Head compensa pull. Cabeza nada mas.'},
+m4a1:{name:'M4A1',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:130,rd:128,s2:118,s4:102,sn:84,fl:140,fb:135,dh:148},br:{gen:120,rd:118,s2:112,s4:98,sn:82,fl:128,fb:125,dh:135},tip:'Balanceado. Headshots consistentes. Tracking estable de craneo.'},
+groza:{name:'Groza',type:'Assault Rifle',range:'Media',recoil:'Medio-Alto',fireRate:'Medio-Rapido',pvp:{gen:132,rd:130,s2:120,s4:105,sn:85,fl:142,fb:138,dh:152},br:{gen:122,rd:120,s2:114,s4:100,sn:82,fl:130,fb:128,dh:138},tip:'Dano alto. Drag Head 152 compensa recoil. Cabeza siempre.'},
+scar:{name:'SCAR',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:130,rd:128,s2:117,s4:100,sn:82,fl:138,fb:134,dh:146},br:{gen:120,rd:118,s2:110,s4:96,sn:80,fl:126,fb:124,dh:133},tip:'Versatil. Preciso sin temblar. Cabeza nada mas.'},
+xm8:{name:'XM8',type:'Assault Rifle',range:'Media-Larga',recoil:'Bajo',fireRate:'Medio',pvp:{gen:128,rd:125,s2:115,s4:98,sn:80,fl:135,fb:130,dh:142},br:{gen:118,rd:115,s2:108,s4:94,sn:78,fl:122,fb:120,dh:128},tip:'Poco recoil. Headshots limpios. No pasarse del craneo.'},
+famas:{name:'FAMAS',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Burst',pvp:{gen:130,rd:128,s2:118,s4:100,sn:80,fl:140,fb:135,dh:148},br:{gen:120,rd:118,s2:110,s4:96,sn:78,fl:128,fb:125,dh:133},tip:'Burst de 3. Cada burst va a craneo. Preciso.'},
+an94:{name:'AN94',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:129,rd:126,s2:116,s4:100,sn:82,fl:137,fb:133,dh:145},br:{gen:119,rd:116,s2:108,s4:95,sn:80,fl:125,fb:122,dh:130},tip:'Preciso. Tracking de craneo estable. Sin pasarse.'},
+aug:{name:'AUG',type:'Assault Rifle',range:'Media-Larga',recoil:'Bajo',fireRate:'Medio',pvp:{gen:126,rd:124,s2:114,s4:96,sn:78,fl:132,fb:128,dh:140},br:{gen:116,rd:114,s2:106,s4:92,sn:76,fl:120,fb:118,dh:125},tip:'Sniper-grade precision en AR. Larga distancia. Cabeza.'},
+ac80:{name:'AC80',type:'Assault Rifle',range:'Larga',recoil:'Bajo',fireRate:'Medio',pvp:{gen:125,rd:122,s2:112,s4:95,sn:78,fl:130,fb:125,dh:138},br:{gen:115,rd:112,s2:105,s4:90,sn:75,fl:118,fb:115,dh:122},tip:'AR de larga distancia. Sens controlada. Cabeza a distancia.'},
+m14:{name:'M14',type:'DMR',range:'Larga',recoil:'Medio',fireRate:'Medio',pvp:{gen:112,rd:115,s2:105,s4:88,sn:70,fl:128,fb:108,dh:118},br:{gen:102,rd:105,s2:98,s4:82,sn:65,fl:116,fb:98,dh:105},tip:'DMR semi-auto. Headshots a distancia. Drag Head controlado. Sin pasarse.'},
+m16a1:{name:'M16A1',type:'Assault Rifle',range:'Media-Larga',recoil:'Bajo',fireRate:'Burst',pvp:{gen:127,rd:124,s2:114,s4:96,sn:78,fl:133,fb:126,dh:140},br:{gen:117,rd:114,s2:106,s4:92,sn:75,fl:121,fb:116,dh:125},tip:'Burst preciso. Cada burst a craneo. Larga distancia.'},
+parafal:{name:'Parafal',type:'Assault Rifle',range:'Media',recoil:'Medio-Alto',fireRate:'Medio',pvp:{gen:131,rd:128,s2:118,s4:102,sn:84,fl:141,fb:136,dh:150},br:{gen:121,rd:118,s2:110,s4:97,sn:81,fl:129,fb:126,dh:136},tip:'AR agresiva. Drag Head para compensar recoil. Cabeza siempre.'},
+sks:{name:'SKS',type:'DMR',range:'Larga',recoil:'Medio',fireRate:'Medio',pvp:{gen:110,rd:113,s2:103,s4:87,sn:68,fl:126,fb:106,dh:116},br:{gen:100,rd:103,s2:96,s4:80,sn:63,fl:114,fb:96,dh:103},tip:'DMR rapida. Headshots seguidos a distancia. Sin pasarse.'},
+awm:{name:'AWM',type:'Sniper',range:'Muy Larga',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:98,rd:102,s2:92,s4:78,sn:62,fl:115,fb:95,dh:105},br:{gen:88,rd:92,s2:85,s4:72,sn:58,fl:105,fb:85,dh:95},tip:'One-shot headshot. Scope 62 NO tiemble. PRECISION ABSOLUTA. Cabeza solo.'},
+kar98k:{name:'Kar98k',type:'Sniper',range:'Larga',recoil:'Alto',fireRate:'Lento',pvp:{gen:102,rd:105,s2:95,s4:82,sn:65,fl:118,fb:98,dh:108},br:{gen:92,rd:95,s2:88,s4:75,sn:60,fl:108,fb:88,dh:98},tip:'Sniper clasico. Scope 65 precisa. Boton estable. Cabeza nada mas.'},
+m82b:{name:'M82B',type:'Sniper',range:'Muy Larga',recoil:'Alto',fireRate:'Lento',pvp:{gen:100,rd:103,s2:93,s4:80,sn:63,fl:116,fb:96,dh:106},br:{gen:90,rd:93,s2:86,s4:73,sn:59,fl:106,fb:86,dh:96},tip:'Muy larga distancia. Sens BAJA. PRECISION EXTREMA. Cabeza.'},
+svd:{name:'SVD Dragunov',type:'DMR',range:'Larga',recoil:'Medio',fireRate:'Medio',pvp:{gen:108,rd:110,s2:100,s4:85,sn:68,fl:125,fb:105,dh:115},br:{gen:98,rd:100,s2:92,s4:78,sn:63,fl:112,fb:95,dh:103},tip:'Semi-auto. Headshots seguidos. Multiple tiros a craneo.'},
+s24:{name:'S24',type:'Sniper',range:'Larga',recoil:'Alto',fireRate:'Lento',pvp:{gen:104,rd:107,s2:97,s4:83,sn:66,fl:120,fb:100,dh:110},br:{gen:94,rd:97,s2:90,s4:76,sn:61,fl:110,fb:90,dh:100},tip:'Sniper ligero. Precision absoluta. Cabeza solo.'},
+m1903:{name:'M1903',type:'Sniper',range:'Muy Larga',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:96,rd:100,s2:90,s4:75,sn:60,fl:112,fb:92,dh:102},br:{gen:86,rd:90,s2:83,s4:70,sn:56,fl:102,fb:82,dh:92},tip:'Sniper de precision extrema. Sens MINIMA. Cabeza garantizada.'},
+sr:{name:'SR-DMR',type:'DMR',range:'Muy Larga',recoil:'Bajo',fireRate:'Medio',pvp:{gen:106,rd:108,s2:98,s4:83,sn:66,fl:122,fb:102,dh:112},br:{gen:96,rd:98,s2:90,s4:76,sn:61,fl:110,fb:92,dh:100},tip:'DMR de muy larga distancia. Headshots precisos a distancia.'},
+m249:{name:'M249',type:'LMG',range:'Media',recoil:'Alto',fireRate:'Rapido',pvp:{gen:126,rd:124,s2:114,s4:98,sn:80,fl:136,fb:130,dh:142},br:{gen:116,rd:114,s2:106,s4:94,sn:78,fl:124,fb:120,dh:128},tip:'LMG recoil alto. Sens controlada para domar recoil. Drag Head a craneo.'},
+ac80lmg:{name:'AC80 LMG',type:'LMG',range:'Media-Larga',recoil:'Medio',fireRate:'Rapido',pvp:{gen:124,rd:122,s2:112,s4:96,sn:78,fl:134,fb:128,dh:140},br:{gen:114,rd:112,s2:104,s4:92,sn:75,fl:122,fb:118,dh:125},tip:'LMG balanceada. Tracking de craneo mientras disparas. Sin temblar.'},
+chargegun:{name:'Charge Gun',type:'Especial',range:'Corta-Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:125,rd:122,s2:112,s4:95,sn:78,fl:135,fb:128,dh:138},br:{gen:115,rd:112,s2:105,s4:90,sn:75,fl:122,fb:118,dh:125},tip:'Arma especial. Tracking de craneo calibrado. Sin pasarse.'},
+treatment:{name:'Treatment Gun',type:'Especial',range:'Corta',recoil:'Bajo',fireRate:'Lento',pvp:{gen:115,rd:112,s2:102,s4:88,sn:72,fl:125,fb:108,dh:118},br:{gen:105,rd:102,s2:95,s4:82,sn:68,fl:112,fb:98,dh:105},tip:'Arma de curacion. Sens equilibrada para apuntar a aliados.'},
+paintgun:{name:'Paint Gun',type:'Especial',range:'Media',recoil:'Bajo',fireRate:'Medio',pvp:{gen:120,rd:118,s2:108,s4:92,sn:75,fl:128,fb:122,dh:132},br:{gen:110,rd:108,s2:100,s4:87,sn:72,fl:115,fb:112,dh:120},tip:'Arma utilitaria. Sens equilibrada. Apuntado preciso.'},
+grenade:{name:'Grenade Launcher',type:'Especial',range:'Media',recoil:'Alto',fireRate:'Lento',pvp:{gen:95,rd:98,s2:88,s4:75,sn:60,fl:110,fb:92,dh:100},br:{gen:85,rd:88,s2:80,s4:70,sn:55,fl:98,fb:82,dh:88},tip:'Arcos. Sens BAJA para apuntar con precision. Boton estable.'},
+rpg:{name:'RPG-7',type:'Especial',range:'Media-Larga',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:92,rd:95,s2:85,s4:72,sn:58,fl:105,fb:88,dh:96},br:{gen:82,rd:85,s2:78,s4:67,sn:53,fl:95,fb:78,dh:85},tip:'Rocket launcher. Sens BAJA para apuntar con precision. Un tiro cuenta.'},
+flamethrower:{name:'Flamethrower',type:'Especial',range:'Muy Corta',recoil:'Nulo',fireRate:'Continuo',pvp:{gen:140,rd:135,s2:122,s4:105,sn:85,fl:150,fb:145,dh:155},br:{gen:128,rd:125,s2:115,s4:100,sn:82,fl:135,fb:130,dh:138},tip:'Fuego continuo. Sens alta para tracking de craneo a corta distancia.'}
+};
+
+var wpnMode='pvp';
+var fbSize='normal'; // small, normal, big
+
+var fbSmall=document.getElementById('fbSmall');
+var fbNormal=document.getElementById('fbNormal');
+var fbBig=document.getElementById('fbBig');
+
+function setFbSize(size){
+fbSize=size;
+[fbSmall,fbNormal,fbBig].forEach(function(b){b.style.border='1px solid #2d1a4e';b.style.background='transparent';b.style.color='#666'});
+if(size==='small'){fbSmall.style.border='1px solid #a855f7';fbSmall.style.background='rgba(168,85,247,.1)';fbSmall.style.color='#a855f7';}
+else if(size==='big'){fbBig.style.border='1px solid #a855f7';fbBig.style.background='rgba(168,85,247,.1)';fbBig.style.color='#a855f7';}
+else{fbNormal.style.border='1px solid #a855f7';fbNormal.style.background='rgba(168,85,247,.1)';fbNormal.style.color='#a855f7';}
+}
+
+fbSmall.addEventListener('click',function(){setFbSize('small')});
+fbNormal.addEventListener('click',function(){setFbSize('normal')});
+fbBig.addEventListener('click',function(){setFbSize('big')});
+var overlay=document.getElementById('overlay');
+var openWpnBtn=document.getElementById('openWpn');
+var closeOvBtn=document.getElementById('closeOv');
+var wpnTabPVP=document.getElementById('wpnTabPVP');
+var wpnTabBR=document.getElementById('wpnTabBR');
+var wpnGenBtn=document.getElementById('wpnGen');
+
+openWpnBtn.addEventListener('click',function(){
+overlay.classList.add('on');
+overlay.style.display='block';
+document.body.style.overflow='hidden';
+});
+
+closeOvBtn.addEventListener('click',function(){
+overlay.classList.remove('on');
+overlay.style.display='none';
+document.body.style.overflow='';
+});
+
+wpnTabPVP.addEventListener('click',function(){
+wpnMode='pvp';
+wpnTabPVP.classList.add('act');
+wpnTabBR.classList.remove('act');
+});
+wpnTabBR.addEventListener('click',function(){
+wpnMode='brdecla';
+wpnTabBR.classList.add('act');
+wpnTabPVP.classList.remove('act');
+});
+
+wpnGenBtn.addEventListener('click',function(){
+var ld=document.getElementById('wpnLoading');
+var res=document.getElementById('wpnResults');
+var lt=document.getElementById('wpnLoadText');
+var wKey=document.getElementById('weapon').value;
+var w=wpnData[wKey]||wpnData.deagle;
+ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
+var steps=['Analizando: '+w.name+'...','Specs del dispositivo...','Calibracion por arma...','Refresh rate...','Recoil del arma...','Drag head para cabeza...','Sin temblar...','Completado!'];
+var s=0;
+var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
+setTimeout(function(){
+clearInterval(iv);
+ld.classList.remove('on');
+var hz=+document.getElementById('wpnHz').value;
+var brand=document.getElementById('wpnBrand').value;
+var model=document.getElementById('wpnModel').value||'Desconocido';
+var isPVP=wpnMode==='pvp';
+var profile=isPVP?w.pvp:w.br;
+var hzF=Math.log2(hz/60)+0.85;
+var bf=brandMap[brand]||0.95;
+var mult=hzF*bf;
+var r={
+weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
+modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
+general:clamp(Math.round(profile.gen*mult),100,200),
+redDot:clamp(Math.round(profile.rd*mult),100,200),
+scope2x:clamp(Math.round(profile.s2*mult),100,200),
+scope4x:clamp(Math.round(profile.s4*mult),80,200),
+sniper:clamp(Math.round(profile.sn*mult),60,200),
+freeLook:clamp(Math.round(profile.fl*mult),100,200),
+fireBtn:clamp(Math.round(profile.fb*mult*(fbSize==='small'?0.92:fbSize==='big'?1.08:1)),100,200),
+dragHead:clamp(Math.round(profile.dh*mult),100,200),
+id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
+hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
+fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
+};
+var items=[{l:'General',v:r.general,t:'BASE /200'},{l:'Punto Rojo',v:r.redDot,t:'RED DOT /200'},{l:'Mira 2x',v:r.scope2x,t:'2X /200'},{l:'Mira 4x',v:r.scope4x,t:'4X /200'},{l:'Mira Sniper',v:r.sniper,t:'SNIPER /200'},{l:'Vista Libre',v:r.freeLook,t:'FREE /200'},{l:'Boton Disparo',v:r.fireBtn,t:'FIRE /200',h:'crit'},{l:'Drag Head',v:r.dragHead,t:'HEAD DRAG /200',h:'hl'}];
+var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
+var recoilColor=r.recoil==='Alto'?'#ff003c':r.recoil==='Medio'?'#ffaa00':'#00ff41';
+res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 TODO ROJO A LA CABEZA SIN TEMBLAR</div><div class="pm" style="border-color:#a855f7"><div class="pm-label" style="color:#c8a8e8">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div><div class="pm-val" style="color:#a855f7">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
+res.classList.add('on');
+setTimeout(function(){
+var bars=res.querySelectorAll('.sbf');
+for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
+var fills=res.querySelectorAll('.pm-fill');
+for(var i=0;i<fills.length;i++)fills[i].style.width='98%';
+},100);
+// Bind copy
+var cpBtn=document.getElementById('wpnCopyBtn');
+if(cpBtn){
+cpBtn.addEventListener('click',function(){
+var card=cpBtn.closest('.rc');
+var txt='SALITA 3.5 ARMA '+r.weapon+'\n';
+var sis=card.querySelectorAll('.si');
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+copyText(txt);
+});
+}
+},1800);
+});
+
+
+// ===== AUTO REFRESH 24/7 =====
+var liveOn=true;
+var liveBox=document.getElementById('liveBox');
+var liveTs=document.getElementById('liveTs');
+var lastMainResults=false;
+var lastWpnResults=false;
+var refreshInterval=null;
+
+function updateTime(){
+var d=new Date();
+var h=('0'+d.getHours()).slice(-2);
+var m=('0'+d.getMinutes()).slice(-2);
+var s=('0'+d.getSeconds()).slice(-2);
+liveTs.textContent=h+':'+m+':'+s;
+}
+
+function autoRefresh(){
+if(!liveOn)return;
+updateTime();
+// Re-calculate main if results are showing
+var res=document.getElementById('results');
+if(res.classList.contains('on')&&res.innerHTML!==''){
+lastMainResults=true;
+var currentMode=mode;
+if(currentMode==='dual'){res.innerHTML=renderMain(calcMain('pvp'))+renderMain(calcMain('brdecla'))}
+else{res.innerHTML=renderMain(calcMain(currentMode==='pvp'?'pvp':'brdecla'))}
+// Animate bars
+setTimeout(function(){
+var bars=res.querySelectorAll('.sbf');
+for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
+var fills=res.querySelectorAll('.pm-fill');
+for(var i=0;i<fills.length;i++)fills[i].style.width='95%';
+},50);
+// Re-bind copy buttons
+var cps=res.querySelectorAll('.cp');
+for(var i=0;i<cps.length;i++){
+(function(btn){
+btn.addEventListener('click',function(){
+var card=btn.closest('.rc');
+var txt='SALITA 3.5 [LIVE]\n'+card.querySelector('h3').textContent+'\n';
+var sis=card.querySelectorAll('.si');
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+copyText(txt);
+});
+})(cps[i]);
+}
+}
+// Re-calculate weapon if results are showing
+var wpnRes=document.getElementById('wpnResults');
+if(wpnRes.classList.contains('on')&&wpnRes.innerHTML!=''&&document.getElementById('overlay').classList.contains('on')){
+// Re-run weapon calc silently
+var wKey=document.getElementById('weapon').value;
+var w=wpnData[wKey]||wpnData.deagle;
+var hz=+document.getElementById('wpnHz').value;
+var brand=document.getElementById('wpnBrand').value;
+var model=document.getElementById('wpnModel').value||'Desconocido';
+var isPVP=wpnMode==='pvp';
+var profile=isPVP?w.pvp:w.br;
+var hzF=Math.log2(hz/60)+0.85;
+var bf=brandMap[brand]||0.95;
+var mult=hzF*bf;
+// Update the existing result values in place
+var items=[profile.gen,profile.rd,profile.s2,profile.s4,profile.sn,profile.fl,profile.fb,profile.dh];
+var labels=['General','Punto Rojo','Mira 2x','Mira 4x','Mira Sniper','Vista Libre','Boton Disparo','Drag Head'];
+var valEls=wpnRes.querySelectorAll('.sv');
+var barEls=wpnRes.querySelectorAll('.sbf');
+var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
+var finalVals=[
+clamp(Math.round(items[0]*mult),100,200),
+clamp(Math.round(items[1]*mult),100,200),
+clamp(Math.round(items[2]*mult),100,200),
+clamp(Math.round(items[3]*mult),80,200),
+clamp(Math.round(items[4]*mult),60,200),
+clamp(Math.round(items[5]*mult),100,200),
+clamp(Math.round(items[6]*mult*fbMult),100,200),
+clamp(Math.round(items[7]*mult),100,200)
+];
+for(var i=0;i<valEls.length&&i<8;i++){
+valEls[i].textContent=finalVals[i];
+barEls[i].setAttribute('data-val',finalVals[i]);
+barEls[i].style.width=(finalVals[i]/200*100)+'%';
+}
+}
+}
+
+// Toggle live
+liveBox.addEventListener('click',function(){
+liveOn=!liveOn;
+if(liveOn){
+liveBox.classList.remove('off');
+liveBox.innerHTML='<span class="live-dot"></span>LIVE 24/7<span class="live-ts" id="liveTs">00:00</span>';
+liveTs=document.getElementById('liveTs');
+updateTime();
+refreshInterval=setInterval(autoRefresh,60000); // every 1 minute
+autoRefresh();
+}else{
+liveBox.classList.add('off');
+liveBox.innerHTML='<span class="live-dot"></span>PAUSED<span class="live-ts">OFF</span>';
+clearInterval(refreshInterval);
+}
+});
+
+// Start auto refresh every 1 minute
+updateTime();
+refreshInterval=setInterval(autoRefresh,60000);
+// Also update time every second
+setInterval(updateTime,1000);
+
+
+// ===== PHONE SETTINGS ADVICE =====
+function getPhoneAdjustments(brand,model,hz){
+var parts=[];
+var brandName={'samsung':'Samsung','xiaomi':'Xiaomi/MIUI','apple':'iPhone/iOS','motorola':'Motorola','huawei':'Huawei/EMUI','oppo':'OPPO/ColorOS','vivo':'Vivo/FuntouchOS','realme':'Realme/realmeUI','oneplus':'OnePlus/OxygenOS','tecno':'Tecno/HiOS','infinix':'Infinix/XOS','zte':'ZTE','asus':'ASUS ROG','nubia':'Nubia Red Magic','google':'Google Pixel','honor':'Honor','otra':'Generico'}[brand]||'Generico';
+
+// Screen refresh rate
+parts.push({section:'📱 PANTALLA',items:[
+'Ve a Ajustes > Pantalla y activa Refresh Rate en '+hz+'Hz (o maximo disponible)',
+hz>=120?'Activa Smooth Motion / Motion Smoothness en ALTO':'Mantén refresh rate en '+hz+'Hz estable',
+'Activa Always On Display (si tienes) para respuesta mas rapida de notificaciones',
+'Desactiva Auto-Brightness, pon el brillo en 70-80% para mejor visibilidad'
+]});
+
+// Touch sensitivity
+parts.push({section:'👆 TACTIL',items:[
+'Ve a Ajustes > Pantalla > Sensibilidad tactil y subela al MAXIMO',
+brand==='samsung'?'Samsung: Activa "Sensibilidad de pantalla tactil" en Ajustes > Pantalla':'',
+'Ve a Opciones de Desarrollador > Pointer Speed y ponlo en MAXIMO (1.0 o mas)',
+'Activa "Mostrar toques" temporalmente para calibrar y despues desactiva',
+'Desactiva "Animaciones de escala" (poner en 0.5x o desactivar) en Opciones de Desarrollador'
+]});
+
+// Brand-specific
+if(brand==='samsung'){
+parts.push({section:'🎮 SAMSUNG GAME LAUNCHER',items:[
+'Ve a Ajustes > Funciones avanzadas > Juegos > Game Launcher y activa',
+'En Game Booster activa "Bloquear durante el juego" y "No interrumpir"',
+'Activa "Toque repetido rapido" en Ajustes > Funciones avanzadas',
+'En Game Booster > Prioridad de rendimiento ponlo en MAXIMO'
+]});
+}else if(brand==='xiaomi'||brand==='redmi'||brand==='poco'){
+parts.push({section:'🎮 XIAOMI GAME TURBO',items:[
+'Ve a Ajustes > Funciones especiales > Game Turbo y activa',
+'En Game Turbo > Rendimiento ponlo en MAXIMO',
+'Activa "Memoria extendida" si tu MIUI lo soporta',
+'Ve a Ajustes > Opciones de desarrollador > Forzar GPU rendering: ACTIVAR'
+]});
+}else if(brand==='apple'){
+parts.push({section:'📱 IPHONE',items:[
+'Ve a Ajustes > Accesibilidad > Tocar > Ajustes de Tactil > Tiempo de respuesta: MAS RAPIDO',
+'Activa "Reducir transparencia" en Ajustes > Accesibilidad > Pantalla',
+'Desactiva "Movimiento automatico" en Ajustes > Accesibilidad > Movimiento',
+'Ve a Ajustes > General > Fondo > Actualizar en segundo plano: DESACTIVAR'
+]});
+}else if(brand==='motorola'){
+parts.push({section:'🎮 MOTOROLA GAMING',items:[
+'Ve a Ajustes > Moto > Moto Gametime y activa',
+'En Moto Gametime activa "Bloquear notificaciones" y "Auto-rotate off"',
+'Ve a Opciones de desarrollador > Animacion 0.5x en todas 3 opciones'
+]});
+}else if(brand==='oppo'||brand==='vivo'||brand==='realme'){
+parts.push({section:'🎮 '+brandName,items:[
+'Ve a Ajustes > Bateria > Rendimiento alto: ACTIVAR',
+'Ve a Game Space / Game Assistant y activa modo Rendimiento Maximo',
+'Desactiva "Smart Sidebar" durante el juego',
+'Ve a Opciones de desarrollador > Animacion 0.5x'
+]});
+}else if(brand==='asus'||brand==='nubia'){
+parts.push({section:'🎮 GAMING PHONE',items:[
+'Ve a Armoury Crate / Game Space y activa modo X o TURBO',
+'Activa "Air Triggers" o "Hombros" si tienes (ASUS ROG)',
+'Ve a Opciones de desarrollador > Forzar 4x MSAA: ACTIVAR',
+'Pon el CPU/GPU en modo Rendimiento Maximo'
+]});
+}else{
+parts.push({section:'🎮 AJUSTES DE JUEGO',items:[
+'Ve a Ajustes > Bateria > Modo de rendimiento: ALTO o MAXIMO',
+'Cierra apps en segundo plano antes de jugar',
+'Ve a Opciones de desarrollador > Animacion 0.5x en todas',
+'Activa Forzar GPU rendering si esta disponible'
+]});
+}
+
+// FreeFire specific
+parts.push({section:'🔥 FREEFIRE',items:[
+'En FreeFire > Ajustes > Sensibilidad: pon los valores que generaste arriba',
+'En FreeFire > Ajustes > Graficos: pon en "Suave" para mas FPS',
+'Activa "Boton de disparo flotante" para mejor control de fuego',
+'Pon "Alcance de rotacion" en 80-90 para respuesta rapida',
+'Desactiva sombras y efectos para mas FPS estable'
+]});
+
+var html='<div class="phone-adjust"><div class="pa-title">⚙️ AJUSTES RECOMENDADOS PARA '+brandName.toUpperCase()+' '+model.toUpperCase()+' — REACCION MAXIMA</div>';
+for(var p=0;p<parts.length;p++){
+if(parts[p].section)html+='<div class="pa-section">'+parts[p].section+'</div>';
+for(var q=0;q<parts[p].items.length;q++){
+if(parts[p].items[q])html+='<div class="pa-item"><span class="pa-num">'+(q+1)+'</span><span>'+parts[p].items[q]+'</span></div>';
+}
+}
+html+='</div>';
+return html;
+}
+
+// Prevent zoom
+document.addEventListener('gesturestart',function(e){e.preventDefault()});
+document.addEventListener('dblclick',function(e){e.preventDefault()});
+</script>
+</body>
+</html>
