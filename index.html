@@ -400,35 +400,115 @@ genBtn.className='gbtn gold';
 genBtn.innerHTML='⚡⚡ GENERAR AMBAS — DUAL ULTRA ⚡⚡';
 });
 
-var brandMap={samsung:1,xiaomi:1.02,apple:1.08,motorola:0.97,huawei:0.99,oppo:0.98,vivo:0.98,realme:1,oneplus:1.06,tecno:0.93,infinix:0.92,zte:0.95,asus:1.1,nubia:1.09,google:1.05,honor:1,otra:0.95};
+// ===== SISTEMA DE PRECISION AVANZADO POR MARCA =====
+var brandData={
+samsung:{name:'Samsung',touchLatency:45,screenFactor:1.00,procBoost:1.02,antiTremor:0.96,touchSample:240,gameBoost:1.03,precisionCurve:0.98},
+xiaomi:{name:'Xiaomi',touchLatency:38,screenFactor:1.02,procBoost:1.04,antiTremor:0.94,touchSample:240,gameBoost:1.05,precisionCurve:1.0},
+apple:{name:'iPhone',touchLatency:25,screenFactor:1.08,procBoost:1.12,antiTremor:0.90,touchSample:120,gameBoost:1.10,precisionCurve:1.05},
+motorola:{name:'Motorola',touchLatency:52,screenFactor:0.97,procBoost:0.98,antiTremor:0.98,touchSample:180,gameBoost:0.99,precisionCurve:0.96},
+huawei:{name:'Huawei',touchLatency:42,screenFactor:0.99,procBoost:1.0,antiTremor:0.97,touchSample:240,gameBoost:1.01,precisionCurve:0.98},
+oppo:{name:'OPPO',touchLatency:48,screenFactor:0.98,procBoost:0.99,antiTremor:0.97,touchSample:180,gameBoost:1.0,precisionCurve:0.97},
+vivo:{name:'Vivo',touchLatency:46,screenFactor:0.98,procBoost:0.99,antiTremor:0.97,touchSample:180,gameBoost:1.0,precisionCurve:0.97},
+realme:{name:'Realme',touchLatency:44,screenFactor:1.0,procBoost:1.01,antiTremor:0.96,touchSample:240,gameBoost:1.02,precisionCurve:0.98},
+oneplus:{name:'OnePlus',touchLatency:30,screenFactor:1.06,procBoost:1.08,antiTremor:0.91,touchSample:360,gameBoost:1.07,precisionCurve:1.03},
+tecno:{name:'Tecno',touchLatency:65,screenFactor:0.93,procBoost:0.92,antiTremor:1.0,touchSample:120,gameBoost:0.93,precisionCurve:0.93},
+infinix:{name:'Infinix',touchLatency:68,screenFactor:0.92,procBoost:0.90,antiTremor:1.0,touchSample:120,gameBoost:0.91,precisionCurve:0.92},
+zte:{name:'ZTE',touchLatency:55,screenFactor:0.95,procBoost:0.96,antiTremor:0.98,touchSample:180,gameBoost:0.96,precisionCurve:0.95},
+asus:{name:'ASUS ROG',touchLatency:20,screenFactor:1.10,procBoost:1.15,antiTremor:0.88,touchSample:480,gameBoost:1.12,precisionCurve:1.08},
+nubia:{name:'Nubia',touchLatency:22,screenFactor:1.09,procBoost:1.13,antiTremor:0.89,touchSample:360,gameBoost:1.10,precisionCurve:1.06},
+google:{name:'Pixel',touchLatency:35,screenFactor:1.05,procBoost:1.06,antiTremor:0.93,touchSample:240,gameBoost:1.04,precisionCurve:1.02},
+honor:{name:'Honor',touchLatency:40,screenFactor:1.0,procBoost:1.01,antiTremor:0.96,touchSample:240,gameBoost:1.02,precisionCurve:0.99},
+otra:{name:'Generico',touchLatency:58,screenFactor:0.95,procBoost:0.95,antiTremor:0.98,touchSample:120,gameBoost:0.95,precisionCurve:0.95}
+};
+
+// Compute multi-factor multiplier for a brand+hz combo
+function computeMult(brand,hz,mode){
+var b=brandData[brand]||brandData.otra;
+// Touch latency factor: lower latency = faster response = higher precision
+var latencyF=1+(50-b.touchLatency)/200;
+// Refresh rate factor: non-linear curve for precision
+var hzF=Math.pow(hz/60,0.72);
+// Touch sample rate factor: higher sample = smoother tracking
+var sampleF=1+(b.touchSample-120)/800;
+// Anti-tremor: stabilizes aim at high sens, prevents overshoot
+var tremorF=b.antiTremor;
+// Processor boost: gaming performance
+var procF=b.procBoost;
+// Precision curve: how well the brand handles micro-adjustments
+var curveF=b.precisionCurve;
+// Game boost: brand-specific gaming optimization
+var gameF=b.gameBoost;
+// Screen factor: touch response baseline
+var screenF=b.screenFactor;
+// Mode modifier: PVP needs faster response, BR needs more stability
+var modeMod=mode==='pvp'?1.08:0.98;
+// Combine all factors with weights
+var raw=hzF*latencyF*sampleF*procF*gameF*screenF*modeMod;
+// Apply precision curve and anti-tremor as stabilizers
+var stabilized=raw*curveF*(1+(1-tremorF)*0.3);
+// Clamp to reasonable range
+return Math.max(0.75,Math.min(1.55,stabilized));
+}
+
+// Compatibility for old code references
+var brandMap={};
+Object.keys(brandData).forEach(function(k){brandMap[k]=brandData[k].screenFactor});
 
 function calcMain(m){
 var hz=+document.getElementById('hz').value;
 var brand=document.getElementById('brand').value;
 var model=document.getElementById('model').value||'Desconocido';
-var hzF=Math.log2(hz/60)+0.85;
-var bf=brandMap[brand]||0.95;
-var base=hzF*bf;
+var b=brandData[brand]||brandData.otra;
+var mult=computeMult(brand,hz,m);
 var r={};
 if(m==='pvp'){
-var pb=185,pm=base*1.25;
-r={general:clamp(Math.round(pb*pm*1.08),100,200),redDot:clamp(Math.round(pb*pm*1.12),100,200),scope2x:clamp(Math.round(pb*pm*1.02),100,200),scope4x:clamp(Math.round(pb*pm*0.92),80,200),sniper:clamp(Math.round(pb*pm*0.82),60,200),freeLook:clamp(Math.round(pb*pm*1.2),100,200),fireBtn:clamp(Math.round(pb*pm*1.25),100,200),dragHead:clamp(Math.round(pb*pm*1.3),100,200)};
+// PVP: precision de flick + tracking de cabeza a corta distancia
+var pb=178;
+// Anti-tremor estabiliza el drag head para que NO tiemble
+var tremorAdj=1+(1-b.antiTremor)*0.15;
+// Precision touch: mejor touch = mejor flick a craneo
+var precisionAdj=b.precisionCurve*0.95;
+r={
+general:clamp(Math.round(pb*mult*1.06*tremorAdj),100,200),
+redDot:clamp(Math.round(pb*mult*1.10*tremorAdj),100,200),
+scope2x:clamp(Math.round(pb*mult*1.00*precisionAdj),100,200),
+scope4x:clamp(Math.round(pb*mult*0.90*precisionAdj),80,200),
+sniper:clamp(Math.round(pb*mult*0.80*precisionAdj),60,200),
+freeLook:clamp(Math.round(pb*mult*1.18*tremorAdj),100,200),
+fireBtn:clamp(Math.round(pb*mult*1.22*tremorAdj),100,200),
+dragHead:clamp(Math.round(pb*mult*1.28*tremorAdj),100,200)
+};
 r.weapons=['Deagle Headshot Machine','Shotgun M1887 One Shot','M1014 Spam Headshots'];
 r.modeName='PVP MEGA HACKER TODO ROJO';r.color='red';
-r.strategy='MEGA AGGRESSIVE: Boton y drag head al maximo. Flick preciso con Deagle, head drag con M1014.';
-r.formula='Base=185 Hz('+hzF.toFixed(2)+') Brand('+bf.toFixed(2)+') PVP(1.25)';
-r.powerLevel='ULTRA AGGRESSIVE 95%';
+r.strategy='PRECISION ANTI-TREMBLOR: Flick estabilizado a craneo. Drag Head con anti-vibracion. Boton calibrado por touch latency ('+b.touchLatency+'ms). Touch sample '+b.touchSample+'Hz para tracking sin saltos.';
+r.formula='Mult='+mult.toFixed(3)+' [Hz^0.72='+Math.pow(hz/60,0.72).toFixed(2)+' Latency('+b.touchLatency+'ms) Sample('+b.touchSample+') AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+') Proc('+b.procBoost+')]';
+r.powerLevel='ULTRA PRECISION '+(85+Math.round(mult*10))+'%';
 }else{
-var bb=140,bm2=base*1.05;
-r={general:clamp(Math.round(bb*bm2*1.1),100,200),redDot:clamp(Math.round(bb*bm2*1.05),100,200),scope2x:clamp(Math.round(bb*bm2*1.02),100,200),scope4x:clamp(Math.round(bb*bm2*0.96),90,200),sniper:clamp(Math.round(bb*bm2*0.9),80,200),freeLook:clamp(Math.round(bb*bm2*1.12),100,200),fireBtn:clamp(Math.round(bb*bm2*1.08),100,200),dragHead:clamp(Math.round(bb*bm2*1.14),100,200)};
+// BR+DECLA: precision dual - larga distancia estable + corta rapida
+var bb=135;
+var tremorBr=1+(1-b.antiTremor)*0.08; // menos agresivo, mas estable
+var precisionBr=b.precisionCurve;
+// Larga distancia necesita MAS estabilidad, corta necesita MAS velocidad
+var longRange=Math.min(1.0,0.92+b.precisionCurve*0.08); // estabilizador para scopes
+var shortRange=1.04+b.procBoost*0.03; // boost para corta
+r={
+general:clamp(Math.round(bb*mult*1.08*shortRange),100,200),
+redDot:clamp(Math.round(bb*mult*1.04*shortRange),100,200),
+scope2x:clamp(Math.round(bb*mult*1.00*precisionBr),100,200),
+scope4x:clamp(Math.round(bb*mult*0.96*longRange),90,200),
+sniper:clamp(Math.round(bb*mult*0.92*longRange),80,200),
+freeLook:clamp(Math.round(bb*mult*1.10*tremorBr),100,200),
+fireBtn:clamp(Math.round(bb*mult*1.06*tremorBr),100,200),
+dragHead:clamp(Math.round(bb*mult*1.12*tremorBr),100,200)
+};
 r.weapons=['Larga: AWM/Kar98k/M82B','Corta: MP40/AK/SCAR','Versatil: M4A1/Groza/XM8'];
 r.modeName='BR+DECLA Larga/Corta';r.color='green';
-r.strategy='Hibrido. Sens alta para corta, scopes calibrados para larga.';
-r.formula='Base=140 Hz('+hzF.toFixed(2)+') Brand('+bf.toFixed(2)+') BR(1.05)';
-r.powerLevel='BALANCED 75%';
+r.strategy='PRECISION DUAL: Larga distancia con estabilizador de precision ('+(longRange*100).toFixed(0)+'%). Corta con boost de processor ('+(shortRange*100).toFixed(0)+'%). Drag Head anti-tremor para headshots limpios.';
+r.formula='Mult='+mult.toFixed(3)+' [Hz^0.72='+Math.pow(hz/60,0.72).toFixed(2)+' Latency('+b.touchLatency+'ms) Sample('+b.touchSample+') LongRange('+longRange.toFixed(2)+') ShortRange('+shortRange.toFixed(2)+')]';
+r.powerLevel='PRECISION BALANCED '+(70+Math.round(mult*15))+'%';
 }
 r.id='SX-'+Math.random().toString(36).substr(2,6).toUpperCase();
-r.dev={hz:hz,brand:brand,model:model,mult:base.toFixed(4)};
+r.dev={hz:hz,brand:brand,model:model,mult:mult.toFixed(4)};
 return r;
 }
 
@@ -598,20 +678,27 @@ var brand=document.getElementById('wpnBrand').value;
 var model=document.getElementById('wpnModel').value||'Desconocido';
 var isPVP=wpnMode==='pvp';
 var profile=isPVP?w.pvp:w.br;
-var hzF=Math.log2(hz/60)+0.85;
-var bf=brandMap[brand]||0.95;
-var mult=hzF*bf;
+var b=brandData[brand]||brandData.otra;
+var mult=computeMult(brand,hz,isPVP?'pvp':'brdecla');
+// Weapon-specific recoil adjustment
+var recoilAdj=w.recoil==='Alto'?1.04:b.recoil==='Medio'?1.0:0.96;
+// Weapon range affects precision curve
+var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.88:w.range.indexOf('Larga')>=0?0.92:w.range.indexOf('Media')>=0?0.98:1.04;
+// Fire rate affects anti-tremor need
+var fireAdj=w.fireRate.indexOf('Muy')>=0?1+(1-b.antiTremor)*0.2:w.fireRate.indexOf('Rapido')>=0?1+(1-b.antiTremor)*0.12:1.0;
+var tremorStab=1+(1-b.antiTremor)*0.10;
+var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
-general:clamp(Math.round(profile.gen*mult),100,200),
-redDot:clamp(Math.round(profile.rd*mult),100,200),
-scope2x:clamp(Math.round(profile.s2*mult),100,200),
-scope4x:clamp(Math.round(profile.s4*mult),80,200),
-sniper:clamp(Math.round(profile.sn*mult),60,200),
-freeLook:clamp(Math.round(profile.fl*mult),100,200),
-fireBtn:clamp(Math.round(profile.fb*mult*(fbSize==='small'?0.92:fbSize==='big'?1.08:1)),100,200),
-dragHead:clamp(Math.round(profile.dh*mult),100,200),
+general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab),100,200),
+redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab),100,200),
+scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab),100,200),
+scope4x:clamp(Math.round(profile.s4*mult*rangeAdj),80,200),
+sniper:clamp(Math.round(profile.sn*mult*rangeAdj),60,200),
+freeLook:clamp(Math.round(profile.fl*mult*fireAdj),100,200),
+fireBtn:clamp(Math.round(profile.fb*mult*fireAdj*fbMult),100,200),
+dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj),100,200),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -692,7 +779,7 @@ copyText(txt);
 // Re-calculate weapon if results are showing
 var wpnRes=document.getElementById('wpnResults');
 if(wpnRes.classList.contains('on')&&wpnRes.innerHTML!=''&&document.getElementById('overlay').classList.contains('on')){
-// Re-run weapon calc silently
+// Re-run weapon calc silently with new precision system
 var wKey=document.getElementById('weapon').value;
 var w=wpnData[wKey]||wpnData.deagle;
 var hz=+document.getElementById('wpnHz').value;
@@ -700,24 +787,24 @@ var brand=document.getElementById('wpnBrand').value;
 var model=document.getElementById('wpnModel').value||'Desconocido';
 var isPVP=wpnMode==='pvp';
 var profile=isPVP?w.pvp:w.br;
-var hzF=Math.log2(hz/60)+0.85;
-var bf=brandMap[brand]||0.95;
-var mult=hzF*bf;
-// Update the existing result values in place
-var items=[profile.gen,profile.rd,profile.s2,profile.s4,profile.sn,profile.fl,profile.fb,profile.dh];
-var labels=['General','Punto Rojo','Mira 2x','Mira 4x','Mira Sniper','Vista Libre','Boton Disparo','Drag Head'];
+var b2=brandData[brand]||brandData.otra;
+var mult2=computeMult(brand,hz,isPVP?'pvp':'brdecla');
+var recoilAdj2=w.recoil==='Alto'?1.04:w.recoil==='Medio'?1.0:0.96;
+var rangeAdj2=w.range.indexOf('Muy Larga')>=0?0.88:w.range.indexOf('Larga')>=0?0.92:w.range.indexOf('Media')>=0?0.98:1.04;
+var fireAdj2=w.fireRate.indexOf('Muy')>=0?1+(1-b2.antiTremor)*0.2:w.fireRate.indexOf('Rapido')>=0?1+(1-b2.antiTremor)*0.12:1.0;
+var tremorStab2=1+(1-b2.antiTremor)*0.10;
+var fbMult2=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
 var valEls=wpnRes.querySelectorAll('.sv');
 var barEls=wpnRes.querySelectorAll('.sbf');
-var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
 var finalVals=[
-clamp(Math.round(items[0]*mult),100,200),
-clamp(Math.round(items[1]*mult),100,200),
-clamp(Math.round(items[2]*mult),100,200),
-clamp(Math.round(items[3]*mult),80,200),
-clamp(Math.round(items[4]*mult),60,200),
-clamp(Math.round(items[5]*mult),100,200),
-clamp(Math.round(items[6]*mult*fbMult),100,200),
-clamp(Math.round(items[7]*mult),100,200)
+clamp(Math.round(profile.gen*mult2*recoilAdj2*tremorStab2),100,200),
+clamp(Math.round(profile.rd*mult2*recoilAdj2*tremorStab2),100,200),
+clamp(Math.round(profile.s2*mult2*rangeAdj2*tremorStab2),100,200),
+clamp(Math.round(profile.s4*mult2*rangeAdj2),80,200),
+clamp(Math.round(profile.sn*mult2*rangeAdj2),60,200),
+clamp(Math.round(profile.fl*mult2*fireAdj2),100,200),
+clamp(Math.round(profile.fb*mult2*fireAdj2*fbMult2),100,200),
+clamp(Math.round(profile.dh*mult2*recoilAdj2*fireAdj2),100,200)
 ];
 for(var i=0;i<valEls.length&&i<8;i++){
 valEls[i].textContent=finalVals[i];
