@@ -855,55 +855,123 @@ function calibrateValue(originalVal,type,brand,hz,mode){
 var b=brandData[brand]||brandData.otra;
 var mult=computeMult(brand,hz,mode);
 var val=originalVal;
+var tremor=b.antiTremor;
+var precision=b.precisionCurve;
+var latencyF=1+(50-b.touchLatency)/200;
 
-// STEP 1: Detect overshoot risk
-// Overshoot = sensitivity too high for the device's touch precision
-// If sens is above the device's "sweet spot", the aim flies past the head
+// Classify the sensitivity type by range
+// shortRange = general, redDot, freeLook (need fast response)
+// longRange = s2, s4, sn (need stability + precision, LOWER sens)
+// special = fb, dh (anti-tremor for headshots)
+var isLongRange=(type==='s2'||type==='s4'||type==='sn');
+var isShortRange=(type==='gen'||type==='rd'||type==='fl');
+var isSpecial=(type==='fb'||type==='dh');
+
+// STEP 1: Calculate sweet spots with range-specific logic
 var sweetSpot={};
 if(mode==='pvp'){
-// PVP: sweet spot is high but controlled
-sweetSpot={gen:170*mult,rd:175*mult,s2:160*mult,s4:145*mult,sn:130*mult,fl:180*mult,fb:185*mult,dh:190*mult};
+// PVP: all red, close range, aggressive but controlled
+sweetSpot={
+gen:172*mult, rd:178*mult, s2:155*mult, s4:138*mult, sn:122*mult,
+fl:182*mult, fb:188*mult, dh:192*mult
+};
 }else{
-// BR: sweet spot is more conservative for precision
-sweetSpot={gen:145*mult,rd:140*mult,s2:135*mult,s4:130*mult,sn:125*mult,fl:155*mult,fb:150*mult,dh:160*mult};
+// BR+DECLA: dual mode - long range needs MUCH lower, more stable sens
+// The further the target, the smaller the margin of error
+// Scopes get progressively lower sweet spots for stability
+var longStability=0.82+(precision*0.15); // 0.82-0.97 range based on device precision
+var longTremorBoost=1+(1-tremor)*0.08; // better anti-tremor = can handle slightly higher
+sweetSpot={
+gen:148*mult,       // general: moderate-high for short range response
+rd:143*mult,        // red dot: balanced
+s2:132*mult*longStability,   // 2x: start reducing for long range
+s4:120*mult*longStability*longTremorBoost, // 4x: much lower, needs precision
+sn:112*mult*longStability*longTremorBoost, // sniper: lowest, maximum stability
+fl:158*mult,        // free look: can be higher
+fb:152*mult,        // fire button: controlled
+dh:162*mult         // drag head: controlled for headshots
+};
 }
 
 var ss=sweetSpot[type]||150*mult;
-var maxVal=mode==='pvp'?200:200;
+var maxVal=200;
 var minVal=50;
 
-// STEP 2: Anti-overshoot correction
-// If value is above sweet spot, it causes overshoot (aim flies past head)
-// We pull it back toward the sweet spot with anti-tremor stabilization
-var tremor=b.antiTremor;
-var precision=b.precisionCurve;
-var correction=0;
+// STEP 2: Anti-overshoot correction with range-specific pullback
+var corrected,correction=0;
 
 if(val>ss){
-// OVERSHOOT DETECTED - pull back
+// OVERSHOOT DETECTED - aim flies past the head
 var overshoot=val-ss;
-// Correction factor depends on anti-tremor: better anti-tremor = can handle closer to sweet spot
-var pullback=overshoot*(0.6+tremor*0.2);
-corrected=Math.round(ss+pullback*0.3); // keep some of the aggression but controlled
-correction=corrected-val; // negative = reduced
-}else if(val<ss*0.7){
-// UNDERSHOOT - push up a bit for better response
+// Long range: MORE aggressive pullback (lower = more stable at distance)
+// Short range: moderate pullback (keep some speed)
+// Special (fb/dh): moderate pullback with anti-tremor
+var pullbackStrength;
+if(isLongRange){
+// Long range overshoot is DANGEROUS - aim flies way past at distance
+// Pull back hard: 75% of overshoot removed for scopes
+pullbackStrength=0.75+(tremor*0.15); // 0.75-0.90
+// Keep only 15% of the excess (very controlled)
+corrected=Math.round(ss+overshoot*(1-pullbackStrength));
+}else if(isShortRange){
+// Short range: moderate pullback, keep some aggression
+pullbackStrength=0.55+(tremor*0.2);
+corrected=Math.round(ss+overshoot*(1-pullbackStrength));
+}else{
+// Special (fb/dh): controlled pullback with anti-tremor
+pullbackStrength=0.60+(tremor*0.18);
+corrected=Math.round(ss+overshoot*(1-pullbackStrength));
+}
+correction=corrected-val;
+
+// Additional long-range stability: if overshoot was extreme, apply extra dampening
+if(isLongRange&&overshoot>ss*0.3){
+// Extreme overshoot on scopes - apply precision dampener
+corrected=Math.round(corrected*(0.95+precision*0.04));
+}
+
+}else if(val<ss*0.65){
+// UNDERSHOOT - too low, aim won't reach the head fast enough
 var undershoot=ss-val;
-corrected=Math.round(val+undershoot*0.4*precision);
-correction=corrected-val; // positive = increased
+if(isLongRange){
+// For long range, don't push up too much - precision matters more than speed
+corrected=Math.round(val+undershoot*0.35*precision);
+}else{
+// For short range, push up more for better reaction time
+corrected=Math.round(val+undershoot*0.45*precision);
+}
+correction=corrected-val;
 }else{
 // IN SWEET SPOT - micro-adjust for precision
-corrected=Math.round(val+(ss-val)*0.15); // gentle pull toward sweet spot
+var microAdjust=0.10;
+if(isLongRange)microAdjust=0.08; // scopes: even gentler micro-adjust
+if(isSpecial)microAdjust=0.12; // fb/dh: slightly more aggressive
+corrected=Math.round(val+(ss-val)*microAdjust);
 correction=corrected-val;
 }
 
-// STEP 3: Apply precision curve for headshot stability
-// Drag head and fire button get extra anti-tremor treatment
-if(type==='dh'||type==='fb'){
-corrected=Math.round(corrected*(0.97+(1-tremor)*0.1));
+// STEP 3: Long-range precision stabilization
+// For scopes, apply a stability factor that prevents micro-tremors at distance
+if(isLongRange){
+// Lower touch latency = can handle slightly higher sens on scopes
+// Higher touch latency = needs lower sens for stability
+var scopeStability=0.94+(latencyF*0.04)+(precision*0.02);
+corrected=Math.round(corrected*scopeStability);
 }
 
-// STEP 4: Clamp
+// STEP 4: Anti-tremor for drag head and fire button
+if(isSpecial){
+var specialStab=0.96+(1-tremor)*0.06;
+corrected=Math.round(corrected*specialStab);
+}
+
+// STEP 5: Sniper extra stability - lowest jitter possible
+if(type==='sn'){
+// Sniper needs the most stability - apply final dampener
+corrected=Math.round(corrected*(0.97+precision*0.03));
+}
+
+// STEP 6: Clamp
 corrected=clamp(corrected,minVal,maxVal);
 
 return {
@@ -913,9 +981,12 @@ diff:corrected-val,
 overshoot:val>ss,
 undershoot:val<ss*0.7,
 sweetSpot:Math.round(ss),
-reason:val>ss?'OVERSHOOT: Tu sensibilidad era muy alta y la mira se pasaba de la cabeza. Se redujo para precision.':
-val<ss*0.7?'UNDERSHOOT: Tu sensibilidad era muy baja. Se subio para mejor reaccion.':
-'EN ZONA: Tu sensibilidad estaba cerca del punto ideal. Se hizo micro-ajuste de precision.'
+reason:val>ss?(isLongRange?'OVERSHOOT LARGA DISTANCIA: Tu scope era muy alto y la mira se pasaba de la cabeza a distancia. Se redujo fuertemente para precision estable.':
+'SOBREAJUSTE: Tu sensibilidad era muy alta y la mira se pasaba de la cabeza. Se redujo para precision controlada.'):
+val<ss*0.65?(isLongRange?'BAJO LARGA DISTANCIA: Tu scope era muy bajo. Se subio moderadamente manteniendo estabilidad.':
+'BAJO: Tu sensibilidad era muy baja. Se subio para mejor reaccion y velocidad.'):
+(isLongRange?'EN ZONA LARGA: Tu scope estaba cerca del ideal. Micro-ajuste de precision para estabilidad.':
+'EN ZONA: Tu sensibilidad estaba cerca del punto ideal. Se hizo micro-ajuste de precision.')
 };
 }
 
