@@ -211,7 +211,7 @@ body{background:#0a0a0a;color:#ff3333;font-family:'Courier New',monospace;paddin
 
 <button class="purple-btn" id="openWpn">🎯 GENERADOR POR ARMA — HACKER PRECISO</button>
 
-<button class="btn-calib" id="openCalib">🔧 AJUSTAR MI SENSIBILIDAD — CALIBRADOR ANTI-OVERSHOOT</button>
+<button class="btn-calib" id="openCalib">🇧🇷 AJUSTAR SENSI 0800 — ESTILO BRASIL HACKER LEGAL</button>
 
 <div class="cfg">
 <h2>⚙ CONFIG DEL DISPOSITIVO</h2>
@@ -352,9 +352,9 @@ body{background:#0a0a0a;color:#ff3333;font-family:'Courier New',monospace;paddin
 <div class="overlay" id="calibOverlay">
 <button class="ov-close" id="closeCalib" style="border-color:#f59e0b;color:#f59e0b;background:#1a0f05">✕</button>
 <div class="ov-hdr" style="border-color:#f59e0b;background:linear-gradient(135deg,#1a0f05,#0a0a0a)">
-<h1 style="color:#f59e0b;text-shadow:0 0 20px rgba(245,158,11,.4)">🔧 CALIBRADOR</h1>
-<div class="sub" style="color:#fbbf24">// AJUSTA TU SENSIBILIDAD PARA QUE NO SE PASE DE LA CABEZA</div>
-<div class="ver" style="background:#2d1a05;color:#f59e0b;border-color:#f59e0b">SALITA 3.5 — ANTI-OVERSHOOT ENGINE</div>
+<h1 style="color:#f59e0b;text-shadow:0 0 20px rgba(245,158,11,.4)">🇧🇷 CALIBRADOR 0800</h1>
+<div class="sub" style="color:#fbbf24">// SENSIBILIDAD ESTILO BRASIL — HEADSHOT LEGAL HACKER</div>
+<div class="ver" style="background:#2d1a05;color:#f59e0b;border-color:#f59e0b">SALITA 3.5 — 0800 BRAZILIAN ENGINE</div>
 </div>
 <div class="ov-calib">
 <h2>📱 TU DISPOSITIVO</h2>
@@ -366,7 +366,7 @@ body{background:#0a0a0a;color:#ff3333;font-family:'Courier New',monospace;paddin
 </div>
 <div class="ov-calib">
 <h2>📥 PON TU SENSIBILIDAD ACTUAL</h2>
-<p style="font-size:.6rem;color:#fbbf24;margin-bottom:8px">Pone los valores que ya tienes en tu FreeFire y dale a AJUSTAR. El calibrador los va a corregir para que no se pasen de la cabeza.</p>
+<p style="font-size:.6rem;color:#fbbf24;margin-bottom:8px">🇧🇷 Poné los valores que ya tenés en tu FreeFire y dale a AJUSTAR. Te los calibra al estilo 0800 de Brasil — puro headshot legal como los brasileros. La sensi se ajusta según tu marca y modelo.</p>
 <div class="calib-inputs">
 <div class="calib-field"><label>General</label><input type="number" id="inGen" value="100" min="0" max="200"></div>
 <div class="calib-field"><label>Punto Rojo</label><input type="number" id="inRD" value="100" min="0" max="200"></div>
@@ -384,8 +384,8 @@ body{background:#0a0a0a;color:#ff3333;font-family:'Courier New',monospace;paddin
 <div class="tab grn" id="calibTabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta estable</div></div>
 </div>
 </div>
-<div class="ov-warn" style="border-color:#f59e0b;color:#f59e0b">🔧 CALIBRACION ANTI-OVERSHOOT — LA MIRA NO SE PASA DE LA CABEZA</div>
-<button class="calib-btn" id="calibGen">🔧 AJUSTAR SENCI — CALIBRAR 🔧</button>
+<div class="ov-warn" style="border-color:#f59e0b;color:#f59e0b">🇧🇷 AJUSTE 0800 BRASIL — PEGAS TODO ROJO LEGAL COMO LOS BRASILEROS</div>
+<button class="calib-btn" id="calibGen">🇧🇷 AJUSTAR SENSI 0800 — CALIBRAR 🇧🇷</button>
 </div>
 <div class="ld" id="calibLoading" style="color:#f59e0b">
 <div style="font-size:.9rem;letter-spacing:2px">🔧 CALIBRANDO...</div>
@@ -859,143 +859,138 @@ var tremor=b.antiTremor;
 var precision=b.precisionCurve;
 var latencyF=1+(50-b.touchLatency)/200;
 
-// Classify the sensitivity type by range
-// shortRange = general, redDot, freeLook (need fast response)
-// longRange = s2, s4, sn (need stability + precision, LOWER sens)
-// special = fb, dh (anti-tremor for headshots)
+// ===== PATRON 0800 BRASIL =====
+// La sensibilidad 0800 brasilera se basa en:
+// - General y Punto Rojo ALTOS para giro rapido y flick a cabeza
+// - Scopes progresivamente mas bajos para precision a distancia
+// - Boton y Drag Head al maximo controlado para headshot natural
+// - La mira sube sola hacia la cabeza sin pasarse (efecto 0800)
+
 var isLongRange=(type==='s2'||type==='s4'||type==='sn');
 var isShortRange=(type==='gen'||type==='rd'||type==='fl');
 var isSpecial=(type==='fb'||type==='dh');
 
-// STEP 1: Calculate sweet spots with range-specific logic
-var sweetSpot={};
+// Sweet spots 0800 Brasil - escalados a 200
+// Base 0800 en escala 0-100: gen=95, rd=98, s2=85, s4=70, sn=55, fl=88, fb=96, dh=98
+// Escalado a 200 con multiplicador de dispositivo
+var base0800={};
 if(mode==='pvp'){
-// PVP: all red, close range, aggressive but controlled
-sweetSpot={
-gen:172*mult, rd:178*mult, s2:155*mult, s4:138*mult, sn:122*mult,
-fl:182*mult, fb:188*mult, dh:192*mult
+// PVP 0800: todo agresivo pero controlado, puro headshot
+base0800={
+gen:170*mult,    // alto para giro rapido
+rd:176*mult,     // alto para flick a craneo
+s2:155*mult,    // medio-alto
+s4:138*mult,    // medio - empieza a bajar
+sn:122*mult,    // bajo - maxima precision sniper
+fl:172*mult,    // alto
+fb:184*mult,    // muy alto - disparo rapido
+dh:190*mult     // muy alto - drag a cabeza
 };
 }else{
-// BR+DECLA: dual mode - long range needs MUCH lower, more stable sens
-// The further the target, the smaller the margin of error
-// Scopes get progressively lower sweet spots for stability
-var longStability=0.82+(precision*0.15); // 0.82-0.97 range based on device precision
-var longTremorBoost=1+(1-tremor)*0.08; // better anti-tremor = can handle slightly higher
-sweetSpot={
-gen:148*mult,       // general: moderate-high for short range response
-rd:143*mult,        // red dot: balanced
-s2:132*mult*longStability,   // 2x: start reducing for long range
-s4:120*mult*longStability*longTremorBoost, // 4x: much lower, needs precision
-sn:112*mult*longStability*longTremorBoost, // sniper: lowest, maximum stability
-fl:158*mult,        // free look: can be higher
-fb:152*mult,        // fire button: controlled
-dh:162*mult         // drag head: controlled for headshots
+// BR+DECLA 0800: hibrido - corta agresiva + larga estable
+// Brasilero: la mira sube natural a la cabeza sin pasarse
+var longStab=0.80+(precision*0.15);
+var tremorBoost=1+(1-tremor)*0.08;
+base0800={
+gen:162*mult,                // alto para corta distancia
+rd:158*mult,                 // alto para corta
+s2:138*mult*longStab,        // media - empieza precision
+s4:122*mult*longStab*tremorBoost, // baja - precision larga
+sn:108*mult*longStab*tremorBoost, // muy baja - sniper estable
+fl:165*mult,                 // alto
+fb:155*mult,                 // controlado
+dh:168*mult                  // controlado para headshot natural
 };
 }
 
-var ss=sweetSpot[type]||150*mult;
+var ss=base0800[type]||150*mult;
 var maxVal=200;
 var minVal=50;
 
-// STEP 2: Anti-overshoot correction with range-specific pullback
+// ===== CORRECCION 0800 =====
 var corrected,correction=0;
 
-if(val>ss){
-// OVERSHOOT DETECTED - aim flies past the head
+if(val>ss*1.15){
+// OVERSHOOT - muy arriba del 0800, la mira se pasa de la cabeza
 var overshoot=val-ss;
-// Long range: MORE aggressive pullback (lower = more stable at distance)
-// Short range: moderate pullback (keep some speed)
-// Special (fb/dh): moderate pullback with anti-tremor
-var pullbackStrength;
+var pullback;
 if(isLongRange){
-// Long range overshoot is DANGEROUS - aim flies way past at distance
-// Pull back hard: 75% of overshoot removed for scopes
-pullbackStrength=0.75+(tremor*0.15); // 0.75-0.90
-// Keep only 15% of the excess (very controlled)
-corrected=Math.round(ss+overshoot*(1-pullbackStrength));
+pullback=0.78+(tremor*0.12);
+corrected=Math.round(ss+overshoot*(1-pullback));
+if(overshoot>ss*0.35){
+corrected=Math.round(corrected*(0.93+precision*0.04));
+}
 }else if(isShortRange){
-// Short range: moderate pullback, keep some aggression
-pullbackStrength=0.55+(tremor*0.2);
-corrected=Math.round(ss+overshoot*(1-pullbackStrength));
+pullback=0.60+(tremor*0.18);
+corrected=Math.round(ss+overshoot*(1-pullback));
 }else{
-// Special (fb/dh): controlled pullback with anti-tremor
-pullbackStrength=0.60+(tremor*0.18);
-corrected=Math.round(ss+overshoot*(1-pullbackStrength));
+pullback=0.65+(tremor*0.15);
+corrected=Math.round(ss+overshoot*(1-pullback));
 }
 correction=corrected-val;
 
-// Additional long-range stability: if overshoot was extreme, apply extra dampening
-if(isLongRange&&overshoot>ss*0.3){
-// Extreme overshoot on scopes - apply precision dampener
-corrected=Math.round(corrected*(0.95+precision*0.04));
-}
-
-}else if(val<ss*0.65){
-// UNDERSHOOT - too low, aim won't reach the head fast enough
+}else if(val<ss*0.75){
+// UNDERSHOOT - muy bajo, la mira no llega a la cabeza
 var undershoot=ss-val;
 if(isLongRange){
-// For long range, don't push up too much - precision matters more than speed
-corrected=Math.round(val+undershoot*0.35*precision);
+corrected=Math.round(val+undershoot*0.38*precision);
 }else{
-// For short range, push up more for better reaction time
-corrected=Math.round(val+undershoot*0.45*precision);
+corrected=Math.round(val+undershoot*0.48*precision);
 }
 correction=corrected-val;
+
 }else{
-// IN SWEET SPOT - micro-adjust for precision
-var microAdjust=0.10;
-if(isLongRange)microAdjust=0.08; // scopes: even gentler micro-adjust
-if(isSpecial)microAdjust=0.12; // fb/dh: slightly more aggressive
-corrected=Math.round(val+(ss-val)*microAdjust);
+// EN ZONA 0800 - micro-ajuste fino al punto exacto
+var microPull=0.12;
+if(isLongRange)microPull=0.10;
+if(isSpecial)microPull=0.14;
+corrected=Math.round(val+(ss-val)*microPull);
 correction=corrected-val;
 }
 
-// STEP 3: Long-range precision stabilization
-// For scopes, apply a stability factor that prevents micro-tremors at distance
+// ===== ESTABILIZACION 0800 BRASILERA =====
 if(isLongRange){
-// Lower touch latency = can handle slightly higher sens on scopes
-// Higher touch latency = needs lower sens for stability
-var scopeStability=0.94+(latencyF*0.04)+(precision*0.02);
-corrected=Math.round(corrected*scopeStability);
+var scopeStab=0.93+(latencyF*0.05)+(precision*0.02);
+corrected=Math.round(corrected*scopeStab);
 }
 
-// STEP 4: Anti-tremor for drag head and fire button
 if(isSpecial){
-var specialStab=0.96+(1-tremor)*0.06;
+var specialStab=0.95+(1-tremor)*0.06;
 corrected=Math.round(corrected*specialStab);
 }
 
-// STEP 5: Sniper extra stability - lowest jitter possible
 if(type==='sn'){
-// Sniper needs the most stability - apply final dampener
-corrected=Math.round(corrected*(0.97+precision*0.03));
+corrected=Math.round(corrected*(0.96+precision*0.03));
 }
 
-// STEP 6: Clamp
 corrected=clamp(corrected,minVal,maxVal);
 
 return {
 original:val,
 corrected:corrected,
 diff:corrected-val,
-overshoot:val>ss,
-undershoot:val<ss*0.7,
+overshoot:val>ss*1.15,
+undershoot:val<ss*0.75,
 sweetSpot:Math.round(ss),
-reason:val>ss?(isLongRange?'OVERSHOOT LARGA DISTANCIA: Tu scope era muy alto y la mira se pasaba de la cabeza a distancia. Se redujo fuertemente para precision estable.':
-'SOBREAJUSTE: Tu sensibilidad era muy alta y la mira se pasaba de la cabeza. Se redujo para precision controlada.'):
-val<ss*0.65?(isLongRange?'BAJO LARGA DISTANCIA: Tu scope era muy bajo. Se subio moderadamente manteniendo estabilidad.':
-'BAJO: Tu sensibilidad era muy baja. Se subio para mejor reaccion y velocidad.'):
-(isLongRange?'EN ZONA LARGA: Tu scope estaba cerca del ideal. Micro-ajuste de precision para estabilidad.':
-'EN ZONA: Tu sensibilidad estaba cerca del punto ideal. Se hizo micro-ajuste de precision.')
+reason:val>ss*1.15?(isLongRange?
+'0800 LARGA: Tu scope estaba muy alto para el patron brasilero. Se calibo fuerte para que la mira suba a la cabeza sin pasarse a distancia.':
+'0800 ALTA: Tu sensi estaba sobre el patron 0800. Se ajusto para que pegues headshot legal como los brasileros.'):
+val<ss*0.75?(isLongRange?
+'0800 BAJA LARGA: Tu scope estaba bajo. Se subio al patron 0800 manteniendo estabilidad para larga distancia.':
+'0800 BAJA: Tu sensi estaba debajo del patron 0800. Se subio para que la mira llegue rapido a la cabeza.'):
+(isLongRange?
+'0800 FINO LARGA: Tu scope ya estaba cerca del 0800 brasilero. Micro-ajuste de precision para que suba sin pasarse.':
+'0800 FINO: Tu sensi ya estaba cerca del 0800. Ajuste fino para headshot natural brasilero.')
 };
 }
+
 
 calibGenBtn.addEventListener('click',function(){
 var ld=document.getElementById('calibLoading');
 var res=document.getElementById('calibResults');
 var lt=document.getElementById('calibLoadText');
 ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
-var steps=['Leyendo tu sensibilidad...','Detectando overshoot...','Analizando touch latency...','Calibrando anti-tremor...','Ajustando drag head...','Estabilizando mira...','Precision curve...','Calibrado!'];
+var steps=['Leyendo tu sensi...','Patron 0800 Brasil...','Calculando por dispositivo...','Touch latency...','Anti-tremor 0800...','Ajustando a cabeza...','Estabilizando mira...','0800 Calibrado!'];
 var s=0;
 var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
 setTimeout(function(){
@@ -1055,7 +1050,7 @@ else inZoneCount++;
 var modeName=calibMode==='pvp'?'PVP TODO ROJO':'BR+DECLA';
 var mult=computeMult(brand,hz,calibMode);
 
-res.innerHTML='<div class="rc amber"><div class="rh"><h3>🔧 CALIBRADO: '+modeName+'</h3><span class="badge">CAL-'+Math.random().toString(36).substr(2,5).toUpperCase()+'</span></div><div class="pinfo">📱 <span class="sp">'+b.name.toUpperCase()+'</span><span class="sp">'+model+'</span><span class="sp">'+hz+'Hz</span></div><div class="pinfo" style="margin-top:4px"><span class="sp" style="background:#7c2d12;color:#f59e0b">⚠ Overshoot: '+overshootCount+'</span><span class="sp" style="background:#1a3300;color:#00cc44">⬆ Undershoot: '+undershootCount+'</span><span class="sp" style="background:#2d1a05;color:#fbbf24">✓ En zona: '+inZoneCount+'</span></div><div class="pm" style="border-color:#f59e0b"><div class="pm-label" style="color:#fbbf24">PRECISION ANTI-OVERSHOOT</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#7c2d12,#ea580c,#f59e0b)"></div></div><div class="pm-val" style="color:#f59e0b">'+(calibMode==='pvp'?'NO SE PASA DE LA CABEZA':'PRECISION ESTABLE')+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🔧 CALIBRACION:</b> Tu sensibilidad fue ajustada con anti-overshoot. '+overshootCount+' valores estaban muy altos (se pasaban de la cabeza) y fueron reducidos. '+undershootCount+' estaban muy bajos y fueron subidos. '+inZoneCount+' ya estaban en zona y recibieron micro-ajuste.<span class="fm">Mult='+mult.toFixed(3)+' [Latency('+b.touchLatency+'ms) Sample('+b.touchSample+'Hz) AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+')] Sweet spot calculado por dispositivo</span></div>'+getPhoneAdjustments(brand,model,hz)+'<button class="cp" id="calibCopyBtn" style="border-color:#f59e0b;color:#f59e0b">📋 COPIAR SENSIBILIDAD CALIBRADA</button></div>';
+res.innerHTML='<div class="rc amber"><div class="rh"><h3>🇧🇷 0800 CALIBRADO: '+modeName+'</h3><span class="badge">CAL-'+Math.random().toString(36).substr(2,5).toUpperCase()+'</span></div><div class="pinfo">📱 <span class="sp">'+b.name.toUpperCase()+'</span><span class="sp">'+model+'</span><span class="sp">'+hz+'Hz</span></div><div class="pinfo" style="margin-top:4px"><span class="sp" style="background:#7c2d12;color:#f59e0b">⚠ Sobre 0800: '+overshootCount+'</span><span class="sp" style="background:#1a3300;color:#00cc44">⬆ Bajo 0800: '+undershootCount+'</span><span class="sp" style="background:#2d1a05;color:#fbbf24">✓ En 0800: '+inZoneCount+'</span></div><div class="pm" style="border-color:#f59e0b"><div class="pm-label" style="color:#fbbf24">PRECISION ANTI-OVERSHOOT</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#7c2d12,#ea580c,#f59e0b)"></div></div><div class="pm-val" style="color:#f59e0b">'+(calibMode==='pvp'?'HEADSHOT LEGAL HACKER':'CORTA AGRESIVA + LARGA ESTABLE')+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🇧🇷 0800 BRASIL:</b> Tu sensibilidad fue calibrada al patron 0800 brasilero. '+overshootCount+' valores estaban sobre el 0800 (se pasaban de la cabeza) y fueron bajados. '+undershootCount+' estaban bajo el 0800 y fueron subidos. '+inZoneCount+' ya estaban en zona 0800 y recibieron ajuste fino.<span class="fm">Mult='+mult.toFixed(3)+' [Latency('+b.touchLatency+'ms) Sample('+b.touchSample+'Hz) AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+')] Sweet spot calculado por dispositivo</span></div>'+getPhoneAdjustments(brand,model,hz)+'<button class="cp" id="calibCopyBtn" style="border-color:#f59e0b;color:#f59e0b">📋 COPIAR SENSI 0800</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
@@ -1066,7 +1061,7 @@ for(var i=0;i<fills.length;i++)fills[i].style.width='92%';
 var cpBtn=document.getElementById('calibCopyBtn');
 if(cpBtn){
 cpBtn.addEventListener('click',function(){
-var txt='SALITA 3.5 — CALIBRADO ['+modeName+']\n'+b.name+' '+model+' '+hz+'Hz\n';
+var txt='SALITA 3.5 — 0800 BRASIL ['+modeName+']\n'+b.name+' '+model+' '+hz+'Hz\n';
 var sis=res.querySelectorAll('.si');
 for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
 copyText(txt);
