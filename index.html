@@ -66,11 +66,12 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 .sg{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
 .si{background:#0c0000;border:1px solid #440000;border-radius:6px;padding:10px 14px;box-shadow:0 0 8px rgba(255,0,60,.08)}
 .si.hl{border:1px solid #ffd700;background:rgba(255,215,0,.06);box-shadow:0 0 10px rgba(255,215,0,.15)}
-.si.crit-fire{border:1px solid #00ddff;background:rgba(0,221,255,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10px 14px;box-shadow:0 0 12px rgba(0,221,255,.2)}
+.si.crit-fire{border:2px solid #00ddff;background:radial-gradient(circle,#001f3f,#000510);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:16px 8px;box-shadow:0 0 20px rgba(0,221,255,.4),inset 0 0 15px rgba(0,221,255,.15);margin:8px auto;width:70%;max-width:220px;position:relative;overflow:hidden}
 .sl{font-size:.85rem;color:#ff8888;text-transform:uppercase;margin-bottom:3px}
 .sv{font-size:1.7rem;font-weight:bold;color:#ff1144;line-height:1;text-shadow:0 0 10px rgba(255,0,60,.4)}
 .si.hl .sv{color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.4)}
-.si.crit-fire .sv{color:#00ddff;text-shadow:0 0 10px rgba(0,221,255,.5)}
+.si.crit-fire .sv{color:#00ffff;text-shadow:0 0 15px rgba(0,255,255,.6),0 0 5px rgba(0,255,255,.8);font-size:2rem}
+.si.crit-fire .sl{color:#00ccff;text-shadow:0 0 8px rgba(0,204,255,.5)}
 .rc.grn .sv{color:#00ff66;text-shadow:0 0 10px rgba(0,255,65,.4)}
 .rc.purple .sv{color:#c084fc;text-shadow:0 0 10px rgba(168,85,247,.4)}
 .sb{height:5px;background:#220000;border-radius:3px;margin-top:8px;overflow:hidden;box-shadow:0 0 5px rgba(255,0,60,.1)}
@@ -79,10 +80,10 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 .rc.grn .sbf{background:linear-gradient(90deg,#003300,#00ff41,#00ff88);box-shadow:0 0 6px rgba(0,255,65,.4)}
 .rc.purple .sbf{background:linear-gradient(90deg,#4c1d95,#a855f7,#c084fc);box-shadow:0 0 6px rgba(168,85,247,.4)}
 .si.hl .sbf{background:linear-gradient(90deg,#aa8800,#ffd700,#ffea00);box-shadow:0 0 6px rgba(255,215,0,.4)}
-.si.crit-fire .sbf{background:linear-gradient(90deg,#003344,#00ddff,#00ffff);box-shadow:0 0 6px rgba(0,221,255,.4)}
+.si.crit-fire .sbf{background:linear-gradient(90deg,#003344,#00ddff,#00ffff,#00ffff);box-shadow:0 0 8px rgba(0,255,255,.5)}
 .st{display:inline-block;font-size:.72rem;padding:1px 6px;border-radius:3px;margin-top:5px;background:rgba(255,0,60,.2);color:#ff4466}
 .si.hl .st{background:rgba(255,215,0,.15);color:#ffd700}
-.si.crit-fire .st{background:rgba(0,221,255,.2);color:#00ddff;font-weight:bold}
+.si.crit-fire .st{background:rgba(0,221,255,.3);color:#00ffff;font-weight:bold;box-shadow:0 0 5px rgba(0,255,255,.3)}
 .rc.grn .st{background:rgba(0,255,65,.15);color:#00ff66}
 .rc.purple .st{background:rgba(168,85,247,.2);color:#c084fc}
 .ai{background:#0a0a0a;border:1px dashed #660000;border-radius:8px;padding:12px;margin-top:12px;font-size:.88rem;color:#ff6666;line-height:1.5}
@@ -168,15 +169,16 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 .rc.amber .badge{background:rgba(245,158,11,.2);color:#f59e0b;border:1px solid #f59e0b}
 .rc.amber .si{border-color:#9a3412;box-shadow:0 0 8px rgba(245,158,11,.1)}
 .rc.amber .si.hl{border:1px solid #fbbf24;background:rgba(245,158,11,.06);box-shadow:0 0 10px rgba(245,158,11,.2)}
-.rc.amber .si.crit-fire{border:1px solid #fb923c;background:rgba(234,88,12,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:0 0 12px rgba(234,88,12,.25)}
+.rc.amber .si.crit-fire{border:2px solid #fbbf24;background:radial-gradient(circle,#1f0f00,#0a0500);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:16px 8px;box-shadow:0 0 20px rgba(251,191,36,.4),inset 0 0 15px rgba(251,191,36,.15);margin:8px auto;width:70%;max-width:220px;overflow:hidden}
 .rc.amber .sv{color:#fbbf24;text-shadow:0 0 10px rgba(245,158,11,.4)}
 .rc.amber .si.hl .sv{color:#fcd34d;text-shadow:0 0 10px rgba(252,211,77,.4)}
-.rc.amber .si.crit-fire .sv{color:#fb923c;text-shadow:0 0 10px rgba(234,88,12,.4)}
+.rc.amber .si.crit-fire .sv{color:#fcd34d;text-shadow:0 0 15px rgba(252,211,77,.6),0 0 5px rgba(252,211,77,.8);font-size:2rem}
+.rc.amber .si.crit-fire .sl{color:#fbbf24;text-shadow:0 0 8px rgba(251,191,36,.5)}
 .rc.amber .sbf{background:linear-gradient(90deg,#7c2d12,#f59e0b,#fbbf24);box-shadow:0 0 6px rgba(245,158,11,.4)}
 .rc.amber .si.hl .sbf{background:linear-gradient(90deg,#7c2d12,#fbbf24);box-shadow:0 0 6px rgba(251,191,36,.4)}
-.rc.amber .si.crit-fire .sbf{background:linear-gradient(90deg,#7c2d12,#fb923c);box-shadow:0 0 6px rgba(251,146,60,.4)}
+.rc.amber .si.crit-fire .sbf{background:linear-gradient(90deg,#7c2d12,#fb923c,#fcd34d,#fcd34d);box-shadow:0 0 8px rgba(252,211,77,.5)}
 .rc.amber .st{background:rgba(245,158,11,.2);color:#fbbf24}
-.rc.amber .si.crit-fire .st{background:rgba(234,88,12,.25);color:#fb923c}
+.rc.amber .si.crit-fire .st{background:rgba(251,191,36,.3);color:#fcd34d;font-weight:bold;box-shadow:0 0 5px rgba(252,211,77,.3)}
 .rc.amber .ai b{color:#f59e0b}
 .rc.amber .ai{border-color:#7c2d12}
 .calib-diff{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;margin:2px 0;border-radius:4px;font-size:.82rem}
@@ -1184,7 +1186,7 @@ var parts=[];
 var brandName={'samsung':'Samsung','xiaomi':'Xiaomi/MIUI','apple':'iPhone/iOS','motorola':'Motorola','huawei':'Huawei/EMUI','oppo':'OPPO/ColorOS','vivo':'Vivo/FuntouchOS','realme':'Realme/realmeUI','oneplus':'OnePlus/OxygenOS','tecno':'Tecno/HiOS','infinix':'Infinix/XOS','zte':'ZTE','asus':'ASUS ROG','nubia':'Nubia Red Magic','google':'Google Pixel','honor':'Honor','otra':'Generico'}[brand]||'Generico';
 
 // SECTION 1: PANTALLA
-parts.push({section:'📱 PANTALLA — PASO A PASO',items:[
+parts.push({section:'📱 PANTALLA — '+brandName+' '+model,items:[
 'PASO 1: Abri Ajustes de tu celular (icono de engranaje)',
 'PASO 2: Busca "Pantalla" o "Display" y entra',
 'PASO 3: Busca "Tasa de refresco" o "Refresh Rate" o "Frecuencia de actualizacion"',
@@ -1198,7 +1200,7 @@ hz>=120?'PASO 5: Si ves "Smooth Motion" o "Motion Smoothness" ponlo en ALTO':'PA
 ]});
 
 // SECTION 2: TACTIL
-parts.push({section:'👆 TACTIL — SENSIBILIDAD DE LA PANTALLA',items:[
+parts.push({section:'👆 TACTIL — '+brandName+' '+model,items:[
 'PASO 1: Ve a Ajustes > Pantalla (o Ajustes > General > Gestos en algunas marcas)',
 'PASO 2: Busca "Sensibilidad tactil" o "Touch Sensitivity" o "Velocidad del puntero"',
 'PASO 3: Sube la sensibilidad tactil al MAXIMO disponible',
@@ -1362,7 +1364,7 @@ parts.push({section:'🎮 AJUSTES GENERALES DE JUEGO',items:[
 }
 
 // SECTION: FREEFIRE IN-GAME
-parts.push({section:'🔥 FREEFIRE — DENTRO DEL JUEGO',items:[
+parts.push({section:'🔥 FREEFIRE — AJUSTES SI O SI EN '+model,items:[
 'PASO 1: Abre FreeFire y entra en Ajustes (icono de engranaje arriba a la derecha)',
 'PASO 2: Ve a la pestania "Sensibilidad" (la segunda pestania)',
 'PASO 3: Pon los valores que generaste arriba — uno por uno, de General para abajo',
@@ -1381,7 +1383,7 @@ parts.push({section:'🔥 FREEFIRE — DENTRO DEL JUEGO',items:[
 ]});
 
 // SECTION: DPI (Opcional pero importante)
-parts.push({section:'📐 DPI Y DENSIDAD (OPCIONAL — OJO)',items:[
+parts.push({section:'📐 DPI — '+brandName+' '+model,items:[
 'PASO 1: Esto es AVANZADO — solo si sabes lo que haces',
 'PASO 2: Ve a Opciones de Desarrollador',
 'PASO 3: Busca "Densidad de visualizacion" o "Ancho minimo" o "Smallest width"',
@@ -1395,7 +1397,7 @@ parts.push({section:'📐 DPI Y DENSIDAD (OPCIONAL — OJO)',items:[
 ]});
 
 // SECTION: ANTES DE JUGAR
-parts.push({section:'⚡ ANTES DE ENTRAR A JUGAR — CHECKLIST',items:[
+parts.push({section:'⚡ CHECKLIST '+model+' — SI O SI HACE ESTO',items:[
 'PASO 1: Cierra TODAS las apps — desliza y cierra todo',
 'PASO 2: Si puedes reinicia el celular antes de jugar — libera toda la RAM',
 'PASO 3: Asegurate de tener mas del 30% de bateria',
@@ -1411,7 +1413,7 @@ parts.push({section:'⚡ ANTES DE ENTRAR A JUGAR — CHECKLIST',items:[
 'PASO 13: Si juegas con 4 dedos, usa el gatillo izquierdo para apuntar y el derecho para disparar'
 ]});
 
-var html='<div class="phone-adjust"><div class="pa-title">⚙️ AJUSTES RECOMENDADOS PARA '+brandName.toUpperCase()+' '+model.toUpperCase()+' — PASO A PASO PARA PEGAR MAS ROJO</div>';
+var html='<div class="phone-adjust"><div class="pa-title">⚙️ AJUSTES ESPECIFICOS PARA '+brandName.toUpperCase()+' '+model.toUpperCase()+' — SI O SI HACE ESTO PARA TU CELULAR</div>';
 for(var p=0;p<parts.length;p++){
 if(parts[p].section)html+='<div class="pa-section">'+parts[p].section+'</div>';
 for(var q=0;q<parts[p].items.length;q++){
