@@ -228,7 +228,7 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </div>
 <div class="tab" id="tabDual" style="border:2px solid #ffd700;background:rgba(255,215,0,.05);color:#ffd700;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER</div>
 </div>
-<div class="warn-box">⚠ ZONA HACKER ACTIVADA — SENSIBILIDADES EXTREMAS HASTA 200 ⚠</div>
+<div class="warn-box">⚠ ZONA HACKER — SENSIBILIDAD CALIBRADA POR DISPOSITIVO ⚠</div>
 <button class="gbtn" id="genBtn">⚡⚡ GENERAR MEGA HACKER PVP ⚡⚡</button>
 </div>
 
@@ -239,7 +239,7 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </div>
 
 <div class="res" id="results"></div>
-<div class="ft"><p>SALITA 3.5 — MEGA HACKER · Valores hasta 200 · FreeFire</p></div>
+<div class="ft"><p>SALITA 3.5 — MEGA HACKER · Calibrado por dispositivo · FreeFire</p></div>
 </div>
 
 <div class="toast" id="toast">✅ Copiado</div>
@@ -549,21 +549,19 @@ var b=brandData[brand]||brandData.otra;
 var mult=computeMult(brand,hz,m);
 var r={};
 if(m==='pvp'){
-// PVP: precision de flick + tracking de cabeza a corta distancia
-var pb=178;
-// Anti-tremor estabiliza el drag head para que NO tiemble
-var tremorAdj=1+(1-b.antiTremor)*0.15;
-// Precision touch: mejor touch = mejor flick a craneo
-var precisionAdj=b.precisionCurve*0.95;
+// PVP: calibrado por dispositivo - NO todo a 200
+var pb=145;
+var tremorAdj=1+(1-b.antiTremor)*0.12;
+var precisionAdj=b.precisionCurve*0.92;
 r={
-general:clamp(Math.round(pb*mult*1.06*tremorAdj),100,200),
-redDot:clamp(Math.round(pb*mult*1.10*tremorAdj),100,200),
-scope2x:clamp(Math.round(pb*mult*1.00*precisionAdj),100,200),
-scope4x:clamp(Math.round(pb*mult*0.90*precisionAdj),80,200),
-sniper:clamp(Math.round(pb*mult*0.80*precisionAdj),60,200),
-freeLook:clamp(Math.round(pb*mult*1.18*tremorAdj),100,200),
-fireBtn:clamp(Math.round(pb*mult*1.22*tremorAdj),100,200),
-dragHead:clamp(Math.round(pb*mult*1.28*tremorAdj),100,200)
+general:clamp(Math.round(pb*mult*1.05*tremorAdj),70,195),
+redDot:clamp(Math.round(pb*mult*1.08*tremorAdj),70,195),
+scope2x:clamp(Math.round(pb*mult*0.98*precisionAdj),60,185),
+scope4x:clamp(Math.round(pb*mult*0.88*precisionAdj),50,175),
+sniper:clamp(Math.round(pb*mult*0.78*precisionAdj),40,165),
+freeLook:clamp(Math.round(pb*mult*1.12*tremorAdj),70,195),
+fireBtn:clamp(Math.round(pb*mult*1.15*tremorAdj),70,198),
+dragHead:clamp(Math.round(pb*mult*1.20*tremorAdj),70,198)
 };
 r.weapons=['Deagle Headshot Machine','Shotgun M1887 One Shot','M1014 Spam Headshots'];
 r.modeName='PVP MEGA HACKER TODO ROJO';r.color='red';
@@ -571,22 +569,21 @@ r.strategy='PRECISION ANTI-TREMBLOR: Flick estabilizado a craneo. Drag Head con 
 r.formula='Mult='+mult.toFixed(3)+' [Hz^0.72='+Math.pow(hz/60,0.72).toFixed(2)+' Latency('+b.touchLatency+'ms) Sample('+b.touchSample+') AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+') Proc('+b.procBoost+')]';
 r.powerLevel='ULTRA PRECISION '+(85+Math.round(mult*10))+'%';
 }else{
-// BR+DECLA: precision dual - larga distancia estable + corta rapida
-var bb=135;
-var tremorBr=1+(1-b.antiTremor)*0.08; // menos agresivo, mas estable
+// BR+DECLA: calibrado por dispositivo - NO todo a 200
+var bb=115;
+var tremorBr=1+(1-b.antiTremor)*0.06;
 var precisionBr=b.precisionCurve;
-// Larga distancia necesita MAS estabilidad, corta necesita MAS velocidad
-var longRange=Math.min(1.0,0.92+b.precisionCurve*0.08); // estabilizador para scopes
-var shortRange=1.04+b.procBoost*0.03; // boost para corta
+var longRange=Math.min(1.0,0.90+b.precisionCurve*0.06);
+var shortRange=1.02+b.procBoost*0.02;
 r={
-general:clamp(Math.round(bb*mult*1.08*shortRange),100,200),
-redDot:clamp(Math.round(bb*mult*1.04*shortRange),100,200),
-scope2x:clamp(Math.round(bb*mult*1.00*precisionBr),100,200),
-scope4x:clamp(Math.round(bb*mult*0.96*longRange),90,200),
-sniper:clamp(Math.round(bb*mult*0.92*longRange),80,200),
-freeLook:clamp(Math.round(bb*mult*1.10*tremorBr),100,200),
-fireBtn:clamp(Math.round(bb*mult*1.06*tremorBr),100,200),
-dragHead:clamp(Math.round(bb*mult*1.12*tremorBr),100,200)
+general:clamp(Math.round(bb*mult*1.06*shortRange),60,185),
+redDot:clamp(Math.round(bb*mult*1.02*shortRange),60,185),
+scope2x:clamp(Math.round(bb*mult*0.98*precisionBr),50,175),
+scope4x:clamp(Math.round(bb*mult*0.92*longRange),40,165),
+sniper:clamp(Math.round(bb*mult*0.86*longRange),35,155),
+freeLook:clamp(Math.round(bb*mult*1.08*tremorBr),60,185),
+fireBtn:clamp(Math.round(bb*mult*1.04*tremorBr),60,188),
+dragHead:clamp(Math.round(bb*mult*1.10*tremorBr),60,188)
 };
 r.weapons=['Larga: AWM/Kar98k/M82B','Corta: MP40/AK/SCAR','Versatil: M4A1/Groza/XM8'];
 r.modeName='BR+DECLA Larga/Corta';r.color='green';
@@ -604,12 +601,12 @@ var red=r.color==='red';
 var cc=red?'rc red':'rc grn';
 var bc=red?'badge red':'badge grn';
 var wc=red?'wc red':'wc grn';
-var items=[{l:'General',v:r.general,t:'BASE /200'},{l:'Punto Rojo',v:r.redDot,t:'RED DOT /200'},{l:'Mira 2x',v:r.scope2x,t:'2X /200'},{l:'Mira 4x',v:r.scope4x,t:'4X /200'},{l:'Mira Sniper',v:r.sniper,t:'SNIPER /200'},{l:'Vista Libre',v:r.freeLook,t:'FREE /200'},{l:'Boton Disparo',v:r.fireBtn,t:'FIRE /200',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'HEAD DRAG /200',h:'crit'}];
+var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'CALIBRADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'CALIBRADO',h:'crit'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
 var wH=r.weapons.map(function(w){return '<span class="'+wc+'">'+w+'</span>'}).join('');
 var d=r.dev;
 var pHTML=red?'<div class="pm"><div class="pm-label">NIVEL HACKER</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.powerLevel+'</div></div>':'';
-return '<div class="'+cc+'"><div class="rh"><h3>'+(red?'🔴':'🟢')+' '+r.modeName+'</h3><span class="'+bc+'">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+d.brand.toUpperCase()+'</span><span class="sp">'+d.model+'</span><span class="sp">'+d.hz+'Hz</span></div><div class="wi">'+wH+'</div>'+pHTML+'<div class="sg">'+sH+'</div><div class="ai"><b>ALGORITMO:</b> '+r.strategy+'<span class="fm">'+r.formula+'</span><span class="fm">Mult:'+d.mult+' Max:200</span></div>'+getPhoneAdjustments(r.dev.brand,r.dev.model,r.dev.hz)+'<button class="cp" data-copy="'+r.id+'">📋 COPIAR</button></div>';
+return '<div class="'+cc+'"><div class="rh"><h3>'+(red?'🔴':'🟢')+' '+r.modeName+'</h3><span class="'+bc+'">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+d.brand.toUpperCase()+'</span><span class="sp">'+d.model+'</span><span class="sp">'+d.hz+'Hz</span></div><div class="wi">'+wH+'</div>'+pHTML+'<div class="sg">'+sH+'</div><div class="ai"><b>ALGORITMO:</b> '+r.strategy+'<span class="fm">'+r.formula+'</span><span class="fm">Mult:'+d.mult+' Calibrado por dispositivo</span></div>'+getPhoneAdjustments(r.dev.brand,r.dev.model,r.dev.hz)+'<button class="cp" data-copy="'+r.id+'">📋 COPIAR</button></div>';
 }
 
 genBtn.addEventListener('click',function(){
@@ -617,7 +614,7 @@ var ld=document.getElementById('loading');
 var res=document.getElementById('results');
 var lt=document.getElementById('loadText');
 ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
-var steps=['Iniciando motor...','Leyendo specs...','Algoritmo agresivo...','Refresh rate...','Optimizando armas...','Boton a 200...','Drag head a 200...','Completado!'];
+var steps=['Iniciando motor...','Leyendo specs...','Calibrando por marca...','Refresh rate...','Touch latency...','Anti-tremor...','Calibrado por dispositivo!','Completado!'];
 var s=0;
 var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
 setTimeout(function(){
@@ -641,7 +638,7 @@ var card=btn.closest('.rc');
 var id=btn.getAttribute('data-copy');
 var txt='SALITA 3.5\n'+card.querySelector('h3').textContent+'\n';
 var sis=card.querySelectorAll('.si');
-for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'\n';
 copyText(txt);
 });
 })(cps[i]);
@@ -778,19 +775,19 @@ var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
-general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab),100,200),
-redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab),100,200),
-scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab),100,200),
-scope4x:clamp(Math.round(profile.s4*mult*rangeAdj),80,200),
-sniper:clamp(Math.round(profile.sn*mult*rangeAdj),60,200),
-freeLook:clamp(Math.round(profile.fl*mult*fireAdj),100,200),
-fireBtn:clamp(Math.round(profile.fb*mult*fireAdj*fbMult),100,200),
-dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj),100,200),
+general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*0.82),60,190),
+redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*0.82),60,190),
+scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*0.82),50,180),
+scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*0.82),40,170),
+sniper:clamp(Math.round(profile.sn*mult*rangeAdj*0.82),35,160),
+freeLook:clamp(Math.round(profile.fl*mult*fireAdj*0.82),60,190),
+fireBtn:clamp(Math.round(profile.fb*mult*fireAdj*fbMult*0.82),60,195),
+dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj*0.82),60,195),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
 };
-var items=[{l:'General',v:r.general,t:'BASE /200'},{l:'Punto Rojo',v:r.redDot,t:'RED DOT /200'},{l:'Mira 2x',v:r.scope2x,t:'2X /200'},{l:'Mira 4x',v:r.scope4x,t:'4X /200'},{l:'Mira Sniper',v:r.sniper,t:'SNIPER /200'},{l:'Vista Libre',v:r.freeLook,t:'FREE /200'},{l:'Boton Disparo',v:r.fireBtn,t:'FIRE /200',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'HEAD DRAG /200',h:'hl'}];
+var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'CALIBRADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'CALIBRADO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
 var recoilColor=r.recoil==='Alto'?'#ff003c':r.recoil==='Medio'?'#ffaa00':'#00ff41';
 res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 TODO ROJO A LA CABEZA SIN TEMBLAR</div><div class="pm" style="border-color:#a855f7"><div class="pm-label" style="color:#c8a8e8">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div><div class="pm-val" style="color:#a855f7">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
@@ -808,7 +805,7 @@ cpBtn.addEventListener('click',function(){
 var card=cpBtn.closest('.rc');
 var txt='SALITA 3.5 ARMA '+r.weapon+'\n';
 var sis=card.querySelectorAll('.si');
-for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'\n';
 copyText(txt);
 });
 }
@@ -875,31 +872,30 @@ var isSpecial=(type==='fb'||type==='dh');
 // Escalado a 200 con multiplicador de dispositivo
 var base0800={};
 if(mode==='pvp'){
-// PVP 0800: todo agresivo pero controlado, puro headshot
+// PVP 0800: calibrado por dispositivo - NO todo a 200
 base0800={
-gen:170*mult,    // alto para giro rapido
-rd:176*mult,     // alto para flick a craneo
-s2:155*mult,    // medio-alto
-s4:138*mult,    // medio - empieza a bajar
-sn:122*mult,    // bajo - maxima precision sniper
-fl:172*mult,    // alto
-fb:184*mult,    // muy alto - disparo rapido
-dh:190*mult     // muy alto - drag a cabeza
+gen:140*mult,
+rd:145*mult,
+s2:128*mult,
+s4:112*mult,
+sn:95*mult,
+fl:142*mult,
+fb:152*mult,
+dh:158*mult
 };
 }else{
-// BR+DECLA 0800: hibrido - corta agresiva + larga estable
-// Brasilero: la mira sube natural a la cabeza sin pasarse
+// BR+DECLA 0800: calibrado por dispositivo - NO todo a 200
 var longStab=0.80+(precision*0.15);
 var tremorBoost=1+(1-tremor)*0.08;
 base0800={
-gen:162*mult,                // alto para corta distancia
-rd:158*mult,                 // alto para corta
-s2:138*mult*longStab,        // media - empieza precision
-s4:122*mult*longStab*tremorBoost, // baja - precision larga
-sn:108*mult*longStab*tremorBoost, // muy baja - sniper estable
-fl:165*mult,                 // alto
-fb:155*mult,                 // controlado
-dh:168*mult                  // controlado para headshot natural
+gen:128*mult,
+rd:125*mult,
+s2:108*mult*longStab,
+s4:92*mult*longStab*tremorBoost,
+sn:78*mult*longStab*tremorBoost,
+fl:132*mult,
+fb:122*mult,
+dh:128*mult
 };
 }
 
@@ -1063,7 +1059,7 @@ if(cpBtn){
 cpBtn.addEventListener('click',function(){
 var txt='SALITA 3.5 — 0800 BRASIL ['+modeName+']\n'+b.name+' '+model+' '+hz+'Hz\n';
 var sis=res.querySelectorAll('.si');
-for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'\n';
 copyText(txt);
 });
 }
@@ -1112,7 +1108,7 @@ btn.addEventListener('click',function(){
 var card=btn.closest('.rc');
 var txt='SALITA 3.5 [LIVE]\n'+card.querySelector('h3').textContent+'\n';
 var sis=card.querySelectorAll('.si');
-for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'/200\n';
+for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'\n';
 copyText(txt);
 });
 })(cps[i]);
