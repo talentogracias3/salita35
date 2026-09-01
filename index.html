@@ -1166,6 +1166,8 @@ liveTs.textContent=h+':'+m+':'+s;
 }
 
 function autoRefresh(){
+// DISABLED — sensitivity only changes when user clicks GENERAR
+return;
 if(!liveOn)return;
 updateTime();
 // Re-calculate main if results are showing
@@ -1239,22 +1241,17 @@ liveBox.addEventListener('click',function(){
 liveOn=!liveOn;
 if(liveOn){
 liveBox.classList.remove('off');
-liveBox.innerHTML='<span class="live-dot"></span>LIVE 24/7<span class="live-ts" id="liveTs">00:00</span>';
+liveBox.innerHTML='<span class="live-dot"></span>HORA<span class="live-ts" id="liveTs">00:00</span>';
 liveTs=document.getElementById('liveTs');
 updateTime();
-refreshInterval=setInterval(autoRefresh,60000); // every 1 minute
-autoRefresh();
 }else{
 liveBox.classList.add('off');
-liveBox.innerHTML='<span class="live-dot"></span>PAUSED<span class="live-ts">OFF</span>';
-clearInterval(refreshInterval);
+liveBox.innerHTML='<span class="live-dot"></span>HORA<span class="live-ts">OFF</span>';
 }
 });
 
-// Start auto refresh every 1 minute
+// Only update time every second — NO auto-refresh of sensitivity values
 updateTime();
-refreshInterval=setInterval(autoRefresh,60000);
-// Also update time every second
 setInterval(updateTime,1000);
 
 
