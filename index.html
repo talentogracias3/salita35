@@ -1260,243 +1260,115 @@ setInterval(updateTime,1000);
 
 // ===== PHONE SETTINGS ADVICE =====
 function getPhoneAdjustments(brand,model,hz){
-var parts=[];
-var brandName={'samsung':'Samsung','xiaomi':'Xiaomi/MIUI','apple':'iPhone/iOS','motorola':'Motorola','huawei':'Huawei/EMUI','oppo':'OPPO/ColorOS','vivo':'Vivo/FuntouchOS','realme':'Realme/realmeUI','oneplus':'OnePlus/OxygenOS','tecno':'Tecno/HiOS','infinix':'Infinix/XOS','zte':'ZTE','asus':'ASUS ROG','nubia':'Nubia Red Magic','google':'Google Pixel','honor':'Honor','otra':'Generico'}[brand]||'Generico';
+var brandName={'samsung':'Samsung','xiaomi':'Xiaomi','apple':'iPhone','motorola':'Motorola','huawei':'Huawei','oppo':'OPPO','vivo':'Vivo','realme':'Realme','oneplus':'OnePlus','tecno':'Tecno','infinix':'Infinix','zte':'ZTE','asus':'ASUS ROG','nubia':'Nubia','google':'Pixel','honor':'Honor','otra':'Generico'}[brand]||'Generico';
+var tips=[];
 
-// SECTION 1: PANTALLA
-parts.push({section:'📱 PANTALLA — '+brandName+' '+model,items:[
-'PASO 1: Abri Ajustes de tu celular (icono de engranaje)',
-'PASO 2: Busca "Pantalla" o "Display" y entra',
-'PASO 3: Busca "Tasa de refresco" o "Refresh Rate" o "Frecuencia de actualizacion"',
-'PASO 4: Ponlo en '+hz+'Hz (o el maximo que tengas disponible)',
-hz>=120?'PASO 5: Si ves "Smooth Motion" o "Motion Smoothness" ponlo en ALTO':'PASO 5: Asegurate de que este estable en '+hz+'Hz',
-'PASO 6: En la misma pantalla busca "Always On Display" y activa si lo tienes',
-'PASO 7: Busca "Brillo automatico" y DESACTIVALO',
-'PASO 8: Pon el brillo manualmente en 70-80% para ver mejor los enemigos',
-'PASO 9: Si tienes "Modo oscuro" activado, dejalo asi — menos consumo de bateria y mejor contraste',
-'PASO 10: Busca "Tamanio de fuente" y dejalo en pequeno o predeterminado para ver mas del mapa'
-]});
-
-// SECTION 2: TACTIL
-parts.push({section:'👆 TACTIL — '+brandName+' '+model,items:[
-'PASO 1: Ve a Ajustes > Pantalla (o Ajustes > General > Gestos en algunas marcas)',
-'PASO 2: Busca "Sensibilidad tactil" o "Touch Sensitivity" o "Velocidad del puntero"',
-'PASO 3: Sube la sensibilidad tactil al MAXIMO disponible',
-brand==='samsung'?'PASO 4 (Samsung): Ve a Ajustes > Pantalla > Activa "Sensibilidad de pantalla tactil" — esto hace que la pantalla responda mas rapido':'PASO 4: Si tu marca tiene "Glove Mode" o "Modo guante" activa tambien — mejora la respuesta',
-'PASO 5: Ahora ve a Ajustes > Busca "Opciones de Desarrollador" o "Programador" (si no lo ves, ve a Ajustes > Acerca del telefono > Toca "Numero de compilacion" 7 veces para activarlo)',
-'PASO 6: En Opciones de Desarrollador busca "Velocidad del puntero" o "Pointer Speed"',
-'PASO 7: Pon la velocidad del puntero en MAXIMO (1.0 o mas alto)',
-'PASO 8: Busca "Mostrar toques" o "Show touches" y ACTIVALO temporalmente',
-'PASO 9: Abre FreeFire y proba tocar la pantalla viendo donde registra el toque',
-'PASO 10: Ajusta tu dedo hasta que el toque salga exactamente donde quieres',
-'PASO 11: Vuelve a Opciones de Desarrollador y DESACTIVA "Mostrar toques"',
-'PASO 12: Busca "Escala de animacion de ventana" y ponla en 0.5x o DESACTIVADA',
-'PASO 13: Busca "Escala de animacion de transicion" y ponla en 0.5x o DESACTIVADA',
-'PASO 14: Busca "Escala de duracion de animador" y ponla en 0.5x o DESACTIVADA',
-'PASO 15: Esto hace que todo en el celu sea instantaneo — menos retardo entre tu toque y la respuesta'
-]});
-
-// SECTION 3: BRAND SPECIFIC
-if(brand==='samsung'){
-parts.push({section:'🎮 SAMSUNG — GAME LAUNCHER Y BOOSTER',items:[
-'PASO 1: Ve a Ajustes > Funciones avanzadas > Juegos',
-'PASO 2: Activa "Game Launcher" — se crea un icono en tu pantalla',
-'PASO 3: Abre Game Launcher desde el menu de apps',
-'PASO 4: Toca el icono de engranaje (Ajustes del Game Launcher)',
-'PASO 5: Activa "Bloquear durante el juego" — no te llegan notificaciones',
-'PASO 6: Activa "No interrumpir" — bloquea llamadas mientras jugas',
-'PASO 7: Ve a Game Booster (la pastilla flotante que aparece cuando juegas)',
-'PASO 8: Toca Game Booster > Prioridad de rendimiento > Ponlo en MAXIMO',
-'PASO 9: Activa "Toque repetido rapido" en Ajustes > Funciones avanzadas',
-'PASO 10: Ve a Ajustes > Mantenimiento del dispositivo > Rendimiento > Modo de juego > MAXIMO',
-'PASO 11: En Opciones de Desarrollador activa "Forzar 4x MSAA" para mejor calidad grafica',
-'PASO 12: Desactiva "Super Ahorro de Bateria" antes de jugar — limita el rendimiento'
-]});
-}else if(brand==='xiaomi'||brand==='redmi'||brand==='poco'){
-parts.push({section:'🎮 XIAOMI/REDMI/POCO — GAME TURBO',items:[
-'PASO 1: Ve a Ajustes > Funciones especiales > Game Turbo',
-'PASO 2: Activa Game Turbo',
-'PASO 3: Toca "Configuracion de rendimiento" dentro de Game Turbo',
-'PASO 4: Pon el modo de rendimiento en MAXIMO o TURBO',
-'PASO 5: Ve a Ajustes > Bateria > Rendimiento (o Modo de bateria)',
-'PASO 6: Ponlo en "Rendimiento" o "Alto" — NO en ahorro de bateria',
-'PASO 7: Ve a Ajustes > Aplicaciones > Permisos > Autoinicio',
-'PASO 8: Desactiva el autoinicio de apps que no necesitas mientras jugas',
-'PASO 9: Ve a Opciones de Desarrollador > Activa "Forzar GPU rendering"',
-'PASO 10: En Opciones de Desarrollador activa "Deshabilitar superposicion de pantalla (HWUI)"',
-'PASO 11: Si tienes MIUI 13+ ve a Ajustes > Funciones especiales > Memoria extendida y activa',
-'PASO 12: Abre Seguridad > Limpiador > Limpia cache antes de jugar para liberar RAM',
-'PASO 13: Desactiva "Super Ahorro de Bateria" o "Ahorro Extremo" antes de jugar'
-]});
+if(brand==='motorola'){
+tips=[
+'Ajustes > Moto > Activa Moto Gametime > Bloquear notificaciones',
+'Ajustes > Pantalla > Refresh Rate en '+hz+'Hz maximo',
+'Opciones de Desarrollador > Animaciones 0.5x en las 3 opciones',
+'Opciones de Desarrollador > Activa Forzar GPU rendering',
+'Ajustes > Bateria > Rendimiento alto (NO ahorro de bateria)',
+'Opciones de Desarrollador > Velocidad del puntero al MAXIMO',
+'Desactiva Acciones de Moto (giro para camara) para no interferir'
+];
+}else if(brand==='samsung'){
+tips=[
+'Ajustes > Funciones avanzadas > Juegos > Activa Game Launcher',
+'Game Booster > Prioridad de rendimiento > MAXIMO',
+'Ajustes > Pantalla > Tasa de refresco en '+hz+'Hz',
+'Ajustes > Pantalla > Activa Sensibilidad tactil',
+'Opciones de Desarrollador > Animaciones 0.5x > Forzar 4x MSAA',
+'Ajustes > Mantenimiento > Rendimiento > Modo de juego MAXIMO',
+'Desactiva Super Ahorro de Bateria antes de jugar'
+];
+}else if(brand==='xiaomi'){
+tips=[
+'Ajustes > Funciones especiales > Game Turbo > Activa',
+'Game Turbo > Configuracion > Rendimiento MAXIMO o TURBO',
+'Ajustes > Pantalla > Refresh Rate en '+hz+'Hz',
+'Opciones de Desarrollador > Forzar GPU rendering',
+'Opciones de Desarrollador > Animaciones 0.5x en las 3',
+'Ajustes > Bateria > Modo Rendimiento (NO ahorro)',
+'Seguridad > Limpiador > Limpia cache antes de jugar'
+];
 }else if(brand==='apple'){
-parts.push({section:'📱 IPHONE — AJUSTES DE RESPUESTA',items:[
-'PASO 1: Ve a Ajustes > Accesibilidad > Tocar > Ajustes de Tactil',
-'PASO 2: Pon "Tiempo de respuesta" en MAS RAPIDO',
-'PASO 3: Activa "Ignorar repeticion" si lo tienes (evita toques fantasma)',
-'PASO 4: Ve a Ajustes > Accesibilidad > Pantalla y tamano del texto',
-'PASO 5: Activa "Reducir transparencia" — menos efecto visual, mas rendimiento',
-'PASO 6: Activa "Reducir movimiento" — menos animaciones, mas rapidez',
-'PASO 7: Ve a Ajustes > General > Fondo de App',
-'PASO 8: Pon "Actualizar en segundo plano" en DESACTIVAR',
-'PASO 9: Ve a Ajustes > Bateria > Desactiva "Modo de bajo consumo"',
-'PASO 10: Ve a Ajustes > Accesibilidad > Movimiento > Desactiva "Movimiento automatico"',
-'PASO 11: Cierra todas las apps abiertas (desliza desde abajo y cierra todo)',
-'PASO 12: Reinicia el iPhone antes de jugar para liberar memoria'
-]});
-}else if(brand==='motorola'){
-parts.push({section:'🎮 MOTOROLA — MOTO GAMETIME',items:[
-'PASO 1: Ve a Ajustes > Moto (o desliza hacia abajo y busca el icono Moto)',
-'PASO 2: Busca "Moto Gametime" y activa',
-'PASO 3: En Moto Gametime activa "Bloquear notificaciones"',
-'PASO 4: Activa "Auto-rotate off" — la pantalla no se gira mientras jugas',
-'PASO 5: Activa "Modo juego" o "Modo rendimiento"',
-'PASO 6: Ve a Opciones de Desarrollador > Animacion 0.5x en las 3 opciones',
-'PASO 7: Ve a Ajustes > Bateria > Pon en "Rendimiento alto" o "Normal"',
-'PASO 8: NO uses "Ahorro de bateria" mientras jugas',
-'PASO 9: Desactiva "Acciones de Moto" (girar para camara, etc) para evitar interferencias',
-'PASO 10: Ve a Opciones de Desarrollador > Activa "Forzar GPU rendering"'
-]});
+tips=[
+'Ajustes > Accesibilidad > Tocar > Tiempo de respuesta MAS RAPIDO',
+'Ajustes > Accesibilidad > Reducir transparencia y Reducir movimiento',
+'Ajustes > General > Fondo de App > Actualizar en segundo plano: DESACTIVAR',
+'Ajustes > Bateria > Modo de bajo consumo: DESACTIVAR',
+'Cierra todas las apps y reinicia el iPhone antes de jugar',
+'Ajustes > Pantalla > Brillo automatico: DESACTIVAR (pon 70-80%)'
+];
 }else if(brand==='oppo'||brand==='vivo'||brand==='realme'){
-parts.push({section:'🎮 '+brandName+' — GAME SPACE',items:[
-'PASO 1: Ve a Ajustes > Bateria > Rendimiento alto: ACTIVAR',
-'PASO 2: Busca "Game Space" o "Game Assistant" en Ajustes o en tu menu de apps',
-'PASO 3: Abre Game Space > Toca el engranaje de ajustes',
-'PASO 4: Pon el modo en "Rendimiento Maximo" o "Modo Pro"',
-'PASO 5: Activa "Bloquear notificaciones" durante el juego',
-'PASO 6: Desactiva "Smart Sidebar" o "Barra lateral inteligente" durante el juego',
-'PASO 7: Ve a Ajustes > Pantalla > Refresh Rate > Ponlo al maximo',
-'PASO 8: Ve a Opciones de Desarrollador > Animacion 0.5x en las 3 opciones',
-'PASO 9: En Opciones de Desarrollador activa "Forzar GPU rendering"',
-'PASO 10: Desactiva "Ahorro de bateria" o "Super Ahorro"',
-'PASO 11: Ve a Opciones de Desarrollador > Activa "Deshabilitar superposicion de pantalla"',
-'PASO 12: Cierra apps en segundo plano antes de abrir FreeFire'
-]});
+tips=[
+'Ajustes > Bateria > Rendimiento alto: ACTIVAR',
+'Game Space > Ajustes > Rendimiento Maximo o Modo Pro',
+'Ajustes > Pantalla > Refresh Rate en '+hz+'Hz',
+'Opciones de Desarrollador > Animaciones 0.5x > Forzar GPU rendering',
+'Desactiva Smart Sidebar durante el juego',
+'Desactiva Ahorro de Bateria o Super Ahorro',
+'Cierra apps en segundo plano antes de abrir FreeFire'
+];
 }else if(brand==='asus'||brand==='nubia'){
-parts.push({section:'🎮 GAMING PHONE — MODO TURBO',items:[
-'PASO 1: Abre Armoury Crate (ASUS) o Game Space (Nubia)',
-'PASO 2: Agrega FreeFire a la lista de juegos',
-'PASO 3: Pon el modo en "X" o "TURBO" o "RENDIMIENTO MAXIMO"',
-'PASO 4: ASUS ROG: Activa "Air Triggers" (gatillos hombro) para disparar sin tocar pantalla',
-'PASO 5: Nubia: Activa "Hombros" (shoulder buttons) si los tienes',
-'PASO 6: Ve a Opciones de Desarrollador > Forzar 4x MSAA: ACTIVAR',
-'PASO 7: Ve a Opciones de Desarrollador > Forzar GPU rendering: ACTIVAR',
-'PASO 8: Pon el CPU/GPU en modo Rendimiento Maximo',
-'PASO 9: Activa "Fan CPU" si tienes ventilador (ASUS ROG)',
-'PASO 10: Ve a Ajustes > Bateria > Modo de rendimiento > MAXIMO',
-'PASO 11: Desactiva todos los efectos de bateria o ahorro',
-'PASO 12: Activa "Bloqueo de notificaciones" durante el juego'
-]});
+tips=[
+'Armoury Crate / Game Space > Agrega FreeFire > Modo TURBO o MAXIMO',
+'Activa Air Triggers / Hombros para disparar sin tocar pantalla',
+'Opciones de Desarrollador > Forzar 4x MSAA > Forzar GPU rendering',
+'Ajustes > Bateria > Modo de rendimiento MAXIMO',
+'CPU/GPU en Rendimiento Maximo (Activa ventilador si tienes)',
+'Activa Bloqueo de notificaciones durante el juego'
+];
 }else if(brand==='huawei'||brand==='honor'){
-parts.push({section:'🎮 '+brandName+' — GAMEASSISTANT',items:[
-'PASO 1: Ve a Ajustes > Aplicaciones > GameAssistant',
-'PASO 2: Activa GameAssistant y agrega FreeFire',
-'PASO 3: Pon modo "Rendimiento" o "Maximo"',
-'PASO 4: Activa "No interrumpir" durante el juego',
-'PASO 5: Ve a Ajustes > Bateria > Modo de rendimiento: ALTO',
-'PASO 6: Ve a Opciones de Desarrollador > Animacion 0.5x en las 3 opciones',
-'PASO 7: Activa "Forzar GPU rendering"',
-'PASO 8: Desactiva "Super Ahorro de Bateria"',
-'PASO 9: Cierra apps en segundo plano',
-'PASO 10: Ve a Ajustes > Pantalla > Refresh Rate > Maximo disponible'
-]});
+tips=[
+'Ajustes > Aplicaciones > GameAssistant > Activa y agrega FreeFire',
+'GameAssistant > Modo Rendimiento o Maximo > No interrumpir',
+'Ajustes > Bateria > Modo de rendimiento ALTO',
+'Opciones de Desarrollador > Animaciones 0.5x > Forzar GPU rendering',
+'Ajustes > Pantalla > Refresh Rate maximo disponible',
+'Desactiva Super Ahorro de Bateria'
+];
 }else if(brand==='tecno'||brand==='infinix'){
-parts.push({section:'🎮 '+brandName+' — MODO JUEGO',items:[
-'PASO 1: Ve a Ajustes > Bateria > Modo de rendimiento: ALTO',
-'PASO 2: Busca "Game Mode" o "Modo Juego" en Ajustes o en tu menu de apps',
-'PASO 3: Activa el Modo Juego y agrega FreeFire',
-'PASO 4: Activa "Bloquear notificaciones" durante el juego',
-'PASO 5: Ve a Opciones de Desarrollador > Animacion 0.5x en las 3 opciones',
-'PASO 6: Activa "Forzar GPU rendering"',
-'PASO 7: Desactiva "Ahorro de bateria" o "Super Ahorro"',
-'PASO 8: Ve a Ajustes > Pantalla > Refresh rate > Maximo',
-'PASO 9: Cierra apps en segundo plano',
-'PASO 10: Si tienes "Smart Panel" o panel flotante desactivalo durante el juego'
-]});
+tips=[
+'Ajustes > Bateria > Modo de rendimiento ALTO',
+'Busca Game Mode o Modo Juego > Activa y agrega FreeFire > Bloquear notificaciones',
+'Ajustes > Pantalla > Refresh Rate en '+hz+'Hz maximo',
+'Opciones de Desarrollador > Animaciones 0.5x > Forzar GPU rendering',
+'Desactiva Ahorro de Bateria o Super Ahorro',
+'Desactiva Smart Panel o panel flotante durante el juego'
+];
 }else if(brand==='google'){
-parts.push({section:'📱 GOOGLE PIXEL — AJUSTES',items:[
-'PASO 1: Ve a Ajustes > Pantalla > Smooth Display (Refresh Rate) > Activa',
-'PASO 2: Ve a Ajustes > Sistema > Opciones de desarrollador',
-'PASO 3: Animacion 0.5x en las 3 opciones',
-'PASO 4: Activa "Forzar GPU rendering"',
-'PASO 5: Ve a Ajustes > Bateria > Modo de ahorro: DESACTIVAR',
-'PASO 6: Ve a Ajustes > Apps > FreeFire > Bateria > Sin restricciones',
-'PASO 7: Activa "No molestar" mientras jugas',
-'PASO 8: Cierra apps en segundo plano antes de jugar',
-'PASO 9: Ve a Ajustes > Pantalla > Brillo automatico: DESACTIVAR',
-'PASO 10: Reinicia el telefono antes de sesiones largas'
-]});
+tips=[
+'Ajustes > Pantalla > Smooth Display (Refresh Rate) > Activa',
+'Opciones de Desarrollador > Animaciones 0.5x > Forzar GPU rendering',
+'Ajustes > Bateria > Modo de ahorro: DESACTIVAR',
+'Ajustes > Apps > FreeFire > Bateria > Sin restricciones',
+'Activa No molestar mientras jugas',
+'Cierra apps en segundo plano y reinicia antes de jugar'
+];
 }else{
-parts.push({section:'🎮 AJUSTES GENERALES DE JUEGO',items:[
-'PASO 1: Ve a Ajustes > Bateria > Modo de rendimiento: ALTO o MAXIMO',
-'PASO 2: Desactiva "Ahorro de bateria" o cualquier modo de ahorro',
-'PASO 3: Cierra TODAS las apps en segundo plano antes de jugar',
-'PASO 4: Ve a Opciones de Desarrollador > Animacion 0.5x en las 3 opciones',
-'PASO 5: Activa "Forzar GPU rendering" si esta disponible',
-'PASO 6: Activa "Deshabilitar superposicion de pantalla" si esta disponible',
-'PASO 7: Ve a Ajustes > Pantalla > Refresh Rate > Ponlo al maximo',
-'PASO 8: Desactiva brillo automatico y ponlo en 70-80%',
-'PASO 9: Activa "No molestar" mientras jugas',
-'PASO 10: Reinicia el celular antes de jugar para liberar RAM',
-'PASO 11: Si tienes "Modo Juego" o "Game Mode" en Ajustes, activa y agrega FreeFire'
-]});
+tips=[
+'Ajustes > Bateria > Modo de rendimiento ALTO (desactiva ahorro)',
+'Ajustes > Pantalla > Refresh Rate en '+hz+'Hz maximo',
+'Opciones de Desarrollador > Animaciones 0.5x en las 3 opciones',
+'Opciones de Desarrollador > Activa Forzar GPU rendering',
+'Activa No molestar y cierra apps en segundo plano',
+'Si tienes Modo Juego > Activa y agrega FreeFire',
+'Reinicia el celular antes de jugar para liberar RAM'
+];
 }
 
-// SECTION: FREEFIRE IN-GAME
-parts.push({section:'🔥 FREEFIRE — AJUSTES SI O SI EN '+model,items:[
-'PASO 1: Abre FreeFire y entra en Ajustes (icono de engranaje arriba a la derecha)',
-'PASO 2: Ve a la pestania "Sensibilidad" (la segunda pestania)',
-'PASO 3: Pon los valores que generaste arriba — uno por uno, de General para abajo',
-'PASO 4: Despues de poner todos los valores toca el check (tick) para guardar',
-'PASO 5: Ve a la pestania "Graficos" (primera pestania de ajustes)',
-'PASO 6: Pon "Graficos" en "SUAVE" — menos calidad pero mas FPS y menos lag',
-'PASO 7: Pon "Resolucion" en "Normal" o "Baja" — mejora los FPS',
-'PASO 8: Activa "Sombras: NO" — las sombras comen FPS',
-'PASO 9: Desactiva "Efectos: NO" o ponlo en minimo',
-'PASO 10: Ve a la pestania "Controles"',
-'PASO 11: Activa "Boton de disparo flotante" si esta disponible',
-'PASO 12: Pon "Alcance de rotacion" en 80-90 para giro rapido',
-'PASO 13: Activa "Disparo rapido" o "Quick fire" si lo tienes',
-'PASO 14: Pon "Tamanio de boton" en el que te quede comodo — no demasiado grande',
-'PASO 15: Guarda los cambios y sal de ajustes'
-]});
+// FreeFire in-game tips (short, same for all)
+tips.push('FreeFire > Ajustes > Sensibilidad > Pon los valores generados > Guardar');
+tips.push('FreeFire > Ajustes > Graficos > SUAVE > Resolucion Normal > Sombras: NO');
+tips.push('FreeFire > Ajustes > Controles > Activa Boton de disparo flotante');
+tips.push('Practica en Entrenamiento primero — si la mira se pasa baja 5 puntos de General');
 
-// SECTION: DPI (Opcional pero importante)
-parts.push({section:'📐 DPI — '+brandName+' '+model,items:[
-'PASO 1: Esto es AVANZADO — solo si sabes lo que haces',
-'PASO 2: Ve a Opciones de Desarrollador',
-'PASO 3: Busca "Densidad de visualizacion" o "Ancho minimo" o "Smallest width"',
-'PASO 4: Si el valor es 480, podes bajarlo a 420 o 380 (botones mas grandes)',
-'PASO 5: NO bajes mas de 320 o el celu puede reiniciarse',
-'PASO 6: Si lo bajas, los botones de FreeFire se ven MAS GRANDES y mas facil de tocar',
-'PASO 7: Si lo subes (600+), los botones son mas chiquitos pero ves mas mapa',
-'PASO 8: Proba con 420 para empezar — boton grande = mas facil pegar a la cabeza',
-'PASO 9: Para volver al valor original ve al mismo lugar y pon "Restablecer"',
-'PASO 10: REINICIA el celu despues de cambiar el DPI para que aplique bien'
-]});
-
-// SECTION: ANTES DE JUGAR
-parts.push({section:'⚡ CHECKLIST '+model+' — SI O SI HACE ESTO',items:[
-'PASO 1: Cierra TODAS las apps — desliza y cierra todo',
-'PASO 2: Si puedes reinicia el celular antes de jugar — libera toda la RAM',
-'PASO 3: Asegurate de tener mas del 30% de bateria',
-'PASO 4: Desactiva el ahorro de bateria en Ajustes > Bateria',
-'PASO 5: Activa "No molestar" para que no te llegue nada mientras jugas',
-'PASO 6: Si tienes los datos móviles, asegurate de tener buena senal o usa WiFi',
-'PASO 7: Abre FreeFire y ve directo a Entrenamiento primero',
-'PASO 8: Probá los valores de sensibilidad en el modo Entrenamiento antes de jugar rank',
-'PASO 9: Si la mira se pasa, baja 5 puntos del General y proba de nuevo',
-'PASO 10: Si la mira no llega, sube 5 puntos del General y proba',
-'PASO 11: Una vez que pegues cabeza facil en Entrenamiento, si podes ir a jugar',
-'PASO 12: Si juegas con 2 dedos, practica el "drag" — arrastra el boton de disparo hacia arriba para subir la mira a la cabeza',
-'PASO 13: Si juegas con 4 dedos, usa el gatillo izquierdo para apuntar y el derecho para disparar'
-]});
-
-var html='<div class="phone-adjust"><div class="pa-title">⚙️ AJUSTES ESPECIFICOS PARA '+brandName.toUpperCase()+' '+model.toUpperCase()+' — SI O SI HACE ESTO PARA TU CELULAR</div>';
-for(var p=0;p<parts.length;p++){
-if(parts[p].section)html+='<div class="pa-section">'+parts[p].section+'</div>';
-for(var q=0;q<parts[p].items.length;q++){
-if(parts[p].items[q])html+='<div class="pa-item"><span class="pa-num">'+(q+1)+'</span><span>'+parts[p].items[q]+'</span></div>';
-}
+var html='<div class="phone-adjust"><div class="pa-title">⚙️ AJUSTES PARA '+brandName.toUpperCase()+' '+model.toUpperCase()+'</div>';
+for(var i=0;i<tips.length;i++){
+html+='<div class="pa-item"><span class="pa-num">'+(i+1)+'</span><span>'+tips[i]+'</span></div>';
 }
 html+='</div>';
 return html;
