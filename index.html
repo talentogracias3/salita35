@@ -653,16 +653,16 @@ res.scrollIntoView({behavior:'smooth',block:'start'});
 
 // ===== WEAPON GENERATOR =====
 var wpnData={
-deagle:{name:'Desert Eagle',type:'Pistola',range:'Corta',recoil:'Alto',fireRate:'Lento',pvp:{gen:142,rd:138,s2:128,s4:112,sn:95,fl:155,fb:148,dh:162},br:{gen:130,rd:128,s2:120,s4:108,sn:92,fl:140,fb:138,dh:148},tip:'Flick preciso a la cabeza. Drag Head 162 exacto al craneo. Cada tiro cuenta.'},
-usp:{name:'USP',type:'Pistola',range:'Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:135,rd:132,s2:120,s4:105,sn:88,fl:148,fb:140,dh:152},br:{gen:122,rd:120,s2:112,s4:100,sn:85,fl:132,fb:128,dh:138},tip:'Pistola rapida. Tracking de cabeza suave. No pasarse del craneo.'},
+deagle:{name:'Desert Eagle',type:'Pistola',range:'Corta',recoil:'Alto',fireRate:'Lento',pvp:{gen:142,rd:138,s2:128,s4:112,sn:95,fl:155,fb:148,dh:162},br:{gen:130,rd:128,s2:120,s4:108,sn:92,fl:140,fb:138,dh:148},tip:'UN TOQUE AL BOTON Y VA AL CRANEO. Drag Head maximo. Flick preciso a la cabeza. No levantes la mira — la sensi la sube sola. Cada tiro al craneo.'},
+usp:{name:'USP',type:'Pistola',range:'Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:135,rd:132,s2:120,s4:105,sn:88,fl:148,fb:140,dh:152},br:{gen:122,rd:120,s2:112,s4:100,sn:85,fl:132,fb:128,dh:138},tip:'Tracking de cabeza suave. UN TOQUE y va al craneo. No te pases — la sensi esta calibrada para que suba sola a la cabeza.'},
 m500:{name:'M500',type:'Pistola',range:'Corta',recoil:'Medio',fireRate:'Lento',pvp:{gen:138,rd:135,s2:122,s4:108,sn:90,fl:150,fb:142,dh:155},br:{gen:125,rd:122,s2:115,s4:102,sn:87,fl:135,fb:130,dh:140},tip:'Pistola de precision media. Flick controlado a craneo.'},
 g18:{name:'G18',type:'Pistola',range:'Muy Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:132,rd:128,s2:115,s4:100,sn:82,fl:145,fb:135,dh:148},br:{gen:118,rd:115,s2:108,s4:95,sn:78,fl:128,fb:122,dh:132},tip:'Rafaga rapida. NO tiemble. Tracking de craneo estable.'},
 walther:{name:'Walther PPK',type:'Pistola',range:'Muy Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:134,rd:130,s2:118,s4:102,sn:85,fl:146,fb:138,dh:150},br:{gen:120,rd:118,s2:110,s4:97,sn:80,fl:130,fb:125,dh:135},tip:'Pistola ligera. Sens controlada para headshots precisos.'},
-m1887:{name:'Shotgun M1887',type:'Shotgun',range:'Muy Corta',recoil:'Medio',fireRate:'Lento',pvp:{gen:158,rd:148,s2:125,s4:105,sn:88,fl:168,fb:155,dh:170},br:{gen:145,rd:138,s2:118,s4:100,sn:85,fl:152,fb:145,dh:155},tip:'One-shot corta distancia. General 158 para girar. Drag Head 170 al craneo.'},
-m1014:{name:'M1014',type:'Shotgun',range:'Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:152,rd:145,s2:132,s4:115,sn:95,fl:162,fb:158,dh:165},br:{gen:138,rd:132,s2:122,s4:108,sn:90,fl:145,fb:140,dh:148},tip:'Spam shotgun. Tracking de cabeza sin temblar. Drag Head 165.'},
+m1887:{name:'Shotgun M1887',type:'Shotgun',range:'Muy Corta',recoil:'Medio',fireRate:'Lento',pvp:{gen:158,rd:148,s2:125,s4:105,sn:88,fl:168,fb:155,dh:170},br:{gen:145,rd:138,s2:118,s4:100,sn:85,fl:152,fb:145,dh:155},tip:'ONE-SHOT AL CRANEO. General alto para girar rapido. Drag Head MAXIMO — un toque al boton y la mira va sola a la cabeza. No levantes nada.'},
+m1014:{name:'M1014',type:'Shotgun',range:'Corta',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:152,rd:145,s2:132,s4:115,sn:95,fl:162,fb:158,dh:165},br:{gen:138,rd:132,s2:122,s4:108,sn:90,fl:145,fb:140,dh:148},tip:'Spam shotgun al craneo. UN TOQUE y va a la cabeza. Tracking sin temblar. Drag Head maximo calibrado.'},
 spas12:{name:'SPAS-12',type:'Shotgun',range:'Corta-Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:148,rd:142,s2:130,s4:112,sn:92,fl:158,fb:150,dh:160},br:{gen:135,rd:130,s2:120,s4:105,sn:88,fl:142,fb:138,dh:148},tip:'Balance potencia/precision. Headshots consistentes sin temblar.'},
 m1873:{name:'Double Barrel (M1873)',type:'Shotgun',range:'Muy Corta',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:155,rd:145,s2:120,s4:100,sn:85,fl:165,fb:152,dh:168},br:{gen:142,rd:135,s2:115,s4:98,sn:82,fl:148,fb:140,dh:152},tip:'Dos tiros letales. Flick rapido a craneo. Cada tiro al craneo.'},
-mp40:{name:'MP40',type:'SMG',range:'Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:138,rd:135,s2:122,s4:105,sn:85,fl:148,fb:145,dh:155},br:{gen:125,rd:122,s2:115,s4:100,sn:82,fl:132,fb:130,dh:138},tip:'Fire rate brutal. NO tiemble. Tracking suave de cabeza.'},
+mp40:{name:'MP40',type:'SMG',range:'Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:138,rd:135,s2:122,s4:105,sn:85,fl:148,fb:145,dh:155},br:{gen:125,rd:122,s2:115,s4:100,sn:82,fl:132,fb:130,dh:138},tip:'Fire rate brutal al CRANEO. UN TOQUE y va a la cabeza. No tiemble — la sensi esta calibrada para que suba sola.'},
 ump:{name:'UMP',type:'SMG',range:'Corta-Media',recoil:'Medio',fireRate:'Rapido',pvp:{gen:140,rd:136,s2:124,s4:108,sn:88,fl:150,fb:142,dh:158},br:{gen:128,rd:124,s2:116,s4:102,sn:85,fl:135,fb:132,dh:142},tip:'Recoil medio. Tracking estable. Response time preciso.'},
 p90:{name:'P90',type:'SMG',range:'Corta',recoil:'Bajo',fireRate:'Muy Rapido',pvp:{gen:135,rd:132,s2:118,s4:102,sn:82,fl:145,fb:140,dh:150},br:{gen:122,rd:118,s2:112,s4:98,sn:80,fl:128,fb:125,dh:135},tip:'Dispara rapidisimo. NO tiemble. Linea en craneo.'},
 vector:{name:'Vector',type:'SMG',range:'Corta',recoil:'Muy Bajo',fireRate:'Extremo',pvp:{gen:132,rd:128,s2:115,s4:98,sn:78,fl:142,fb:135,dh:148},br:{gen:118,rd:115,s2:108,s4:95,sn:75,fl:122,fb:120,dh:130},tip:'Fire rate extremo. General 132 BAJA para no temblar. Precision > velocidad.'},
@@ -670,8 +670,8 @@ mp5:{name:'MP5',type:'SMG',range:'Corta-Media',recoil:'Bajo',fireRate:'Rapido',p
 thompson:{name:'Thompson',type:'SMG',range:'Corta',recoil:'Medio',fireRate:'Muy Rapido',pvp:{gen:137,rd:134,s2:121,s4:104,sn:84,fl:147,fb:140,dh:154},br:{gen:124,rd:121,s2:114,s4:99,sn:81,fl:131,fb:127,dh:137},tip:'SMG retro. Recoil medio. Drag Head para mantener en craneo.'},
 cg15:{name:'CG15',type:'SMG',range:'Corta-Media',recoil:'Bajo',fireRate:'Rapido',pvp:{gen:134,rd:131,s2:119,s4:102,sn:82,fl:144,fb:136,dh:150},br:{gen:121,rd:118,s2:111,s4:97,sn:79,fl:129,fb:124,dh:134},tip:'SMG con cargas. Tracking de craneo preciso. Sin temblar.'},
 m10:{name:'M10',type:'SMG',range:'Muy Corta',recoil:'Medio',fireRate:'Muy Rapido',pvp:{gen:133,rd:130,s2:117,s4:100,sn:80,fl:143,fb:134,dh:146},br:{gen:120,rd:117,s2:110,s4:95,sn:77,fl:127,fb:122,dh:130},tip:'SMG agresiva corta distancia. Flick a craneo sin pasarse.'},
-ak:{name:'AK47',type:'Assault Rifle',range:'Media',recoil:'Alto',fireRate:'Medio',pvp:{gen:128,rd:125,s2:115,s4:100,sn:82,fl:138,fb:132,dh:145},br:{gen:118,rd:115,s2:108,s4:95,sn:80,fl:125,fb:122,dh:132},tip:'Recoil alto. CONTROL no velocidad. Drag Head compensa pull. Cabeza nada mas.'},
-m4a1:{name:'M4A1',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:130,rd:128,s2:118,s4:102,sn:84,fl:140,fb:135,dh:148},br:{gen:120,rd:118,s2:112,s4:98,sn:82,fl:128,fb:125,dh:135},tip:'Balanceado. Headshots consistentes. Tracking estable de craneo.'},
+ak:{name:'AK47',type:'Assault Rifle',range:'Media',recoil:'Alto',fireRate:'Medio',pvp:{gen:128,rd:125,s2:115,s4:100,sn:82,fl:138,fb:132,dh:145},br:{gen:118,rd:115,s2:108,s4:95,sn:80,fl:125,fb:122,dh:132},tip:'Recoil alto. La sensi COMPENSA el pull automatico. UN TOQUE al boton y va al craneo. Cabeza nada mas — no levantes la mira.'},
+m4a1:{name:'M4A1',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:130,rd:128,s2:118,s4:102,sn:84,fl:140,fb:135,dh:148},br:{gen:120,rd:118,s2:112,s4:98,sn:82,fl:128,fb:125,dh:135},tip:'Balanceado al CRANEO. UN TOQUE y va a la cabeza. Tracking estable. Headshots consistentes sin esforzarte.'},
 groza:{name:'Groza',type:'Assault Rifle',range:'Media',recoil:'Medio-Alto',fireRate:'Medio-Rapido',pvp:{gen:132,rd:130,s2:120,s4:105,sn:85,fl:142,fb:138,dh:152},br:{gen:122,rd:120,s2:114,s4:100,sn:82,fl:130,fb:128,dh:138},tip:'Dano alto. Drag Head 152 compensa recoil. Cabeza siempre.'},
 scar:{name:'SCAR',type:'Assault Rifle',range:'Media',recoil:'Medio',fireRate:'Medio',pvp:{gen:130,rd:128,s2:117,s4:100,sn:82,fl:138,fb:134,dh:146},br:{gen:120,rd:118,s2:110,s4:96,sn:80,fl:126,fb:124,dh:133},tip:'Versatil. Preciso sin temblar. Cabeza nada mas.'},
 xm8:{name:'XM8',type:'Assault Rifle',range:'Media-Larga',recoil:'Bajo',fireRate:'Medio',pvp:{gen:128,rd:125,s2:115,s4:98,sn:80,fl:135,fb:130,dh:142},br:{gen:118,rd:115,s2:108,s4:94,sn:78,fl:122,fb:120,dh:128},tip:'Poco recoil. Headshots limpios. No pasarse del craneo.'},
@@ -683,7 +683,7 @@ m14:{name:'M14',type:'DMR',range:'Larga',recoil:'Medio',fireRate:'Medio',pvp:{ge
 m16a1:{name:'M16A1',type:'Assault Rifle',range:'Media-Larga',recoil:'Bajo',fireRate:'Burst',pvp:{gen:127,rd:124,s2:114,s4:96,sn:78,fl:133,fb:126,dh:140},br:{gen:117,rd:114,s2:106,s4:92,sn:75,fl:121,fb:116,dh:125},tip:'Burst preciso. Cada burst a craneo. Larga distancia.'},
 parafal:{name:'Parafal',type:'Assault Rifle',range:'Media',recoil:'Medio-Alto',fireRate:'Medio',pvp:{gen:131,rd:128,s2:118,s4:102,sn:84,fl:141,fb:136,dh:150},br:{gen:121,rd:118,s2:110,s4:97,sn:81,fl:129,fb:126,dh:136},tip:'AR agresiva. Drag Head para compensar recoil. Cabeza siempre.'},
 sks:{name:'SKS',type:'DMR',range:'Larga',recoil:'Medio',fireRate:'Medio',pvp:{gen:110,rd:113,s2:103,s4:87,sn:68,fl:126,fb:106,dh:116},br:{gen:100,rd:103,s2:96,s4:80,sn:63,fl:114,fb:96,dh:103},tip:'DMR rapida. Headshots seguidos a distancia. Sin pasarse.'},
-awm:{name:'AWM',type:'Sniper',range:'Muy Larga',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:98,rd:102,s2:92,s4:78,sn:62,fl:115,fb:95,dh:105},br:{gen:88,rd:92,s2:85,s4:72,sn:58,fl:105,fb:85,dh:95},tip:'One-shot headshot. Scope 62 NO tiemble. PRECISION ABSOLUTA. Cabeza solo.'},
+awm:{name:'AWM',type:'Sniper',range:'Muy Larga',recoil:'Alto',fireRate:'Muy Lento',pvp:{gen:98,rd:102,s2:92,s4:78,sn:62,fl:115,fb:95,dh:105},br:{gen:88,rd:92,s2:85,s4:72,sn:58,fl:105,fb:85,dh:95},tip:'ONE-SHOT AL CRANEO. Scope estable. UN TOQUE y va a la cabeza. PRECISION ABSOLUTA. Cabeza garantizada.'},
 kar98k:{name:'Kar98k',type:'Sniper',range:'Larga',recoil:'Alto',fireRate:'Lento',pvp:{gen:102,rd:105,s2:95,s4:82,sn:65,fl:118,fb:98,dh:108},br:{gen:92,rd:95,s2:88,s4:75,sn:60,fl:108,fb:88,dh:98},tip:'Sniper clasico. Scope 65 precisa. Boton estable. Cabeza nada mas.'},
 m82b:{name:'M82B',type:'Sniper',range:'Muy Larga',recoil:'Alto',fireRate:'Lento',pvp:{gen:100,rd:103,s2:93,s4:80,sn:63,fl:116,fb:96,dh:106},br:{gen:90,rd:93,s2:86,s4:73,sn:59,fl:106,fb:86,dh:96},tip:'Muy larga distancia. Sens BAJA. PRECISION EXTREMA. Cabeza.'},
 svd:{name:'SVD Dragunov',type:'DMR',range:'Larga',recoil:'Medio',fireRate:'Medio',pvp:{gen:108,rd:110,s2:100,s4:85,sn:68,fl:125,fb:105,dh:115},br:{gen:98,rd:100,s2:92,s4:78,sn:63,fl:112,fb:95,dh:103},tip:'Semi-auto. Headshots seguidos. Multiple tiros a craneo.'},
@@ -853,7 +853,7 @@ res.scrollIntoView({behavior:'smooth',block:'start'});
 return;
 }
 
-var steps=['Analizando: '+w.name+'...','Specs del dispositivo...','Calibracion por arma...','Refresh rate...','Recoil del arma...','Drag head para cabeza...','Sin temblar...','Completado!'];
+var steps=['Analizando: '+w.name+'...','Specs del dispositivo...','Calibrando punteria...','MAXIMO headshot...','Tactil alto...','Drag head al craneo...','Un toque = cabeza...','PRECISION LISTA!'];
 var s=0;
 var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
 setTimeout(function(){
@@ -866,25 +866,34 @@ var isPVP=wpnMode==='pvp';
 var profile=isPVP?w.pvp:w.br;
 var b=brandData[brand]||brandData.otra;
 var mult=computeMult(brand,hz,isPVP?'pvp':'brdecla');
-// Weapon-specific recoil adjustment
-var recoilAdj=w.recoil==='Alto'?1.04:b.recoil==='Medio'?1.0:0.96;
-// Weapon range affects precision curve
-var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.88:w.range.indexOf('Larga')>=0?0.92:w.range.indexOf('Media')>=0?0.98:1.04;
-// Fire rate affects anti-tremor need
-var fireAdj=w.fireRate.indexOf('Muy')>=0?1+(1-b.antiTremor)*0.2:w.fireRate.indexOf('Rapido')>=0?1+(1-b.antiTremor)*0.12:1.0;
-var tremorStab=1+(1-b.antiTremor)*0.10;
+// === MAXIMA PUNTERIA HEADSHOT ===
+// Recoil adjustment — armas con mas recoil necesitan mas drag head
+var recoilAdj=w.recoil==='Alto'?1.06:w.recoil==='Medio-Alto'?1.04:w.recoil==='Medio'?1.02:0.98;
+// Range adjustment — corta distancia = mas agil, larga = mas estable
+var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.85:w.range.indexOf('Larga')>=0?0.90:w.range.indexOf('Media-Larga')>=0?0.95:w.range.indexOf('Media')>=0?1.0:w.range.indexOf('Corta')>=0?1.06:1.10;
+// Fire rate — rapido = necesita mas control anti-tremor
+var fireAdj=w.fireRate.indexOf('Extremo')>=0?1+(1-b.antiTremor)*0.25:w.fireRate.indexOf('Muy')>=0?1+(1-b.antiTremor)*0.18:w.fireRate.indexOf('Rapido')>=0?1+(1-b.antiTremor)*0.10:1.0;
+// Anti-tremor stabilization — MAS ESTABLE para no pasarse del craneo
+var tremorStab=1+(1-b.antiTremor)*0.14;
+// Headshot boost — la mira sube sola al craneo con un toque
+var headshotBoost=1.12; // +12% mas alto para que con un toque vaya a la cabeza
+// Precision curve del dispositivo
+var precCurve=b.precisionCurve;
 var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
+// Detectar Moto G20 para boton 52
+var isMotoG20=(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola');
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
-general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*0.82),60,190),
-redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*0.82),60,190),
-scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*0.82),50,180),
-scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*0.82),40,170),
-sniper:clamp(Math.round(profile.sn*mult*rangeAdj*0.82),35,160),
-freeLook:clamp(Math.round(profile.fl*mult*fireAdj*0.82),60,190),
-fireBtn:(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola')?52:clamp(Math.round(profile.fb*mult*fireAdj*fbMult*0.82),60,195),
-dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj*0.82),60,195),
+general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*0.85),55,195),
+redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*0.85),55,195),
+scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*0.85),45,185),
+scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*0.85),38,175),
+sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*0.85),30,165),
+freeLook:clamp(Math.round(profile.fl*mult*fireAdj*headshotBoost*0.85),55,195),
+fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*fireAdj*fbMult*0.85),55,195),
+// DRAG HEAD MAXIMO — con un toque al boton ya va al craneo
+dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*0.88),55,198),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -892,7 +901,7 @@ fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
 var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:r.fireBtn===52?'FIJO 52':'CALIBRADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'CALIBRADO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
 var recoilColor=r.recoil==='Alto'?'#ff003c':r.recoil==='Medio'?'#ffaa00':'#00ff41';
-res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 TODO ROJO A LA CABEZA SIN TEMBLAR</div><div class="pm" style="border-color:#a855f7"><div class="pm-label" style="color:#c8a8e8">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div><div class="pm-val" style="color:#a855f7">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
+res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 MAXIMA PUNTERIA — UN TOQUE AL BOTON = CRANEO — TODO ROJO</div><div class="pm" style="border-color:#a855f7"><div class="pm-label" style="color:#c8a8e8">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div><div class="pm-val" style="color:#a855f7">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
