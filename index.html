@@ -32,8 +32,6 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:12px 8px;text-align:center;border:2px solid #440000;border-radius:10px;background:#0a0a0a;color:#888;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;touch-action:manipulation}
 .tab.act.red{border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.1)}
-.tab.act.hack{border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.15);box-shadow:0 0 10px rgba(255,0,60,.3);animation:hackPulse 2s infinite}
-@keyframes hackPulse{0%,100%{box-shadow:0 0 10px rgba(255,0,60,.3)}50%{box-shadow:0 0 20px rgba(255,0,60,.5)}}
 .tab.act.grn{border-color:#00ff41;color:#00ff41;background:rgba(0,255,65,.08)}
 .tab .ic{font-size:1.2rem;display:block;margin-bottom:4px}
 .tab .ds{font-size:.75rem;font-weight:normal;opacity:.7;text-transform:none}
@@ -332,11 +330,11 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 <div class="tabs">
 <div class="tab act red" id="wpnTabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Headshots precisos</div></div>
 <div class="tab grn" id="wpnTabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta</div></div>
-<div class="tab" id="wpnTabHack" style="border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.1)"><span class="ic">💀</span>HACKER FREESTYLE<div class="ds">M1887 + Deagle</div></div>
+<div class="tab" id="wpnTabHead" style="border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.08)"><span class="ic">🎯</span>UN TOQUE = CRANEO<div class="ds">Maxima punteria</div></div>
+
 </div>
 </div>
 <div class="ov-warn">🎯 CALIBRACION PRECISA — TODO ROJO A LA CABEZA SIN TEMBLAR</div>
-<div id="hackWarn" style="display:none;background:rgba(255,0,60,.15);border:1px solid #ff003c;border-radius:8px;padding:10px;margin-top:8px;font-size:.88rem;color:#ff4466;text-align:center">💀 HACKER FREESTYLE: M1887 + Deagle combinados — Boton 52 fijo — Motorola G20</div>
 <button class="ov-btn" id="wpnGen">⚡ GENERAR SENSIBILIDAD POR ARMA ⚡</button>
 
 <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -746,29 +744,15 @@ wpnTabBR.addEventListener('click',function(){
 wpnMode='brdecla';
 wpnTabBR.classList.add('act');
 wpnTabPVP.classList.remove('act');
-wpnTabHack.classList.remove('act');
+wpnTabHead.classList.remove('act');
 });
 
-var wpnTabHack=document.getElementById('wpnTabHack');
-var hackWarn=document.getElementById('hackWarn');
-wpnTabHack.addEventListener('click',function(){
-wpnMode='hack';
-wpnTabHack.classList.add('act','hack');
+var wpnTabHead=document.getElementById('wpnTabHead');
+wpnTabHead.addEventListener('click',function(){
+wpnMode='headshot';
+wpnTabHead.classList.add('act');
 wpnTabPVP.classList.remove('act');
 wpnTabBR.classList.remove('act');
-// Auto-select M1887 and set brand to Motorola
-document.getElementById('weapon').value='m1887';
-document.getElementById('wpnBrand').value='motorola';
-document.getElementById('wpnModel').value='Moto G20';
-if(hackWarn)hackWarn.style.display='block';
-});
-
-wpnTabPVP.addEventListener('click',function(){
-if(hackWarn)hackWarn.style.display='none';
-});
-
-wpnTabBR.addEventListener('click',function(){
-if(hackWarn)hackWarn.style.display='none';
 });
 
 wpnGenBtn.addEventListener('click',function(){
@@ -779,58 +763,44 @@ var wKey=document.getElementById('weapon').value;
 var w=wpnData[wKey]||wpnData.deagle;
 ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
 
-// HACKER FREESTYLE MODE — M1887 + Deagle combo for Motorola G20
-if(wpnMode==='hack'){
-var steps=['💀 HACKER FREESTYLE...','Motorola G20 detectado...','M1887 + Deagle combo...','Boton 52 calibrando...','Anti-tremor Moto G20...','Drag Head al craneo...','Todo rojo activado...','FREESTYLE LISTO!'];
-var s=0;
-var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
+// UN TOQUE = CRANEO MODE — maxima punteria headshot
+if(wpnMode==='headshot'){
+var hsteps=['🎯 MAXIMA PUNTERIA...','Calibrando headshot...','Un toque = craneo...','Tactil alto...','Drag Head maximo...','Anti-tremor...','Todo rojo...','PRECISION LISTA!'];
+var hs=0;
+var hiv=setInterval(function(){if(hs<hsteps.length){lt.textContent=hsteps[hs];hs++}},200);
 setTimeout(function(){
-clearInterval(iv);
+clearInterval(hiv);
 ld.classList.remove('on');
 var hz=+document.getElementById('wpnHz').value;
-var brand='motorola';
-var model='Moto G20';
-var b=brandData.motorola;
-var mult=computeMult('motorola',hz,'pvp');
-// Motorola G20 specs: touchLatency 52ms, screenFactor 0.97, antiTremor 0.98, touchSample 180, precisionCurve 0.96
-// M1887 base + Deagle base — combined for freestyle
-var m1887=wpnData.m1887.pvp;
-var deagle=wpnData.deagle.pvp;
-// Combined profile: M1887 aggressive + Deagle precision
-var comboBase={
-gen:Math.round((m1887.gen+deagle.gen)/2),     // 150
-rd:Math.round((m1887.rd+deagle.rd)/2),        // 143
-s2:Math.round((m1887.s2+deagle.s2)/2),         // 127
-s4:Math.round((m1887.s4+deagle.s4)/2),         // 109
-sn:Math.round((m1887.sn+deagle.sn)/2),          // 92
-fl:Math.round((m1887.fl+deagle.fl)/2),          // 162
-dh:Math.round((m1887.dh+deagle.dh)/2)           // 166
-};
-// Motorola G20 specific calibration
-var tremorStab=1+(1-b.antiTremor)*0.12;
-var recoilAdj=1.03; // combo: shotgun recoil medio + deagle alto
-var rangeAdj=0.98;  // muy corta distancia ambas
-var fireAdj=1+(1-b.antiTremor)*0.15;
+var brand=document.getElementById('wpnBrand').value;
+var model=document.getElementById('wpnModel').value||'Desconocido';
+var b=brandData[brand]||brandData.otra;
+var mult=computeMult(brand,hz,'pvp');
+var profile=w.pvp;
+var isMotoG20=(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola');
+var recoilAdj=w.recoil==='Alto'?1.08:w.recoil==='Medio-Alto'?1.06:w.recoil==='Medio'?1.04:1.0;
+var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.85:w.range.indexOf('Larga')>=0?0.90:w.range.indexOf('Media')>=0?1.0:1.10;
+var tremorStab=1+(1-b.antiTremor)*0.14;
+var precCurve=b.precisionCurve;
+var headBoost=1.20;
 var r={
-weapon:'M1887 + Deagle FREESTYLE',type:'Shotgun + Pistola Hacker',range:'Muy Corta',recoil:'Alto',fireRate:'Lento',
-modeName:'HACKER FREESTYLE — TODO ROJO',isPVP:true,
-general:clamp(Math.round(comboBase.gen*mult*recoilAdj*tremorStab*0.85),50,190),
-redDot:clamp(Math.round(comboBase.rd*mult*recoilAdj*tremorStab*0.85),50,190),
-scope2x:clamp(Math.round(comboBase.s2*mult*rangeAdj*tremorStab*0.85),40,180),
-scope4x:clamp(Math.round(comboBase.s4*mult*rangeAdj*0.85),35,170),
-sniper:clamp(Math.round(comboBase.sn*mult*rangeAdj*0.85),30,160),
-freeLook:clamp(Math.round(comboBase.fl*mult*fireAdj*0.85),50,190),
-fireBtn:52, // FIJO EN 52 — como pidio el usuario
-dragHead:clamp(Math.round(comboBase.dh*mult*recoilAdj*fireAdj*0.88),50,195),
-id:'HK-'+Math.random().toString(36).substr(2,6).toUpperCase(),
-hz:hz,brand:'motorola',model:'Moto G20',mult:mult.toFixed(4),
-fbSizeLabel:'FIJO 52'
+weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
+modeName:'UN TOQUE = CRANEO',isPVP:true,
+general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headBoost*0.85),55,195),
+redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headBoost*0.85),55,195),
+scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headBoost*0.85),45,185),
+scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*0.85),38,175),
+sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*0.85),30,165),
+freeLook:clamp(Math.round(profile.fl*mult*headBoost*0.85),55,195),
+fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*0.85),55,195),
+dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*headBoost*0.88),55,198),
+id:'HS-'+Math.random().toString(36).substr(2,6).toUpperCase(),
+hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
+fbSizeLabel:isMotoG20?'FIJO 52':'CALIBRADO'
 };
-var hackTip='M1887: One-shot al craneo a corta distancia. Gira rapido con General alto y dispara al pecho — la mira sube sola a la cabeza por el recoil. Deagle: Flick preciso a la cabeza, cada tiro al craneo. Boton 52 fijo: disparo controlado sin pasarse. Combo FREESTYLE: cambia entre M1887 (corta) y Deagle (flick) sin cambiar la sensi.';
-var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'FIJO 52',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'CALIBRADO',h:'hl'}];
+var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:r.fireBtn===52?'FIJO 52':'CALIBRADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'MAXIMO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
-var recoilColor='#ff003c';
-res.innerHTML='<div class="rc red" style="border-color:#ff003c;box-shadow:0 0 25px rgba(255,0,60,.4)"><div class="rh"><h3>💀 HACKER FREESTYLE — M1887 + DEAGLE</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">MOTOROLA</span><span class="sp">Moto G20</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">🔫 M1887: One-shot craneo</span><span class="wc red">🎯 Deagle: Flick cabeza</span><span class="wc red" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: Alto</span><span class="wc red">Fire: Lento</span></div><div class="hs-tag" style="font-size:.92rem;padding:8px 12px">💀 HACKER FREESTYLE ACTIVADO — BOTON 52 — TODO ROJO A LA CABEZA</div><div class="pm"><div class="pm-label">NIVEL HACKER FREESTYLE</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">M1887 + DEAGLE MAX</div></div><div class="sg">'+sH+'</div><div class="ai"><b>💀 HACKER:</b> '+hackTip+'<span class="fm">Armas=M1887+Deagle Hz('+r.hz+') Motorola Moto G20 Mult:'+r.mult+'</span><span class="fm">Boton Disparo FIJO en 52 — Calibrado para Moto G20</span></div>'+getPhoneAdjustments('motorola','Moto G20',r.hz)+'<button class="cp" id="wpnCopyBtn">📋 COPIAR HACKER FREESTYLE</button></div>';
+res.innerHTML='<div class="rc red" style="border-color:#ff003c;box-shadow:0 0 25px rgba(255,0,60,.4)"><div class="rh"><h3>\u{1f3af} UN TOQUE = CRANEO — '+r.weapon+'</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">\u{1f4f1} <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">Tipo: '+r.type+'</span><span class="wc red">Rango: '+r.range+'</span><span class="wc red">Recoil: '+r.recoil+'</span><span class="wc red">Fire: '+r.fireRate+'</span></div><div class="hs-tag" style="font-size:.92rem;padding:8px 12px">\u{1f3af} UN TOQUE AL BOTON Y VA AL CRANEO — MAXIMA PUNTERIA — TODO ROJO</div><div class="pm"><div class="pm-label">NIVEL PUNTERIA MAXIMA</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.weapon.toUpperCase()+' HEADSHOT</div></div><div class="sg">'+sH+'</div><div class="ai"><b>\u{1f3af} PUNTERIA:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">UN TOQUE = CRANEO — Calibrado para maxima punteria a la cabeza</span></div>'+getPhoneAdjustments(r.brand,r.model,r.hz)+'<button class="cp" id="wpnCopyBtn">\u{1f4cb} COPIAR</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
@@ -842,7 +812,7 @@ var cpBtn=document.getElementById('wpnCopyBtn');
 if(cpBtn){
 cpBtn.addEventListener('click',function(){
 var card=cpBtn.closest('.rc');
-var txt='SALITA 3.5 — HACKER FREESTYLE\nM1887 + Deagle\nMotorola Moto G20 '+r.hz+'Hz\nBoton Disparo: 52\n';
+var txt='SALITA 3.5 — UN TOQUE = CRANEO\n'+r.weapon+'\n'+r.brand+' '+r.model+' '+r.hz+'Hz\n';
 var sis=card.querySelectorAll('.si');
 for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+sis[j].querySelector('.sv').textContent+'\n';
 copyText(txt);
