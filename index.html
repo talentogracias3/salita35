@@ -335,6 +335,11 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </div>
 </div>
 <div class="ov-warn">🎯 CALIBRACION PRECISA — TODO ROJO A LA CABEZA SIN TEMBLAR</div>
+<div style="margin-top:12px">
+<h2 style="font-size:1rem;color:#c8a8e8;margin-bottom:8px">✍️ CONTAME COMO QUERES TU SENSI</h2>
+<textarea id="wpnCustom" placeholder="Ej: quiero que gire rapido, que la mira vaya sola a la cabeza, que no tiemble, tactil alto, para pegar de cerca..." style="width:100%;min-height:90px;background:rgba(15,10,30,.6);border:1px solid #a855f7;border-radius:10px;padding:12px;font-size:1rem;color:#e8d5ff;font-family:inherit;resize:vertical;box-shadow:0 0 12px rgba(168,85,247,.25)"></textarea>
+<div style="font-size:.8rem;color:#888;margin-top:6px;text-align:center">El generador lee lo que escribis y ajusta la sensi para tu arma + tu celular</div>
+</div>
 <button class="ov-btn" id="wpnGen">⚡ GENERAR SENSIBILIDAD POR ARMA ⚡</button>
 
 <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -755,6 +760,70 @@ wpnTabPVP.classList.remove('act');
 wpnTabBR.classList.remove('act');
 });
 
+// === ANALIZADOR DE TEXTO — lee lo que el usuario pide y ajusta la sensi ===
+function analyzeCustomText(txt){
+var t=(txt||'').toLowerCase();
+var adj={
+gen:1.0,rd:1.0,s2:1.0,s4:1.0,sn:1.0,fl:1.0,fb:1.0,dh:1.0,
+tags:[]
+};
+if(!t)return adj;
+
+// GIRAR RAPIDO / AGIL / RAPIDA
+if(t.indexOf('gir')>=0||t.indexOf('rapid')>=0||t.indexOf('agil')>=0||t.indexOf('veloz')>=0||t.indexOf('rapida')>=0){
+adj.gen*=1.10;adj.fl*=1.10;adj.tags.push('Giro rapido +10%');
+}
+// LENTA / TRANQUILA / ESTABLE / CONTROLADA
+if(t.indexOf('lent')>=0||t.indexOf('tranquil')>=0||t.indexOf('estable')>=0||t.indexOf('controlad')>=0||t.indexOf('calm')>=0){
+adj.gen*=0.90;adj.sn*=0.90;adj.tags.push('Mas estable -10%');
+}
+// CABEZA / CRANEO / HEADSHOT / TIRO A LA CABEZA
+if(t.indexOf('cabez')>=0||t.indexOf('crane')>=0||t.indexOf('head')>=0||t.indexOf('rojo')>=0){
+adj.dh*=1.15;adj.rd*=1.05;adj.tags.push('Headshot +15% Drag Head');
+}
+// NO TEMBLAR / SIN TEMBLAR / PRECISA / PRECISION
+if(t.indexOf('tembl')>=0||t.indexOf('precision')>=0||t.indexOf('precis')>=0||t.indexOf('exact')>=0){
+adj.s2*=0.95;adj.s4*=0.95;adj.sn*=0.95;adj.tags.push('Anti-temblor scopes -5%');
+}
+// TACTIL ALTO / MUCHO MOVIMIENTO / MUCHA PANTALLA
+if(t.indexOf('tactil')>=0||t.indexOf('movim')>=0||t.indexOf('pantall')>=0||t.indexOf('dedo')>=0){
+adj.gen*=1.06;adj.dh*=1.06;adj.tags.push('Tactil alto +6%');
+}
+// DE CERCA / CORTA DISTANCIA / CLOSE
+if(t.indexOf('cerca')>=0||t.indexOf('cort')>=0||t.indexOf('close')>=0){
+adj.gen*=1.08;adj.dh*=1.08;adj.sn*=0.92;adj.tags.push('Corta distancia +8%');
+}
+// LEJOS / LARGA DISTANCIA / SNIPER
+if(t.indexOf('lejo')>=0||t.indexOf('larg')>=0||t.indexOf('snip')>=0||t.indexOf('distanc')>=0){
+adj.s2*=0.92;adj.s4*=0.92;adj.sn*=0.92;adj.tags.push('Larga distancia estabilizada');
+}
+// DRAG HEAD / ARRASTRAR / SUBIR MIRA
+if(t.indexOf('drag')>=0||t.indexOf('arrastr')>=0||t.indexOf('subir')>=0||t.indexOf('mira')>=0){
+adj.dh*=1.12;adj.tags.push('Drag Head +12%');
+}
+// UN TOQUE / MINIMO ESFUERZO / SOLA
+if(t.indexOf('toque')>=0||t.indexOf('sola')>=0||t.indexOf('esfuerzo')>=0||t.indexOf('automatic')>=0){
+adj.dh*=1.10;adj.rd*=1.06;adj.tags.push('Un toque = cabeza +10%');
+}
+// FREESTYLE / HACKER / AGRESIVA
+if(t.indexOf('hack')>=0||t.indexOf('agresiv')>=0||t.indexOf('freestyle')>=0||t.indexOf('loco')>=0){
+adj.gen*=1.08;adj.dh*=1.08;adj.fl*=1.08;adj.tags.push('Modo agresivo +8%');
+}
+// SUAVE / COMODA / FÁCIL
+if(t.indexOf('suave')>=0||t.indexOf('comod')>=0||t.indexOf('facil')>=0||t.indexOf('fácil')>=0){
+adj.gen*=0.95;adj.s2*=0.95;adj.dh*=0.95;adj.tags.push('Suave y facil de dominar');
+}
+// PUNTO ROJO / MIRA CERCA
+if(t.indexOf('punto rojo')>=0||t.indexOf('red dot')>=0){
+adj.rd*=1.10;adj.tags.push('Punto rojo +10%');
+}
+// SCOPE / MIRA / ZOOM
+if(t.indexOf('scope')>=0||t.indexOf('zoom')>=0||t.indexOf('mira 2')>=0||t.indexOf('mira 4')>=0){
+adj.s2*=1.08;adj.s4*=1.08;adj.tags.push('Scopes +8%');
+}
+return adj;
+}
+
 wpnGenBtn.addEventListener('click',function(){
 var ld=document.getElementById('wpnLoading');
 var res=document.getElementById('wpnResults');
@@ -778,6 +847,8 @@ var b=brandData[brand]||brandData.otra;
 var mult=computeMult(brand,hz,'pvp');
 var profile=w.pvp;
 var isMotoG20=(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola');
+var customTxt=document.getElementById('wpnCustom')?document.getElementById('wpnCustom').value:'';
+var custom=analyzeCustomText(customTxt);
 var recoilAdj=w.recoil==='Alto'?1.08:w.recoil==='Medio-Alto'?1.06:w.recoil==='Medio'?1.04:1.0;
 var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.85:w.range.indexOf('Larga')>=0?0.90:w.range.indexOf('Media')>=0?1.0:1.10;
 var tremorStab=1+(1-b.antiTremor)*0.14;
@@ -786,14 +857,15 @@ var headBoost=1.20;
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:'UN TOQUE = CRANEO',isPVP:true,
-general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headBoost*0.85),55,195),
-redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headBoost*0.85),55,195),
-scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headBoost*0.85),45,185),
-scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*0.85),38,175),
-sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*0.85),30,165),
-freeLook:clamp(Math.round(profile.fl*mult*headBoost*0.85),55,195),
-fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*0.85),55,195),
-dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*headBoost*0.88),55,198),
+customTags:custom.tags,customTxt:customTxt,
+general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headBoost*custom.gen*0.85),55,195),
+redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headBoost*custom.rd*0.85),55,195),
+scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headBoost*custom.s2*0.85),45,185),
+scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85),38,175),
+sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85),30,165),
+freeLook:clamp(Math.round(profile.fl*mult*headBoost*custom.fl*0.85),55,195),
+fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*custom.fb*0.85),55,195),
+dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*headBoost*custom.dh*0.88),55,198),
 id:'HS-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:isMotoG20?'FIJO 52':'CALIBRADO'
@@ -852,18 +924,22 @@ var precCurve=b.precisionCurve;
 var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
 // Detectar Moto G20 para boton 52
 var isMotoG20=(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola');
+// Leer lo que el usuario escribio y ajustar
+var customTxt=document.getElementById('wpnCustom')?document.getElementById('wpnCustom').value:'';
+var custom=analyzeCustomText(customTxt);
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
-general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*0.85),55,195),
-redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*0.85),55,195),
-scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*0.85),45,185),
-scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*0.85),38,175),
-sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*0.85),30,165),
-freeLook:clamp(Math.round(profile.fl*mult*fireAdj*headshotBoost*0.85),55,195),
-fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*fireAdj*fbMult*0.85),55,195),
+customTags:custom.tags,customTxt:customTxt,
+general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*custom.gen*0.85),55,195),
+redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*custom.rd*0.85),55,195),
+scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85),45,185),
+scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85),38,175),
+sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85),30,165),
+freeLook:clamp(Math.round(profile.fl*mult*fireAdj*headshotBoost*custom.fl*0.85),55,195),
+fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*fireAdj*fbMult*custom.fb*0.85),55,195),
 // DRAG HEAD MAXIMO — con un toque al boton ya va al craneo
-dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*0.88),55,198),
+dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*custom.dh*0.88),55,198),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
