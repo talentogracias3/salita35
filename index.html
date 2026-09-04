@@ -1535,7 +1535,7 @@ var li=0;
 var step=1;
 pct.textContent=step+'%';
 var iv=setInterval(function(){
-step+=Math.floor(Math.random()*4)+2;
+step+=Math.floor(Math.random()*12)+10;
 if(step>100)step=100;
 pct.textContent=step+'%';
 bar.style.width=step+'%';
@@ -1552,17 +1552,17 @@ li++;
 term.scrollTop=term.scrollHeight;
 if(step>=100){
 setTimeout(function(){
-ov.style.transition='opacity .4s';
+ov.style.transition='opacity .15s';
 ov.style.opacity='0';
 setTimeout(function(){
 ov.style.display='none';
 ov.style.opacity='1';
 hackBusy=false;
 done();
-},400);
-},600);
+},150);
+},200);
 }
-},110);
+},40);
 }
 // === ANUNCIO ACTUALIZADO — congela todo 5 segundos al entrar ===
 var isFrozen=true;
