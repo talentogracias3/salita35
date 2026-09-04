@@ -1550,7 +1550,10 @@ d.style.opacity='1';
 li++;
 }
 term.scrollTop=term.scrollHeight;
-if(step>=100){
+var finished=false;
+if(step>=100&&!finished){
+finished=true;
+clearInterval(iv);
 setTimeout(function(){
 ov.style.transition='opacity .15s';
 ov.style.opacity='0';
