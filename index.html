@@ -193,6 +193,14 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </style>
 </head>
 <body>
+<!-- ANUNCIO ACTUALIZADO — 5 segundos con todo congelado -->
+<div id="updOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(5,10,5,.96);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px">
+<div id="updTitle" style="font-size:2.4rem;color:#00ff41;text-shadow:0 0 20px #00ff41,0 0 45px #00ff41,0 0 70px rgba(0,255,65,.6);font-weight:bold;letter-spacing:3px;animation:updPulse 1s infinite alternate">⚡ ACTUALIZADO ⚡</div>
+<div style="margin-top:16px;font-size:1.15rem;color:#a855f7;text-shadow:0 0 12px #a855f7;font-weight:bold">NUEVA VERSION INSTALADA — SALITA 3.5</div>
+<div id="updCount" style="margin-top:22px;font-size:2.6rem;color:#ff003c;text-shadow:0 0 18px #ff003c,0 0 35px rgba(255,0,60,.5);font-weight:bold">5</div>
+<div style="margin-top:12px;font-size:.95rem;color:#9fb8a0;text-shadow:0 0 8px rgba(0,255,65,.4)">❄ GENERADOR CONGELADO — Espera para usarlo</div>
+</div>
+<style>@keyframes updPulse{from{transform:scale(1)}to{transform:scale(1.06)}}</style>
 <canvas id="matrixCanvas"></canvas>
 <div class="live-box" id="liveBox"><span class="live-dot"></span>LIVE 24/7<span class="live-ts" id="liveTs">00:00</span></div>
 
@@ -629,6 +637,7 @@ return '<div class="'+cc+'"><div class="rh"><h3>'+(red?'🔴':'🟢')+' '+r.mode
 }
 
 genBtn.addEventListener('click',function(){
+if(isFrozen)return;
 var ld=document.getElementById('loading');
 var res=document.getElementById('results');
 var lt=document.getElementById('loadText');
@@ -858,6 +867,7 @@ return adj;
 }
 
 wpnGenBtn.addEventListener('click',function(){
+if(isFrozen)return;
 var ld=document.getElementById('wpnLoading');
 var res=document.getElementById('wpnResults');
 var lt=document.getElementById('wpnLoadText');
@@ -1184,6 +1194,7 @@ val<ss*0.75?(isLongRange?
 
 
 calibGenBtn.addEventListener('click',function(){
+if(isFrozen)return;
 var ld=document.getElementById('calibLoading');
 var res=document.getElementById('calibResults');
 var lt=document.getElementById('calibLoadText');
@@ -1490,6 +1501,26 @@ html+='<div class="pa-item"><span class="pa-num">'+(i+1)+'</span><span>'+tips[i]
 html+='</div>';
 return html;
 }
+
+// === ANUNCIO ACTUALIZADO — congela todo 5 segundos al entrar ===
+var isFrozen=true;
+var updOverlay=document.getElementById('updOverlay');
+var updCount=document.getElementById('updCount');
+var updSec=5;
+var updTimer=setInterval(function(){
+updSec--;
+if(updSec>0){
+updCount.textContent=updSec;
+}else{
+clearInterval(updTimer);
+updOverlay.style.transition='opacity .4s';
+updOverlay.style.opacity='0';
+setTimeout(function(){
+updOverlay.style.display='none';
+isFrozen=false;
+},400);
+}
+},1000);
 
 // Prevent zoom
 document.addEventListener('gesturestart',function(e){e.preventDefault()});
