@@ -207,7 +207,7 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 <div class="page">
 <div class="hdr">
 <h1>SALITA 3.5</h1>
-<div class="sub">// MEGA HACKER PVP AGGRESSIVE ENGINE</div>
+<div class="sub">// GENERADOR 1 — UNIVERSAL TODAS LAS ARMAS — TODO ROJO SIN PASARSE NI TEMBLAR</div>
 <div class="ver">v3.5.1 — ULTRA HACKER MODE</div>
 <div class="sbar">
 <span class="pill"><span class="dot"></span> ENGINE: MAX</span>
@@ -237,7 +237,7 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 <div class="tab" id="tabDual" style="border:2px solid #ffd700;background:rgba(255,215,0,.05);color:#ffd700;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER</div>
 </div>
 <div class="warn-box">⚠ ZONA HACKER — SENSIBILIDAD CALIBRADA POR DISPOSITIVO ⚠</div>
-<button class="gbtn" id="genBtn">⚡⚡ GENERAR MEGA HACKER PVP ⚡⚡</button>
+<button class="gbtn" id="genBtn">⚡ GENERAR UNIVERSAL — TODAS LAS ARMAS ⚡</button>
 </div>
 
 <div class="ld" id="loading">
@@ -488,7 +488,7 @@ mode='pvp';
 tabPVP.classList.add('act');
 tabBR.classList.remove('act');
 genBtn.className='gbtn';
-genBtn.innerHTML='⚡⚡ GENERAR MEGA HACKER PVP ⚡⚡';
+genBtn.innerHTML='⚡ GENERAR UNIVERSAL — TODAS LAS ARMAS ⚡';
 tabDual.style.display='none';
 });
 tabBR.addEventListener('click',function(){
@@ -576,25 +576,29 @@ var b=brandData[brand]||brandData.otra;
 var mult=computeMult(brand,hz,m);
 var r={};
 if(m==='pvp'){
-// PVP: calibrado por dispositivo - NO todo a 200
-var pb=145;
-var tremorAdj=1+(1-b.antiTremor)*0.12;
-var precisionAdj=b.precisionCurve*0.92;
+// UNIVERSAL PARA TODAS LAS ARMAS — TODO ROJO SIN PASARSE NI TEMBLAR
+// Zona dulce: la mira sube al craneo pero NO se pasa (anti-overshoot)
+// Anti-temblor reforzado: valores estables, sin vibracion en el tracking
+var pb=118;
+var tremorAdj=1+(1-b.antiTremor)*0.18;
+var precisionAdj=b.precisionCurve*0.96;
+var antiOver=0.94; // recorte fino anti-overshoot: frena justo en la cabeza
 r={
-general:clamp(Math.round(jit(pb*mult*1.05*tremorAdj,SPREAD_MAIN)),70,195),
-redDot:clamp(Math.round(jit(pb*mult*1.08*tremorAdj,SPREAD_MAIN)),70,195),
-scope2x:clamp(Math.round(jit(pb*mult*0.98*precisionAdj,SPREAD_MAIN)),60,185),
-scope4x:clamp(Math.round(jit(pb*mult*0.88*precisionAdj,SPREAD_MAIN)),50,175),
-sniper:clamp(Math.round(jit(pb*mult*0.78*precisionAdj,SPREAD_MAIN)),40,165),
-freeLook:clamp(Math.round(jit(pb*mult*1.12*tremorAdj,SPREAD_MAIN)),70,195),
-fireBtn:clamp(Math.round(jit(pb*mult*1.15*tremorAdj,SPREAD_MAIN)),70,198),
-dragHead:clamp(Math.round(jit(pb*mult*1.20*tremorAdj,SPREAD_MAIN)),70,198)
+general:clamp(Math.round(jit(pb*mult*1.04*tremorAdj*antiOver,SPREAD_MAIN*0.6)),72,160),
+redDot:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.6)),75,168),
+scope2x:clamp(Math.round(jit(pb*mult*0.96*precisionAdj,SPREAD_MAIN*0.6)),62,152),
+scope4x:clamp(Math.round(jit(pb*mult*0.86*precisionAdj,SPREAD_MAIN*0.6)),52,142),
+sniper:clamp(Math.round(jit(pb*mult*0.76*precisionAdj,SPREAD_MAIN*0.6)),42,132),
+freeLook:clamp(Math.round(jit(pb*mult*1.06*tremorAdj,SPREAD_MAIN*0.6)),72,162),
+fireBtn:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.6)),72,168),
+// DRAG HEAD en zona dulce: sube derecho al craneo y frena ahi — no se pasa
+dragHead:clamp(Math.round(jit(pb*mult*1.16*tremorAdj*antiOver,SPREAD_MAIN*0.6)),78,172)
 };
-r.weapons=['Deagle Headshot Machine','Shotgun M1887 One Shot','M1014 Spam Headshots'];
-r.modeName='PVP MEGA HACKER TODO ROJO';r.color='red';
-r.strategy='PRECISION ANTI-TREMBLOR: Flick estabilizado a craneo. Drag Head con anti-vibracion. Boton calibrado por touch latency ('+b.touchLatency+'ms). Touch sample '+b.touchSample+'Hz para tracking sin saltos.';
-r.formula='Mult='+mult.toFixed(3)+' [Hz^0.72='+Math.pow(hz/60,0.72).toFixed(2)+' Latency('+b.touchLatency+'ms) Sample('+b.touchSample+') AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+') Proc('+b.procBoost+')]';
-r.powerLevel='ULTRA PRECISION '+(85+Math.round(mult*10))+'%';
+r.weapons=['Sirve para TODAS las armas','Deagle / MP40 / AK / M4A1','M1887 / AWM / Groza / XM8'];
+r.modeName='UNIVERSAL TODAS LAS ARMAS — TODO ROJO SIN PASARSE';r.color='red';
+r.strategy='ZONA DULCE ANTI-OVERSHOOT: La mira sube sola al craneo y FRENA ahi — no se pasa de la cabeza. ANTI-TREMBLOR reforzado: tracking estable sin vibracion. Calibrado con tu touch latency ('+b.touchLatency+'ms) y touch sample '+b.touchSample+'Hz para que el flick llegue exacto a la cabeza. Una sola sensi para todas las armas.';
+r.formula='Mult='+mult.toFixed(3)+' [ZonaDulce AntiOver(0.94) Hz^0.72='+Math.pow(hz/60,0.72).toFixed(2)+' Latency('+b.touchLatency+'ms) Sample('+b.touchSample+') AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+')]';
+r.powerLevel='PRECISION ESTABLE '+(82+Math.round(mult*10))+'%';
 }else{
 // BR+DECLA: calibrado por dispositivo - NO todo a 200
 var bb=115;
