@@ -6,185 +6,188 @@
 <title>Salita 3.5 — MEGA HACKER</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;padding:12px;touch-action:manipulation}
+body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;padding:12px;touch-action:manipulation}
 #matrixCanvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;opacity:.55;pointer-events:none}
 .page{position:relative;z-index:1}
-.hdr{text-align:center;padding:20px 14px;border:2px solid #ff0044;border-radius:12px;background:linear-gradient(135deg,#220000,#0a0a0a);box-shadow:0 0 25px rgba(255,0,60,.3);margin-bottom:12px}
-.hdr h1{font-size:1.8rem;color:#ff003c;text-shadow:0 0 20px rgba(255,0,60,.5);letter-spacing:2px}
-.hdr .sub{color:#ff8888;font-size:.95rem;margin-top:6px}
-.hdr .ver{display:inline-block;background:#330000;color:#ff0044;padding:2px 10px;border-radius:4px;font-size:.85rem;margin-top:8px;border:1px solid #ff003c}
+.hdr{text-align:center;padding:22px 14px;border:1px solid rgba(255,0,212,.45);border-radius:16px;background:linear-gradient(135deg,rgba(50,10,80,.6),rgba(10,7,20,.85));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 0 35px rgba(255,0,212,.25),inset 0 1px 0 rgba(255,255,255,.1);margin-bottom:12px}
+.hdr h1{font-size:1.9rem;letter-spacing:2px;background:linear-gradient(90deg,#ff00c8,#b45cff,#00e5ff,#ff00c8);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:h1flow 4s linear infinite;font-weight:bold}
+@keyframes h1flow{to{background-position:300% 0}}
+.hdr .sub{color:#ff9ded;font-size:.95rem;margin-top:6px}
+.hdr .ver{display:inline-block;background:#2e0640;color:#ff00d4;padding:2px 10px;border-radius:4px;font-size:.85rem;margin-top:8px;border:1px solid #ff00c8}
 .sbar{display:flex;justify-content:center;gap:6px;margin-top:10px;flex-wrap:wrap}
-.pill{display:inline-flex;align-items:center;gap:4px;background:rgba(255,0,60,.1);border:1px solid #ff0044;border-radius:20px;padding:3px 10px;font-size:.82rem;color:#ff003c}
-.pill.danger{border-color:#ff0000;color:#ff0000}
+.pill{display:inline-flex;align-items:center;gap:4px;background:rgba(255,0,200,.1);border:1px solid #ff00d4;border-radius:20px;padding:3px 10px;font-size:.82rem;color:#ff00c8}
+.pill.danger{border-color:#ff00aa;color:#ff00aa}
 .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:p 1.5s infinite}
 @keyframes p{50%{opacity:.2}}
-.purple-btn{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:10px 16px;background:linear-gradient(135deg,#4c1d95,#8b5cf6,#a855f7);border:none;border-radius:8px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.purple-btn{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#6320c9,#9d5cff,#d0aaff);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(157,92,255,.4);position:relative;overflow:hidden}
 .purple-btn:active{transform:scale(.97)}
-.cfg{background:#0f0a0a;border:2px solid #330000;border-radius:12px;padding:16px;margin-bottom:12px}
-.cfg h2{color:#ff0044;font-size:1.1rem;margin-bottom:12px;border-bottom:1px solid #330000;padding-bottom:6px}
+.cfg{background:rgba(18,11,34,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 6px 25px rgba(0,0,0,.4)}
+.cfg h2{color:#ff00d4;font-size:1.1rem;margin-bottom:12px;border-bottom:1px solid #2e0640;padding-bottom:6px}
 .cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:480px){.cg{grid-template-columns:1fr}}
 .f{display:flex;flex-direction:column;gap:3px}
-.f label{font-size:.82rem;color:#ff8888;text-transform:uppercase;letter-spacing:1px}
-.f input,.f select{background:#0a0a0a;border:1px solid #440000;color:#ff8888;padding:9px 10px;border-radius:6px;font-family:inherit;font-size:1.05rem;outline:none;width:100%}
-.f input:focus,.f select:focus{border-color:#ff003c}
-.f select option{background:#0f0a0a}
+.f label{font-size:.82rem;color:#ff9ded;text-transform:uppercase;letter-spacing:1px}
+.f input,.f select{background:rgba(10,7,20,.9);border:1px solid rgba(255,0,212,.25);color:#ff9ded;padding:11px 12px;border-radius:10px;font-family:inherit;font-size:1.05rem;outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f select:focus{border-color:#ff00c8;box-shadow:0 0 12px rgba(255,0,212,.3)}
+.f select option{background:#0d0819}
 .tabs{display:flex;gap:8px;margin-bottom:12px}
-.tab{flex:1;padding:12px 8px;text-align:center;border:2px solid #440000;border-radius:10px;background:#0a0a0a;color:#888;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;touch-action:manipulation}
-.tab.act.red{border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.1)}
-.tab.act.grn{border-color:#00ff41;color:#00ff41;background:rgba(0,255,65,.08)}
+.tab{flex:1;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(14,9,26,.7);color:#9988bb;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;touch-action:manipulation;transition:all .2s}
+.tab.act.red{border-color:#ff00c8;color:#ff00c8;background:rgba(255,0,200,.1)}
+.tab.act.grn{border-color:#00ffa3;color:#00ffa3;background:rgba(0,255,163,.08)}
 .tab .ic{font-size:1.2rem;display:block;margin-bottom:4px}
 .tab .ds{font-size:.75rem;font-weight:normal;opacity:.7;text-transform:none}
-.warn-box{background:rgba(255,0,0,.08);border:1px solid #ff0000;border-radius:8px;padding:10px;margin-top:10px;font-size:.88rem;color:#ff6666;text-align:center}
-.gbtn{width:100%;padding:16px;background:linear-gradient(135deg,#660000,#ff0044,#ff2244);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.warn-box{background:rgba(255,0,170,.08);border:1px solid #ff00aa;border-radius:8px;padding:10px;margin-top:10px;font-size:.88rem;color:#ff8ef5;text-align:center}
+.gbtn{width:100%;padding:16px;background:linear-gradient(135deg,#8b1cc9,#ff00d4,#ff3ef0);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:1rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 20px rgba(255,0,212,.35),0 0 30px rgba(139,28,201,.25);position:relative;overflow:hidden}
+.gbtn::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 2.8s infinite}
+@keyframes shine{to{left:130%}}
 .gbtn:active{transform:scale(.98)}
-.gbtn.grn{background:linear-gradient(135deg,#003300,#00ff55,#00ff88);color:#000;box-shadow:0 0 15px rgba(0,255,85,.3)}
-.gbtn.gold{background:linear-gradient(135deg,#aa8800,#ffd700,#ffea00);color:#000;box-shadow:0 0 15px rgba(255,215,0,.3)}
-.ld{text-align:center;padding:24px;color:#ff003c;display:none}
+.gbtn.grn{background:linear-gradient(135deg,#003d2e,#1affb0,#40ffc4);color:#000;box-shadow:0 0 15px rgba(0,255,180,.3)}
+.gbtn.gold{background:linear-gradient(135deg,#c79b00,#ffe14d,#fff43d);color:#000;box-shadow:0 0 15px rgba(255,230,0,.3)}
+.ld{text-align:center;padding:24px;color:#ff00c8;display:none}
 .ld.on{display:block}
-.lbar{width:100%;height:5px;background:#330000;border-radius:3px;overflow:hidden;margin:10px 0}
-.lbf{height:100%;background:linear-gradient(90deg,#660000,#ff0044,#ff2244);width:0%;animation:lb 1.5s ease-out;box-shadow:0 0 8px rgba(255,0,68,.5)}
+.lbar{width:100%;height:5px;background:#2e0640;border-radius:3px;overflow:hidden;margin:10px 0}
+.lbf{height:100%;background:linear-gradient(90deg,#8b1cc9,#ff00d4,#ff3ef0);width:0%;animation:lb 1.5s ease-out;box-shadow:0 0 8px rgba(255,0,220,.5)}
 @keyframes lb{0%{width:0}100%{width:100%}}
-.lt{font-size:.92rem;color:#ff6666;margin-top:6px}
+.lt{font-size:.92rem;color:#ff8ef5;margin-top:6px}
 .res{display:none}
 .res.on{display:block}
-.rc{background:#0f0a0a;border:2px solid #330000;border-radius:12px;padding:16px;margin-bottom:12px}
-.rc.red{border-color:#ff003c}
-.rc.grn{border-color:#00aa2a}
-.rc.purple{border-color:#a855f7}
-.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #330000;flex-wrap:wrap;gap:6px}
+.rc{background:rgba(20,12,38,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.rc.red{border-color:#ff00c8}
+.rc.grn{border-color:#00b86b}
+.rc.purple{border-color:#b45cff}
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2e0640;flex-wrap:wrap;gap:6px}
 .rh h3{font-size:1rem;letter-spacing:1px}
-.rc.red .rh h3{color:#ff003c}
-.rc.grn .rh h3{color:#00ff41}
-.rc.purple .rh h3{color:#a855f7}
+.rc.red .rh h3{color:#ff00c8}
+.rc.grn .rh h3{color:#00ffa3}
+.rc.purple .rh h3{color:#b45cff}
 .badge{font-size:.8rem;padding:3px 8px;border-radius:20px;font-weight:bold}
-.badge.red{background:rgba(255,0,60,.2);color:#ff003c;border:1px solid #ff003c}
-.badge.grn{background:rgba(0,255,65,.15);color:#00ff41;border:1px solid #00aa2a}
-.badge.purple{background:rgba(168,85,247,.2);color:#a855f7;border:1px solid #a855f7}
-.pinfo{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:.82rem;color:#ff6666;flex-wrap:wrap}
-.sp{padding:2px 6px;background:#330000;border-radius:4px;color:#ff6666}
+.badge.red{background:rgba(255,0,200,.2);color:#ff00c8;border:1px solid #ff00c8}
+.badge.grn{background:rgba(0,255,163,.15);color:#00ffa3;border:1px solid #00b86b}
+.badge.purple{background:rgba(180,92,255,.2);color:#b45cff;border:1px solid #b45cff}
+.pinfo{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:.82rem;color:#ff8ef5;flex-wrap:wrap}
+.sp{padding:2px 6px;background:#2e0640;border-radius:4px;color:#ff8ef5}
 .sg{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
-.si{background:#0c0000;border:1px solid #440000;border-radius:6px;padding:10px 14px;box-shadow:0 0 8px rgba(255,0,60,.08)}
-.si.hl{border:1px solid #ffd700;background:rgba(255,215,0,.06);box-shadow:0 0 10px rgba(255,215,0,.15)}
-.si.crit-fire{border:2px solid #00ddff;background:radial-gradient(circle,#001f3f,#000510);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:16px 8px;box-shadow:0 0 20px rgba(0,221,255,.4),inset 0 0 15px rgba(0,221,255,.15);margin:8px auto;width:70%;max-width:220px;position:relative;overflow:hidden}
-.sl{font-size:.85rem;color:#ff8888;text-transform:uppercase;margin-bottom:3px}
-.sv{font-size:1.7rem;font-weight:bold;color:#ff1144;line-height:1;text-shadow:0 0 10px rgba(255,0,60,.4)}
-.si.hl .sv{color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.4)}
-.si.crit-fire .sv{color:#00ffff;text-shadow:0 0 15px rgba(0,255,255,.6),0 0 5px rgba(0,255,255,.8);font-size:2rem}
-.si.crit-fire .sl{color:#00ccff;text-shadow:0 0 8px rgba(0,204,255,.5)}
-.rc.grn .sv{color:#00ff66;text-shadow:0 0 10px rgba(0,255,65,.4)}
-.rc.purple .sv{color:#c084fc;text-shadow:0 0 10px rgba(168,85,247,.4)}
-.sb{height:5px;background:#220000;border-radius:3px;margin-top:8px;overflow:hidden;box-shadow:0 0 5px rgba(255,0,60,.1)}
+.si{background:rgba(16,10,30,.85);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 14px;box-shadow:0 0 10px rgba(255,0,200,.1);transition:transform .15s}
+.si.hl{border:1px solid #ffe14d;background:rgba(255,230,0,.06);box-shadow:0 0 10px rgba(255,230,0,.15)}
+.si.crit-fire{border:2px solid #00e5ff;background:radial-gradient(circle,#001f44,#000510);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:16px 8px;box-shadow:0 0 20px rgba(0,229,255,.4),inset 0 0 15px rgba(0,229,255,.15);margin:8px auto;width:70%;max-width:220px;position:relative;overflow:hidden}
+.sl{font-size:.85rem;color:#ff9ded;text-transform:uppercase;margin-bottom:3px}
+.sv{font-size:1.7rem;font-weight:bold;color:#ff2ee6;line-height:1;text-shadow:0 0 10px rgba(255,0,200,.4)}
+.si.hl .sv{color:#ffe14d;text-shadow:0 0 10px rgba(255,230,0,.4)}
+.si.crit-fire .sv{color:#40f0ff;text-shadow:0 0 15px rgba(0,240,255,.6),0 0 5px rgba(0,240,255,.8);font-size:2rem}
+.si.crit-fire .sl{color:#22d5ff;text-shadow:0 0 8px rgba(0,220,255,.5)}
+.rc.grn .sv{color:#00ffaa;text-shadow:0 0 10px rgba(0,255,163,.4)}
+.rc.purple .sv{color:#cf8bff;text-shadow:0 0 10px rgba(180,92,255,.4)}
+.sb{height:5px;background:#24023a;border-radius:3px;margin-top:8px;overflow:hidden;box-shadow:0 0 5px rgba(255,0,200,.1)}
 .sbf{height:100%;border-radius:3px;transition:width 1s ease-out;width:0%}
-.rc.red .sbf{background:linear-gradient(90deg,#660000,#ff0044,#ff1144);box-shadow:0 0 6px rgba(255,0,68,.4)}
-.rc.grn .sbf{background:linear-gradient(90deg,#003300,#00ff41,#00ff88);box-shadow:0 0 6px rgba(0,255,65,.4)}
-.rc.purple .sbf{background:linear-gradient(90deg,#4c1d95,#a855f7,#c084fc);box-shadow:0 0 6px rgba(168,85,247,.4)}
-.si.hl .sbf{background:linear-gradient(90deg,#aa8800,#ffd700,#ffea00);box-shadow:0 0 6px rgba(255,215,0,.4)}
-.si.crit-fire .sbf{background:linear-gradient(90deg,#003344,#00ddff,#00ffff,#00ffff);box-shadow:0 0 8px rgba(0,255,255,.5)}
-.st{display:inline-block;font-size:.72rem;padding:1px 6px;border-radius:3px;margin-top:5px;background:rgba(255,0,60,.2);color:#ff4466}
-.si.hl .st{background:rgba(255,215,0,.15);color:#ffd700}
-.si.crit-fire .st{background:rgba(0,221,255,.3);color:#00ffff;font-weight:bold;box-shadow:0 0 5px rgba(0,255,255,.3)}
-.rc.grn .st{background:rgba(0,255,65,.15);color:#00ff66}
-.rc.purple .st{background:rgba(168,85,247,.2);color:#c084fc}
-.ai{background:#0a0a0a;border:1px dashed #660000;border-radius:8px;padding:12px;margin-top:12px;font-size:.88rem;color:#ff6666;line-height:1.5}
-.ai b{color:#ff003c}
-.rc.purple .ai b{color:#a855f7}
-.fm{display:block;margin-top:6px;padding:6px;background:rgba(255,0,0,.1);border-radius:4px;font-size:.8rem;color:#ff9999}
-.rc.purple .fm{background:rgba(168,85,247,.1);color:#c8a8e8}
+.rc.red .sbf{background:linear-gradient(90deg,#8b1cc9,#ff00d4,#ff2ee6);box-shadow:0 0 6px rgba(255,0,220,.4)}
+.rc.grn .sbf{background:linear-gradient(90deg,#003d2e,#00ffa3,#40ffc4);box-shadow:0 0 6px rgba(0,255,163,.4)}
+.rc.purple .sbf{background:linear-gradient(90deg,#6320c9,#b45cff,#cf8bff);box-shadow:0 0 6px rgba(180,92,255,.4)}
+.si.hl .sbf{background:linear-gradient(90deg,#c79b00,#ffe14d,#fff43d);box-shadow:0 0 6px rgba(255,230,0,.4)}
+.si.crit-fire .sbf{background:linear-gradient(90deg,#003344,#00e5ff,#40f0ff,#40f0ff);box-shadow:0 0 8px rgba(0,240,255,.5)}
+.st{display:inline-block;font-size:.72rem;padding:1px 6px;border-radius:3px;margin-top:5px;background:rgba(255,0,200,.2);color:#ff5edb}
+.si.hl .st{background:rgba(255,230,0,.15);color:#ffe14d}
+.si.crit-fire .st{background:rgba(0,229,255,.3);color:#40f0ff;font-weight:bold;box-shadow:0 0 5px rgba(0,240,255,.3)}
+.rc.grn .st{background:rgba(0,255,163,.15);color:#00ffaa}
+.rc.purple .st{background:rgba(180,92,255,.2);color:#cf8bff}
+.ai{background:#0a0714;border:1px dashed #8b1cc9;border-radius:8px;padding:12px;margin-top:12px;font-size:.88rem;color:#ff8ef5;line-height:1.5}
+.ai b{color:#ff00c8}
+.rc.purple .ai b{color:#b45cff}
+.fm{display:block;margin-top:6px;padding:6px;background:rgba(255,0,170,.1);border-radius:4px;font-size:.8rem;color:#ffb3f7}
+.rc.purple .fm{background:rgba(180,92,255,.1);color:#d0aaff}
 .wi{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .wc{padding:5px 8px;border-radius:6px;font-size:.85rem;border:1px solid;font-weight:bold}
-.wc.red{border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.08)}
-.wc.grn{border-color:#00aa2a;color:#00ff41;background:rgba(0,255,65,.06)}
-.wc.purple{border-color:#a855f7;color:#a855f7;background:rgba(168,85,247,.08)}
-.cp{width:100%;padding:10px;background:transparent;border:1px solid #ff0044;border-radius:8px;color:#ff0044;font-family:inherit;font-size:.95rem;cursor:pointer;margin-top:10px;font-weight:bold;touch-action:manipulation}
-.rc.purple .cp{border-color:#a855f7;color:#a855f7}
+.wc.red{border-color:#ff00c8;color:#ff00c8;background:rgba(255,0,200,.08)}
+.wc.grn{border-color:#00b86b;color:#00ffa3;background:rgba(0,255,163,.06)}
+.wc.purple{border-color:#b45cff;color:#b45cff;background:rgba(180,92,255,.08)}
+.cp{width:100%;padding:10px;background:transparent;border:1px solid #ff00d4;border-radius:8px;color:#ff00d4;font-family:inherit;font-size:.95rem;cursor:pointer;margin-top:10px;font-weight:bold;touch-action:manipulation}
+.rc.purple .cp{border-color:#b45cff;color:#b45cff}
 .cp:active{opacity:.7}
-.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:#0f0a0a;border:1px solid #ff0044;color:#ff0044;padding:10px 24px;border-radius:8px;font-size:1rem;z-index:9999;transition:transform .3s}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(20,12,38,.95);backdrop-filter:blur(10px);border:1px solid #ff00d4;color:#ff00d4;padding:10px 24px;border-radius:12px;font-size:1rem;z-index:9999;transition:transform .3s;box-shadow:0 0 20px rgba(255,0,212,.35)}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.ft{text-align:center;padding:14px;color:#660000;font-size:.8rem}
-.pm{text-align:center;margin-top:12px;padding:10px;border:1px solid #ff003c;border-radius:8px;background:rgba(255,0,60,.05)}
-.pm-label{font-size:.85rem;color:#ff6666}
-.pm-bar{width:100%;height:7px;background:#330000;border-radius:4px;margin:6px 0;overflow:hidden}
-.pm-fill{height:100%;background:linear-gradient(90deg,#660000,#ff0044,#ff2244,#ffd700);border-radius:4px;width:0%;transition:width 1.5s;box-shadow:0 0 8px rgba(255,0,68,.4)}
-.pm-val{font-size:1.3rem;font-weight:bold;color:#ff003c}
-.hs-tag{display:inline-block;margin-top:8px;padding:5px 12px;background:rgba(255,0,0,.1);border:1px solid #ff0044;border-radius:6px;font-size:.85rem;color:#ff003c;font-weight:bold}
+.ft{text-align:center;padding:14px;color:#8b1cc9;font-size:.8rem}
+.pm{text-align:center;margin-top:12px;padding:10px;border:1px solid #ff00c8;border-radius:8px;background:rgba(255,0,200,.05)}
+.pm-label{font-size:.85rem;color:#ff8ef5}
+.pm-bar{width:100%;height:7px;background:#2e0640;border-radius:4px;margin:6px 0;overflow:hidden}
+.pm-fill{height:100%;background:linear-gradient(90deg,#8b1cc9,#ff00d4,#ff3ef0,#ffe14d);border-radius:4px;width:0%;transition:width 1.5s;box-shadow:0 0 8px rgba(255,0,220,.4)}
+.pm-val{font-size:1.3rem;font-weight:bold;color:#ff00c8}
+.hs-tag{display:inline-block;margin-top:8px;padding:5px 12px;background:rgba(255,0,170,.1);border:1px solid #ff00d4;border-radius:6px;font-size:.85rem;color:#ff00c8;font-weight:bold}
 .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9998;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;padding-top:44px}
 .overlay.on{display:block}
-.ov-close{position:fixed;top:10px;left:10px;width:34px;height:34px;background:#1a0a1a;border:2px solid #a855f7;border-radius:50%;color:#a855f7;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;touch-action:manipulation;-webkit-appearance:button;appearance:button}
-.ov-close:active{background:#a855f7;color:#000}
-.ov-hdr{text-align:center;padding:16px 12px;border:2px solid #a855f7;border-radius:12px;background:linear-gradient(135deg,#1a0a2e,#0a0a0a);margin-bottom:12px}
-.ov-hdr h1{font-size:1.4rem;color:#a855f7;text-shadow:0 0 20px rgba(168,85,247,.4)}
-.ov-hdr .sub{color:#c8a8e8;font-size:.9rem;margin-top:4px}
-.ov-hdr .ver{display:inline-block;background:#2d1a4e;color:#c084fc;padding:2px 8px;border-radius:4px;font-size:.8rem;margin-top:6px;border:1px solid #a855f7}
-.ov-cfg{background:#0f0a1a;border:2px solid #2d1a4e;border-radius:12px;padding:14px;margin-bottom:12px}
-.ov-cfg h2{color:#c084fc;font-size:1.1rem;margin-bottom:10px;border-bottom:1px solid #2d1a4e;padding-bottom:6px}
-.ov-cfg .f label{color:#c8a8e8}
-.ov-cfg .f input,.ov-cfg .f select{background:#0a0a0a;border:1px solid #2d1a4e;color:#c8a8e8}
-.ov-cfg .f input:focus,.ov-cfg .f select:focus{border-color:#a855f7}
-.ov-cfg .f select option{background:#0f0a1a}
-.ov-cfg .tab{border-color:#2d1a4e}
-.ov-warn{background:rgba(168,85,247,.08);border:1px solid #c084fc;border-radius:8px;padding:10px;margin-top:10px;font-size:.85rem;color:#c8a8e8;text-align:center}
-.ov-btn{width:100%;padding:16px;background:linear-gradient(135deg,#4c1d95,#8b5cf6,#c084fc);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1.15rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:10px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.ov-close{position:fixed;top:10px;left:10px;width:34px;height:34px;background:#170b26;border:2px solid #b45cff;border-radius:50%;color:#b45cff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.ov-close:active{background:#b45cff;color:#000}
+.ov-hdr{text-align:center;padding:16px 12px;border:2px solid #b45cff;border-radius:12px;background:linear-gradient(135deg,#180a33,#0a0714);margin-bottom:12px}
+.ov-hdr h1{font-size:1.4rem;color:#b45cff;text-shadow:0 0 20px rgba(180,92,255,.4)}
+.ov-hdr .sub{color:#d0aaff;font-size:.9rem;margin-top:4px}
+.ov-hdr .ver{display:inline-block;background:#2b1055;color:#cf8bff;padding:2px 8px;border-radius:4px;font-size:.8rem;margin-top:6px;border:1px solid #b45cff}
+.ov-cfg{background:#0d081f;border:2px solid #2b1055;border-radius:12px;padding:14px;margin-bottom:12px}
+.ov-cfg h2{color:#cf8bff;font-size:1.1rem;margin-bottom:10px;border-bottom:1px solid #2b1055;padding-bottom:6px}
+.ov-cfg .f label{color:#d0aaff}
+.ov-cfg .f input,.ov-cfg .f select{background:#0a0714;border:1px solid #2b1055;color:#d0aaff}
+.ov-cfg .f input:focus,.ov-cfg .f select:focus{border-color:#b45cff}
+.ov-cfg .f select option{background:#0d081f}
+.ov-cfg .tab{border-color:#2b1055}
+.ov-warn{background:rgba(180,92,255,.08);border:1px solid #cf8bff;border-radius:8px;padding:10px;margin-top:10px;font-size:.85rem;color:#d0aaff;text-align:center}
+.ov-btn{width:100%;padding:16px;background:linear-gradient(135deg,#6320c9,#9d5cff,#cf8bff);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1.15rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:10px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
 .ov-btn:active{transform:scale(.98)}
 
-.live-box{position:fixed;top:8px;right:8px;z-index:9999;display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(0,20,0,.9);border:1px solid #00ff41;border-radius:20px;font-size:.8rem;color:#00ff41;font-family:'Courier New',monospace;touch-action:manipulation;cursor:pointer}
-.live-dot{width:7px;height:7px;border-radius:50%;background:#00ff41;animation:livePulse 1s infinite}
-@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 8px #00ff41}50%{opacity:.4;box-shadow:0 0 4px #00ff41}}
-.live-box.off{border-color:#660000;color:#660000;background:rgba(20,0,0,.9)}
-.live-box.off .live-dot{background:#660000;animation:none}
-.live-ts{font-size:.75rem;color:#00aa2a;margin-left:4px}
-.live-box.off .live-ts{color:#660000}
+.live-box{position:fixed;top:8px;right:8px;z-index:9999;display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(0,30,20,.9);border:1px solid #00ffa3;border-radius:20px;font-size:.8rem;color:#00ffa3;font-family:'Courier New',monospace;touch-action:manipulation;cursor:pointer}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#00ffa3;animation:livePulse 1s infinite}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 8px #00ffa3}50%{opacity:.4;box-shadow:0 0 4px #00ffa3}}
+.live-box.off{border-color:#8b1cc9;color:#8b1cc9;background:rgba(30,10,40,.9)}
+.live-box.off .live-dot{background:#8b1cc9;animation:none}
+.live-ts{font-size:.75rem;color:#00b86b;margin-left:4px}
+.live-box.off .live-ts{color:#8b1cc9}
 @media(max-width:480px){.live-box{font-size:.75rem;padding:4px 8px}}
 
 
-.phone-adjust{margin-top:14px;border:1px solid #00aaff;border-radius:10px;background:rgba(0,80,160,.06);padding:14px}
-.phone-adjust .pa-title{font-size:.92rem;color:#00ccff;font-weight:bold;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(0,170,255,.2);padding-bottom:6px}
-.phone-adjust .pa-item{display:flex;align-items:flex-start;gap:6px;padding:6px 0;font-size:.85rem;color:#88ccff;line-height:1.5;border-bottom:1px solid rgba(0,170,255,.08)}
+.phone-adjust{margin-top:14px;border:1px solid #00b3ff;border-radius:10px;background:rgba(0,90,200,.08);padding:14px}
+.phone-adjust .pa-title{font-size:.92rem;color:#22d5ff;font-weight:bold;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(0,180,255,.2);padding-bottom:6px}
+.phone-adjust .pa-item{display:flex;align-items:flex-start;gap:6px;padding:6px 0;font-size:.85rem;color:#99e5ff;line-height:1.5;border-bottom:1px solid rgba(0,180,255,.08)}
 .phone-adjust .pa-item:last-child{border-bottom:none}
-.phone-adjust .pa-num{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;background:rgba(0,170,255,.15);color:#00ccff;border-radius:4px;font-size:.75rem;font-weight:bold;flex-shrink:0;margin-top:1px}
-.phone-adjust .pa-val{color:#00aaff;font-weight:bold}
-.phone-adjust .pa-section{font-size:.82rem;color:#0088cc;font-weight:bold;letter-spacing:.5px;margin:8px 0 4px;text-transform:uppercase}
-.rc.purple .phone-adjust{border-color:#a855f7;background:rgba(168,85,247,.05)}
-.rc.purple .phone-adjust .pa-title{color:#c8a8e8;border-bottom-color:rgba(168,85,247,.2)}
-.rc.purple .phone-adjust .pa-item{color:#c8a8e8;border-bottom-color:rgba(168,85,247,.08)}
-.rc.purple .phone-adjust .pa-num{background:rgba(168,85,247,.15);color:#a855f7}
-.rc.purple .phone-adjust .pa-val{color:#a855f7}
-.rc.purple .phone-adjust .pa-section{color:#a855f7}
+.phone-adjust .pa-num{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;background:rgba(0,180,255,.15);color:#22d5ff;border-radius:4px;font-size:.75rem;font-weight:bold;flex-shrink:0;margin-top:1px}
+.phone-adjust .pa-val{color:#00b3ff;font-weight:bold}
+.phone-adjust .pa-section{font-size:.82rem;color:#0090e0;font-weight:bold;letter-spacing:.5px;margin:8px 0 4px;text-transform:uppercase}
+.rc.purple .phone-adjust{border-color:#b45cff;background:rgba(180,92,255,.05)}
+.rc.purple .phone-adjust .pa-title{color:#d0aaff;border-bottom-color:rgba(180,92,255,.2)}
+.rc.purple .phone-adjust .pa-item{color:#d0aaff;border-bottom-color:rgba(180,92,255,.08)}
+.rc.purple .phone-adjust .pa-num{background:rgba(180,92,255,.15);color:#b45cff}
+.rc.purple .phone-adjust .pa-val{color:#b45cff}
+.rc.purple .phone-adjust .pa-section{color:#b45cff}
 
 
-.btn-calib{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:10px 16px;background:linear-gradient(135deg,#7c2d12,#ea580c,#f59e0b);border:none;border-radius:8px;color:#fff;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.btn-calib{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#8a3000,#ff6a00,#ffcc33);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(255,106,0,.4)}
 .btn-calib:active{transform:scale(.97)}
-.ov-calib{background:#0f0a05;border:2px solid #7c2d12;border-radius:12px;padding:14px;margin-bottom:12px}
-.ov-calib h2{color:#f59e0b;font-size:1.1rem;margin-bottom:10px;border-bottom:1px solid #7c2d12;padding-bottom:6px}
+.ov-calib{background:#120a04;border:2px solid #8a3000;border-radius:12px;padding:14px;margin-bottom:12px}
+.ov-calib h2{color:#ff9500;font-size:1.1rem;margin-bottom:10px;border-bottom:1px solid #8a3000;padding-bottom:6px}
 .calib-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .calib-field{display:flex;flex-direction:column;gap:2px}
-.calib-field label{font-size:.82rem;color:#f59e0b;text-transform:uppercase;letter-spacing:.5px}
-.calib-field input{background:#0a0a05;border:1px solid #7c2d12;color:#fbbf24;padding:8px 10px;border-radius:6px;font-family:inherit;font-size:1.05rem;outline:none;width:100%;text-align:center}
-.calib-field input:focus{border-color:#f59e0b}
+.calib-field label{font-size:.82rem;color:#ff9500;text-transform:uppercase;letter-spacing:.5px}
+.calib-field input{background:#0a0a05;border:1px solid #8a3000;color:#ffcc33;padding:8px 10px;border-radius:6px;font-family:inherit;font-size:1.05rem;outline:none;width:100%;text-align:center}
+.calib-field input:focus{border-color:#ff9500}
 .calib-field input::-webkit-outer-spin-button,.calib-field input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.calib-btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c2d12,#ea580c,#f59e0b);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1.1rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
+.calib-btn{width:100%;padding:14px;background:linear-gradient(135deg,#8a3000,#ff6a00,#ff9500);border:none;border-radius:10px;color:#fff;font-family:inherit;font-size:1.1rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button}
 .calib-btn:active{transform:scale(.98)}
-.rc.amber{border-color:#f59e0b}
-.rc.amber .rh h3{color:#f59e0b}
-.rc.amber .badge{background:rgba(245,158,11,.2);color:#f59e0b;border:1px solid #f59e0b}
+.rc.amber{border-color:#ff9500}
+.rc.amber .rh h3{color:#ff9500}
+.rc.amber .badge{background:rgba(245,158,11,.2);color:#ff9500;border:1px solid #ff9500}
 .rc.amber .si{border-color:#9a3412;box-shadow:0 0 8px rgba(245,158,11,.1)}
-.rc.amber .si.hl{border:1px solid #fbbf24;background:rgba(245,158,11,.06);box-shadow:0 0 10px rgba(245,158,11,.2)}
-.rc.amber .si.crit-fire{border:2px solid #fbbf24;background:radial-gradient(circle,#1f0f00,#0a0500);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:16px 8px;box-shadow:0 0 20px rgba(251,191,36,.4),inset 0 0 15px rgba(251,191,36,.15);margin:8px auto;width:70%;max-width:220px;overflow:hidden}
-.rc.amber .sv{color:#fbbf24;text-shadow:0 0 10px rgba(245,158,11,.4)}
+.rc.amber .si.hl{border:1px solid #ffcc33;background:rgba(245,158,11,.06);box-shadow:0 0 10px rgba(245,158,11,.2)}
+.rc.amber .si.crit-fire{border:2px solid #ffcc33;background:radial-gradient(circle,#1f0f00,#0a0500);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:16px 8px;box-shadow:0 0 20px rgba(251,191,36,.4),inset 0 0 15px rgba(251,191,36,.15);margin:8px auto;width:70%;max-width:220px;overflow:hidden}
+.rc.amber .sv{color:#ffcc33;text-shadow:0 0 10px rgba(245,158,11,.4)}
 .rc.amber .si.hl .sv{color:#fcd34d;text-shadow:0 0 10px rgba(252,211,77,.4)}
 .rc.amber .si.crit-fire .sv{color:#fcd34d;text-shadow:0 0 15px rgba(252,211,77,.6),0 0 5px rgba(252,211,77,.8);font-size:2rem}
-.rc.amber .si.crit-fire .sl{color:#fbbf24;text-shadow:0 0 8px rgba(251,191,36,.5)}
-.rc.amber .sbf{background:linear-gradient(90deg,#7c2d12,#f59e0b,#fbbf24);box-shadow:0 0 6px rgba(245,158,11,.4)}
-.rc.amber .si.hl .sbf{background:linear-gradient(90deg,#7c2d12,#fbbf24);box-shadow:0 0 6px rgba(251,191,36,.4)}
-.rc.amber .si.crit-fire .sbf{background:linear-gradient(90deg,#7c2d12,#fb923c,#fcd34d,#fcd34d);box-shadow:0 0 8px rgba(252,211,77,.5)}
-.rc.amber .st{background:rgba(245,158,11,.2);color:#fbbf24}
+.rc.amber .si.crit-fire .sl{color:#ffcc33;text-shadow:0 0 8px rgba(251,191,36,.5)}
+.rc.amber .sbf{background:linear-gradient(90deg,#8a3000,#ff9500,#ffcc33);box-shadow:0 0 6px rgba(245,158,11,.4)}
+.rc.amber .si.hl .sbf{background:linear-gradient(90deg,#8a3000,#ffcc33);box-shadow:0 0 6px rgba(251,191,36,.4)}
+.rc.amber .si.crit-fire .sbf{background:linear-gradient(90deg,#8a3000,#fb923c,#fcd34d,#fcd34d);box-shadow:0 0 8px rgba(252,211,77,.5)}
+.rc.amber .st{background:rgba(245,158,11,.2);color:#ffcc33}
 .rc.amber .si.crit-fire .st{background:rgba(251,191,36,.3);color:#fcd34d;font-weight:bold;box-shadow:0 0 5px rgba(252,211,77,.3)}
-.rc.amber .ai b{color:#f59e0b}
-.rc.amber .ai{border-color:#7c2d12}
+.rc.amber .ai b{color:#ff9500}
+.rc.amber .ai{border-color:#8a3000}
 .calib-diff{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;margin:2px 0;border-radius:4px;font-size:.82rem}
-.calib-diff.down{background:rgba(234,88,12,.08);color:#ea580c}
-.calib-diff.up{background:rgba(0,200,0,.08);color:#00cc44}
-.calib-diff.same{background:rgba(245,158,11,.05);color:#f59e0b}
+.calib-diff.down{background:rgba(234,88,12,.08);color:#ff6a00}
+.calib-diff.up{background:rgba(0,200,0,.08);color:#00e05a}
+.calib-diff.same{background:rgba(245,158,11,.05);color:#ff9500}
 .calib-diff .arrow{font-weight:bold;font-size:.7rem}
 .calib-arrow{font-size:1.1rem;margin:0 4px}
 .calib-before{color:#666;text-decoration:line-through}
@@ -194,11 +197,11 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </head>
 <body>
 <!-- ANUNCIO ACTUALIZADO — 5 segundos con todo congelado -->
-<div id="updOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(5,10,5,.96);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px">
-<div id="updTitle" style="font-size:2.4rem;color:#00ff41;text-shadow:0 0 20px #00ff41,0 0 45px #00ff41,0 0 70px rgba(0,255,65,.6);font-weight:bold;letter-spacing:3px;animation:updPulse 1s infinite alternate">⚡ ACTUALIZADO ⚡</div>
-<div style="margin-top:16px;font-size:1.15rem;color:#a855f7;text-shadow:0 0 12px #a855f7;font-weight:bold">NUEVA VERSION INSTALADA — SALITA 3.5</div>
-<div id="updCount" style="margin-top:22px;font-size:2.6rem;color:#ff003c;text-shadow:0 0 18px #ff003c,0 0 35px rgba(255,0,60,.5);font-weight:bold">5</div>
-<div style="margin-top:12px;font-size:.95rem;color:#9fb8a0;text-shadow:0 0 8px rgba(0,255,65,.4)">❄ GENERADOR CONGELADO — Espera para usarlo</div>
+<div id="updOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(8,4,15,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px">
+<div id="updTitle" style="font-size:2.4rem;color:#00ffa3;text-shadow:0 0 20px #00ffa3,0 0 45px #00ffa3,0 0 70px rgba(0,255,163,.6);font-weight:bold;letter-spacing:3px;animation:updPulse 1s infinite alternate">⚡ ACTUALIZADO ⚡</div>
+<div style="margin-top:16px;font-size:1.15rem;color:#b45cff;text-shadow:0 0 12px #b45cff;font-weight:bold">NUEVA VERSION INSTALADA — SALITA 3.5 NEON</div>
+<div id="updCount" style="margin-top:22px;font-size:2.6rem;color:#ff00c8;text-shadow:0 0 18px #ff00c8,0 0 35px rgba(255,0,200,.5);font-weight:bold">5</div>
+<div style="margin-top:12px;font-size:.95rem;color:#9fb8a0;text-shadow:0 0 8px rgba(0,255,163,.4)">❄ GENERADOR CONGELADO — Espera para usarlo</div>
 </div>
 <style>@keyframes updPulse{from{transform:scale(1)}to{transform:scale(1.06)}}</style>
 <canvas id="matrixCanvas"></canvas>
@@ -229,12 +232,12 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 <div class="f"><label>Refresh Rate</label><select id="hz"><option value="60">60 Hz</option><option value="90" selected>90 Hz</option><option value="120">120 Hz</option><option value="144">144 Hz</option><option value="165">165 Hz</option></select></div>
 </div>
 <div style="margin-top:14px">
-<h2 style="font-size:.82rem;color:#ff6666;margin-bottom:8px">🎯 MODO DE JUEGO</h2>
+<h2 style="font-size:.82rem;color:#ff8ef5;margin-bottom:8px">🎯 MODO DE JUEGO</h2>
 <div class="tabs">
 <div class="tab act red" id="tabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Deagle·Shotgun·M1014</div></div>
 <div class="tab grn" id="tabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta distancia</div></div>
 </div>
-<div class="tab" id="tabDual" style="border:2px solid #ffd700;background:rgba(255,215,0,.05);color:#ffd700;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER</div>
+<div class="tab" id="tabDual" style="border:2px solid #ffe14d;background:rgba(255,230,0,.05);color:#ffe14d;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER</div>
 </div>
 <div class="warn-box">⚠ ZONA HACKER — SENSIBILIDAD CALIBRADA POR DISPOSITIVO ⚠</div>
 <button class="gbtn" id="genBtn">⚡ GENERAR UNIVERSAL — TODAS LAS ARMAS ⚡</button>
@@ -327,52 +330,52 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </optgroup>
 </select>
 </div>
-<h2 style="font-size:1rem;color:#c8a8e8;margin-top:10px">📱 TU DISPOSITIVO</h2>
+<h2 style="font-size:1rem;color:#d0aaff;margin-top:10px">📱 TU DISPOSITIVO</h2>
 <div class="cg" style="margin-top:8px">
 <div class="f"><label>Marca</label><select id="wpnBrand"><option value="samsung">Samsung</option><option value="xiaomi">Xiaomi/Redmi/POCO</option><option value="apple">iPhone</option><option value="motorola" selected>Motorola</option><option value="huawei">Huawei</option><option value="oppo">OPPO</option><option value="vivo">Vivo</option><option value="realme">Realme</option><option value="oneplus">OnePlus</option><option value="tecno">Tecno</option><option value="infinix">Infinix</option><option value="zte">ZTE</option><option value="asus">ASUS ROG</option><option value="nubia">Nubia Red Magic</option><option value="google">Google Pixel</option><option value="honor">Honor</option><option value="otra">Otra</option></select></div>
 <div class="f"><label>Modelo</label><input type="text" id="wpnModel" placeholder="Ej: Moto G20" value="Moto G20"></div>
 <div class="f"><label>Refresh Rate</label><select id="wpnHz"><option value="60">60 Hz</option><option value="90" selected>90 Hz</option><option value="120">120 Hz</option><option value="144">144 Hz</option><option value="165">165 Hz</option></select></div>
 </div>
 <div style="margin-top:12px">
-<h2 style="font-size:.82rem;color:#c8a8e8;margin-bottom:8px">🎮 MODO</h2>
+<h2 style="font-size:.82rem;color:#d0aaff;margin-bottom:8px">🎮 MODO</h2>
 <div class="tabs">
 <div class="tab act red" id="wpnTabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Headshots precisos</div></div>
 <div class="tab grn" id="wpnTabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta</div></div>
-<div class="tab" id="wpnTabHead" style="border-color:#ff003c;color:#ff003c;background:rgba(255,0,60,.08)"><span class="ic">🎯</span>UN TOQUE = CRANEO<div class="ds">Maxima punteria</div></div>
+<div class="tab" id="wpnTabHead" style="border-color:#ff00c8;color:#ff00c8;background:rgba(255,0,200,.08)"><span class="ic">🎯</span>UN TOQUE = CRANEO<div class="ds">Maxima punteria</div></div>
 
 </div>
 </div>
 <div class="ov-warn">🎯 CALIBRACION PRECISA — TODO ROJO A LA CABEZA SIN TEMBLAR</div>
 <div style="margin-top:12px">
 <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
-<button id="hs100Btn" style="padding:10px 22px;font-size:.95rem;font-weight:bold;border:2px solid #2d1a4e;background:transparent;color:#666;border-radius:8px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button;letter-spacing:1px">🎯 100% HEADSHOT</button>
+<button id="hs100Btn" style="padding:10px 22px;font-size:.95rem;font-weight:bold;border:2px solid #2b1055;background:transparent;color:#666;border-radius:8px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button;letter-spacing:1px">🎯 100% HEADSHOT</button>
 </div>
-<h2 style="font-size:1rem;color:#c8a8e8;margin-bottom:8px">✍️ CONTAME COMO QUERES TU SENSI</h2>
-<textarea id="wpnCustom" placeholder="Ej: quiero que gire rapido, que la mira vaya sola a la cabeza, que no tiemble, tactil alto, para pegar de cerca..." style="width:100%;min-height:90px;background:rgba(15,10,30,.6);border:1px solid #a855f7;border-radius:10px;padding:12px;font-size:1rem;color:#e8d5ff;font-family:inherit;resize:vertical;box-shadow:0 0 12px rgba(168,85,247,.25)"></textarea>
+<h2 style="font-size:1rem;color:#d0aaff;margin-bottom:8px">✍️ CONTAME COMO QUERES TU SENSI</h2>
+<textarea id="wpnCustom" placeholder="Ej: quiero que gire rapido, que la mira vaya sola a la cabeza, que no tiemble, tactil alto, para pegar de cerca..." style="width:100%;min-height:90px;background:rgba(15,10,30,.6);border:1px solid #b45cff;border-radius:10px;padding:12px;font-size:1rem;color:#e8d5ff;font-family:inherit;resize:vertical;box-shadow:0 0 12px rgba(180,92,255,.25)"></textarea>
 <div style="font-size:.8rem;color:#888;margin-top:6px;text-align:center">El generador lee lo que escribis y ajusta la sensi para tu arma + tu celular</div>
 </div>
 <button class="ov-btn" id="wpnGen">⚡ GENERAR SENSIBILIDAD POR ARMA ⚡</button>
 
 <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-<button class="fb-btn" id="fbSmall" style="padding:6px 14px;font-size:.82rem;border:1px solid #c084fc;background:rgba(168,85,247,.1);color:#a855f7;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton CHICO</button>
-<button class="fb-btn" id="fbNormal" style="padding:6px 14px;font-size:.82rem;border:1px solid #2d1a4e;background:transparent;color:#666;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton NORMAL</button>
-<button class="fb-btn" id="fbBig" style="padding:6px 14px;font-size:.82rem;border:1px solid #2d1a4e;background:transparent;color:#666;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton GRANDE</button>
+<button class="fb-btn" id="fbSmall" style="padding:6px 14px;font-size:.82rem;border:1px solid #cf8bff;background:rgba(180,92,255,.1);color:#b45cff;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton CHICO</button>
+<button class="fb-btn" id="fbNormal" style="padding:6px 14px;font-size:.82rem;border:1px solid #2b1055;background:transparent;color:#666;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton NORMAL</button>
+<button class="fb-btn" id="fbBig" style="padding:6px 14px;font-size:.82rem;border:1px solid #2b1055;background:transparent;color:#666;border-radius:6px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button">🔥 Boton GRANDE</button>
 </div>
 </div>
-<div class="ld" id="wpnLoading" style="color:#a855f7">
+<div class="ld" id="wpnLoading" style="color:#b45cff">
 <div style="font-size:1.1rem;letter-spacing:2px">⚡ CALIBRANDO ARMA...</div>
-<div class="lbar"><div class="lbf" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div>
-<div class="lt" id="wpnLoadText" style="color:#c8a8e8">Analizando arma...</div>
+<div class="lbar"><div class="lbf" style="background:linear-gradient(90deg,#6320c9,#b45cff)"></div></div>
+<div class="lt" id="wpnLoadText" style="color:#d0aaff">Analizando arma...</div>
 </div>
 <div class="res" id="wpnResults"></div>
 </div>
 
 <div class="overlay" id="calibOverlay">
-<button class="ov-close" id="closeCalib" style="border-color:#f59e0b;color:#f59e0b;background:#1a0f05">✕</button>
-<div class="ov-hdr" style="border-color:#f59e0b;background:linear-gradient(135deg,#1a0f05,#0a0a0a)">
-<h1 style="color:#f59e0b;text-shadow:0 0 20px rgba(245,158,11,.4)">🇧🇷 CALIBRADOR 0800</h1>
-<div class="sub" style="color:#fbbf24">// SENSIBILIDAD ESTILO BRASIL — HEADSHOT LEGAL HACKER</div>
-<div class="ver" style="background:#2d1a05;color:#f59e0b;border-color:#f59e0b">SALITA 3.5 — 0800 BRAZILIAN ENGINE</div>
+<button class="ov-close" id="closeCalib" style="border-color:#ff9500;color:#ff9500;background:#1a0f05">✕</button>
+<div class="ov-hdr" style="border-color:#ff9500;background:linear-gradient(135deg,#1a0f05,#0a0714)">
+<h1 style="color:#ff9500;text-shadow:0 0 20px rgba(245,158,11,.4)">🇧🇷 CALIBRADOR 0800</h1>
+<div class="sub" style="color:#ffcc33">// SENSIBILIDAD ESTILO BRASIL — HEADSHOT LEGAL HACKER</div>
+<div class="ver" style="background:#2d1a05;color:#ff9500;border-color:#ff9500">SALITA 3.5 — 0800 BRAZILIAN ENGINE</div>
 </div>
 <div class="ov-calib">
 <h2>📱 TU DISPOSITIVO</h2>
@@ -384,7 +387,7 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </div>
 <div class="ov-calib">
 <h2>📥 PON TU SENSIBILIDAD ACTUAL</h2>
-<p style="font-size:.85rem;color:#fbbf24;margin-bottom:8px">🇧🇷 Poné los valores que ya tenés en tu FreeFire y dale a AJUSTAR. Te los calibra al estilo 0800 de Brasil — puro headshot legal como los brasileros. La sensi se ajusta según tu marca y modelo.</p>
+<p style="font-size:.85rem;color:#ffcc33;margin-bottom:8px">🇧🇷 Poné los valores que ya tenés en tu FreeFire y dale a AJUSTAR. Te los calibra al estilo 0800 de Brasil — puro headshot legal como los brasileros. La sensi se ajusta según tu marca y modelo.</p>
 <div class="calib-inputs">
 <div class="calib-field"><label>General</label><input type="number" id="inGen" value="100" min="0" max="200"></div>
 <div class="calib-field"><label>Punto Rojo</label><input type="number" id="inRD" value="100" min="0" max="200"></div>
@@ -396,19 +399,19 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 <div class="calib-field"><label>Drag Head</label><input type="number" id="inDH" value="100" min="0" max="200"></div>
 </div>
 <div style="margin-top:10px">
-<h2 style="font-size:1rem;color:#f59e0b;margin-bottom:8px">🎮 MODO</h2>
+<h2 style="font-size:1rem;color:#ff9500;margin-bottom:8px">🎮 MODO</h2>
 <div class="tabs">
 <div class="tab act red" id="calibTabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Anti-overshoot head</div></div>
 <div class="tab grn" id="calibTabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta estable</div></div>
 </div>
 </div>
-<div class="ov-warn" style="border-color:#f59e0b;color:#f59e0b">🇧🇷 AJUSTE 0800 BRASIL — PEGAS TODO ROJO LEGAL COMO LOS BRASILEROS</div>
+<div class="ov-warn" style="border-color:#ff9500;color:#ff9500">🇧🇷 AJUSTE 0800 BRASIL — PEGAS TODO ROJO LEGAL COMO LOS BRASILEROS</div>
 <button class="calib-btn" id="calibGen">🇧🇷 AJUSTAR SENSI 0800 — CALIBRAR 🇧🇷</button>
 </div>
-<div class="ld" id="calibLoading" style="color:#f59e0b">
+<div class="ld" id="calibLoading" style="color:#ff9500">
 <div style="font-size:1.1rem;letter-spacing:2px">🔧 CALIBRANDO...</div>
-<div class="lbar"><div class="lbf" style="background:linear-gradient(90deg,#7c2d12,#f59e0b)"></div></div>
-<div class="lt" id="calibLoadText" style="color:#fbbf24">Analizando tu sensibilidad...</div>
+<div class="lbar"><div class="lbf" style="background:linear-gradient(90deg,#8a3000,#ff9500)"></div></div>
+<div class="lt" id="calibLoadText" style="color:#ffcc33">Analizando tu sensibilidad...</div>
 </div>
 <div class="res" id="calibResults"></div>
 </div>
@@ -432,9 +435,9 @@ resize();
 window.addEventListener('resize',resize);
 var chars='ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎ0123456789ABCDEF';
 var charArr=chars.split('');
-var colors=['#00ff41','#39ff14','#00cc00','#33ff33','#00ff88','#00ffaa'];
+var colors=['#00ffa3','#39ff14','#00cc00','#33ff33','#40ffc4','#00ffaa'];
 function draw(){
-ctx.fillStyle='rgba(10,10,10,0.04)';
+ctx.fillStyle='rgba(8,4,15,0.05)';
 ctx.fillRect(0,0,c.width,c.height);
 ctx.font=fontSize+'px monospace';
 for(var i=0;i<drops.length;i++){
@@ -737,10 +740,10 @@ var fbBig=document.getElementById('fbBig');
 
 function setFbSize(size){
 fbSize=size;
-[fbSmall,fbNormal,fbBig].forEach(function(b){b.style.border='1px solid #2d1a4e';b.style.background='transparent';b.style.color='#666'});
-if(size==='small'){fbSmall.style.border='1px solid #a855f7';fbSmall.style.background='rgba(168,85,247,.1)';fbSmall.style.color='#a855f7';}
-else if(size==='big'){fbBig.style.border='1px solid #a855f7';fbBig.style.background='rgba(168,85,247,.1)';fbBig.style.color='#a855f7';}
-else{fbNormal.style.border='1px solid #a855f7';fbNormal.style.background='rgba(168,85,247,.1)';fbNormal.style.color='#a855f7';}
+[fbSmall,fbNormal,fbBig].forEach(function(b){b.style.border='1px solid #2b1055';b.style.background='transparent';b.style.color='#666'});
+if(size==='small'){fbSmall.style.border='1px solid #b45cff';fbSmall.style.background='rgba(180,92,255,.1)';fbSmall.style.color='#b45cff';}
+else if(size==='big'){fbBig.style.border='1px solid #b45cff';fbBig.style.background='rgba(180,92,255,.1)';fbBig.style.color='#b45cff';}
+else{fbNormal.style.border='1px solid #b45cff';fbNormal.style.background='rgba(180,92,255,.1)';fbNormal.style.color='#b45cff';}
 }
 
 fbSmall.addEventListener('click',function(){setFbSize('small')});
@@ -792,13 +795,13 @@ var hs100Btn=document.getElementById('hs100Btn');
 hs100Btn.addEventListener('click',function(){
 hs100On=!hs100On;
 if(hs100On){
-hs100Btn.style.border='2px solid #ff003c';
-hs100Btn.style.background='rgba(255,0,60,.15)';
-hs100Btn.style.color='#ff003c';
-hs100Btn.style.boxShadow='0 0 15px rgba(255,0,60,.5)';
+hs100Btn.style.border='2px solid #ff00c8';
+hs100Btn.style.background='rgba(255,0,200,.15)';
+hs100Btn.style.color='#ff00c8';
+hs100Btn.style.boxShadow='0 0 15px rgba(255,0,200,.5)';
 hs100Btn.textContent='🎯 100% HEADSHOT — ACTIVADO';
 }else{
-hs100Btn.style.border='2px solid #2d1a4e';
+hs100Btn.style.border='2px solid #2b1055';
 hs100Btn.style.background='transparent';
 hs100Btn.style.color='#666';
 hs100Btn.style.boxShadow='none';
@@ -923,7 +926,7 @@ fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
 };
 var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'RECOMENDADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'MAXIMO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
-res.innerHTML='<div class="rc red" style="border-color:#ff003c;box-shadow:0 0 25px rgba(255,0,60,.4)"><div class="rh"><h3>\u{1f3af} UN TOQUE = CRANEO — '+r.weapon+'</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">\u{1f4f1} <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">Tipo: '+r.type+'</span><span class="wc red">Rango: '+r.range+'</span><span class="wc red">Recoil: '+r.recoil+'</span><span class="wc red">Fire: '+r.fireRate+'</span></div>'+(hs100On?'<div class="hs-tag" style="font-size:.95rem;padding:10px 12px;border-color:#ff003c;box-shadow:0 0 15px rgba(255,0,60,.6)">\u{1f3af} 100% HEADSHOT ACTIVADO — TODO AL CRANEO — MAXIMO NIVEL</div>':'<div class="hs-tag" style="font-size:.92rem;padding:8px 12px">\u{1f3af} UN TOQUE AL BOTON Y VA AL CRANEO — MAXIMA PUNTERIA — TODO ROJO</div>')+'<div class="pm"><div class="pm-label">NIVEL PUNTERIA MAXIMA</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.weapon.toUpperCase()+' HEADSHOT</div></div><div class="sg">'+sH+'</div><div class="ai"><b>\u{1f3af} PUNTERIA:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">UN TOQUE = CRANEO — Calibrado para maxima punteria a la cabeza</span></div>'+getPhoneAdjustments(r.brand,r.model,r.hz)+'<button class="cp" id="wpnCopyBtn">\u{1f4cb} COPIAR</button></div>';
+res.innerHTML='<div class="rc red" style="border-color:#ff00c8;box-shadow:0 0 25px rgba(255,0,200,.4)"><div class="rh"><h3>\u{1f3af} UN TOQUE = CRANEO — '+r.weapon+'</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">\u{1f4f1} <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">Tipo: '+r.type+'</span><span class="wc red">Rango: '+r.range+'</span><span class="wc red">Recoil: '+r.recoil+'</span><span class="wc red">Fire: '+r.fireRate+'</span></div>'+(hs100On?'<div class="hs-tag" style="font-size:.95rem;padding:10px 12px;border-color:#ff00c8;box-shadow:0 0 15px rgba(255,0,200,.6)">\u{1f3af} 100% HEADSHOT ACTIVADO — TODO AL CRANEO — MAXIMO NIVEL</div>':'<div class="hs-tag" style="font-size:.92rem;padding:8px 12px">\u{1f3af} UN TOQUE AL BOTON Y VA AL CRANEO — MAXIMA PUNTERIA — TODO ROJO</div>')+'<div class="pm"><div class="pm-label">NIVEL PUNTERIA MAXIMA</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.weapon.toUpperCase()+' HEADSHOT</div></div><div class="sg">'+sH+'</div><div class="ai"><b>\u{1f3af} PUNTERIA:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">UN TOQUE = CRANEO — Calibrado para maxima punteria a la cabeza</span></div>'+getPhoneAdjustments(r.brand,r.model,r.hz)+'<button class="cp" id="wpnCopyBtn">\u{1f4cb} COPIAR</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
@@ -1002,8 +1005,8 @@ fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
 };
 var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'RECOMENDADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'CALIBRADO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
-var recoilColor=r.recoil==='Alto'?'#ff003c':r.recoil==='Medio'?'#ffaa00':'#00ff41';
-res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 MAXIMA PUNTERIA — UN TOQUE AL BOTON = CRANEO — TODO ROJO</div><div class="pm" style="border-color:#a855f7"><div class="pm-label" style="color:#c8a8e8">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#4c1d95,#a855f7)"></div></div><div class="pm-val" style="color:#a855f7">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
+var recoilColor=r.recoil==='Alto'?'#ff00c8':r.recoil==='Medio'?'#ffaa00':'#00ffa3';
+res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 MAXIMA PUNTERIA — UN TOQUE AL BOTON = CRANEO — TODO ROJO</div><div class="pm" style="border-color:#b45cff"><div class="pm-label" style="color:#d0aaff">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#6320c9,#b45cff)"></div></div><div class="pm-val" style="color:#b45cff">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
@@ -1260,7 +1263,7 @@ else inZoneCount++;
 var modeName=calibMode==='pvp'?'PVP TODO ROJO':'BR+DECLA';
 var mult=computeMult(brand,hz,calibMode);
 
-res.innerHTML='<div class="rc amber"><div class="rh"><h3>🇧🇷 0800 CALIBRADO: '+modeName+'</h3><span class="badge">CAL-'+Math.random().toString(36).substr(2,5).toUpperCase()+'</span></div><div class="pinfo">📱 <span class="sp">'+b.name.toUpperCase()+'</span><span class="sp">'+model+'</span><span class="sp">'+hz+'Hz</span></div><div class="pinfo" style="margin-top:4px"><span class="sp" style="background:#7c2d12;color:#f59e0b">⚠ Sobre 0800: '+overshootCount+'</span><span class="sp" style="background:#1a3300;color:#00cc44">⬆ Bajo 0800: '+undershootCount+'</span><span class="sp" style="background:#2d1a05;color:#fbbf24">✓ En 0800: '+inZoneCount+'</span></div><div class="pm" style="border-color:#f59e0b"><div class="pm-label" style="color:#fbbf24">PRECISION ANTI-OVERSHOOT</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#7c2d12,#ea580c,#f59e0b)"></div></div><div class="pm-val" style="color:#f59e0b">'+(calibMode==='pvp'?'HEADSHOT LEGAL HACKER':'CORTA AGRESIVA + LARGA ESTABLE')+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🇧🇷 0800 BRASIL:</b> Tu sensibilidad fue calibrada al patron 0800 brasilero. '+overshootCount+' valores estaban sobre el 0800 (se pasaban de la cabeza) y fueron bajados. '+undershootCount+' estaban bajo el 0800 y fueron subidos. '+inZoneCount+' ya estaban en zona 0800 y recibieron ajuste fino.<span class="fm">Mult='+mult.toFixed(3)+' [Latency('+b.touchLatency+'ms) Sample('+b.touchSample+'Hz) AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+')] Sweet spot calculado por dispositivo</span></div>'+getPhoneAdjustments(brand,model,hz)+'<button class="cp" id="calibCopyBtn" style="border-color:#f59e0b;color:#f59e0b">📋 COPIAR SENSI 0800</button></div>';
+res.innerHTML='<div class="rc amber"><div class="rh"><h3>🇧🇷 0800 CALIBRADO: '+modeName+'</h3><span class="badge">CAL-'+Math.random().toString(36).substr(2,5).toUpperCase()+'</span></div><div class="pinfo">📱 <span class="sp">'+b.name.toUpperCase()+'</span><span class="sp">'+model+'</span><span class="sp">'+hz+'Hz</span></div><div class="pinfo" style="margin-top:4px"><span class="sp" style="background:#8a3000;color:#ff9500">⚠ Sobre 0800: '+overshootCount+'</span><span class="sp" style="background:#1a3300;color:#00e05a">⬆ Bajo 0800: '+undershootCount+'</span><span class="sp" style="background:#2d1a05;color:#ffcc33">✓ En 0800: '+inZoneCount+'</span></div><div class="pm" style="border-color:#ff9500"><div class="pm-label" style="color:#ffcc33">PRECISION ANTI-OVERSHOOT</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#8a3000,#ff6a00,#ff9500)"></div></div><div class="pm-val" style="color:#ff9500">'+(calibMode==='pvp'?'HEADSHOT LEGAL HACKER':'CORTA AGRESIVA + LARGA ESTABLE')+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🇧🇷 0800 BRASIL:</b> Tu sensibilidad fue calibrada al patron 0800 brasilero. '+overshootCount+' valores estaban sobre el 0800 (se pasaban de la cabeza) y fueron bajados. '+undershootCount+' estaban bajo el 0800 y fueron subidos. '+inZoneCount+' ya estaban en zona 0800 y recibieron ajuste fino.<span class="fm">Mult='+mult.toFixed(3)+' [Latency('+b.touchLatency+'ms) Sample('+b.touchSample+'Hz) AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+')] Sweet spot calculado por dispositivo</span></div>'+getPhoneAdjustments(brand,model,hz)+'<button class="cp" id="calibCopyBtn" style="border-color:#ff9500;color:#ff9500">📋 COPIAR SENSI 0800</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
