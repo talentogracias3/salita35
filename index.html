@@ -551,6 +551,15 @@ return Math.max(0.75,Math.min(1.55,stabilized));
 var brandMap={};
 Object.keys(brandData).forEach(function(k){brandMap[k]=brandData[k].screenFactor});
 
+// === VARIACION POR CLICK — cada GENERAR da valores NUEVOS (solo con el boton) ===
+function jit(base,spread){
+return base*(1+(Math.random()*2-1)*spread);
+}
+// Cada generador tiene su propio spread — 3 generadores dan sensis DISTINTAS entre si
+var SPREAD_MAIN=0.05;      // Generador principal: ±5% por click
+var SPREAD_WPN=0.04;       // Generador por arma: ±4% por click
+var SPREAD_CALIB=0.03;     // Calibrador 0800: ±3% por click
+
 function calcMain(m){
 var hz=+document.getElementById('hz').value;
 var brand=document.getElementById('brand').value;
@@ -564,14 +573,14 @@ var pb=145;
 var tremorAdj=1+(1-b.antiTremor)*0.12;
 var precisionAdj=b.precisionCurve*0.92;
 r={
-general:clamp(Math.round(pb*mult*1.05*tremorAdj),70,195),
-redDot:clamp(Math.round(pb*mult*1.08*tremorAdj),70,195),
-scope2x:clamp(Math.round(pb*mult*0.98*precisionAdj),60,185),
-scope4x:clamp(Math.round(pb*mult*0.88*precisionAdj),50,175),
-sniper:clamp(Math.round(pb*mult*0.78*precisionAdj),40,165),
-freeLook:clamp(Math.round(pb*mult*1.12*tremorAdj),70,195),
-fireBtn:(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola')?52:clamp(Math.round(pb*mult*1.15*tremorAdj),70,198),
-dragHead:clamp(Math.round(pb*mult*1.20*tremorAdj),70,198)
+general:clamp(Math.round(jit(pb*mult*1.05*tremorAdj,SPREAD_MAIN)),70,195),
+redDot:clamp(Math.round(jit(pb*mult*1.08*tremorAdj,SPREAD_MAIN)),70,195),
+scope2x:clamp(Math.round(jit(pb*mult*0.98*precisionAdj,SPREAD_MAIN)),60,185),
+scope4x:clamp(Math.round(jit(pb*mult*0.88*precisionAdj,SPREAD_MAIN)),50,175),
+sniper:clamp(Math.round(jit(pb*mult*0.78*precisionAdj,SPREAD_MAIN)),40,165),
+freeLook:clamp(Math.round(jit(pb*mult*1.12*tremorAdj,SPREAD_MAIN)),70,195),
+fireBtn:(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola')?52:clamp(Math.round(jit(pb*mult*1.15*tremorAdj,SPREAD_MAIN)),70,198),
+dragHead:clamp(Math.round(jit(pb*mult*1.20*tremorAdj,SPREAD_MAIN)),70,198)
 };
 r.weapons=['Deagle Headshot Machine','Shotgun M1887 One Shot','M1014 Spam Headshots'];
 r.modeName='PVP MEGA HACKER TODO ROJO';r.color='red';
@@ -586,14 +595,14 @@ var precisionBr=b.precisionCurve;
 var longRange=Math.min(1.0,0.90+b.precisionCurve*0.06);
 var shortRange=1.02+b.procBoost*0.02;
 r={
-general:clamp(Math.round(bb*mult*1.06*shortRange),60,185),
-redDot:clamp(Math.round(bb*mult*1.02*shortRange),60,185),
-scope2x:clamp(Math.round(bb*mult*0.98*precisionBr),50,175),
-scope4x:clamp(Math.round(bb*mult*0.92*longRange),40,165),
-sniper:clamp(Math.round(bb*mult*0.86*longRange),35,155),
-freeLook:clamp(Math.round(bb*mult*1.08*tremorBr),60,185),
-fireBtn:(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola')?52:clamp(Math.round(bb*mult*1.04*tremorBr),60,188),
-dragHead:clamp(Math.round(bb*mult*1.10*tremorBr),60,188)
+general:clamp(Math.round(jit(bb*mult*1.06*shortRange,SPREAD_MAIN)),60,185),
+redDot:clamp(Math.round(jit(bb*mult*1.02*shortRange,SPREAD_MAIN)),60,185),
+scope2x:clamp(Math.round(jit(bb*mult*0.98*precisionBr,SPREAD_MAIN)),50,175),
+scope4x:clamp(Math.round(jit(bb*mult*0.92*longRange,SPREAD_MAIN)),40,165),
+sniper:clamp(Math.round(jit(bb*mult*0.86*longRange,SPREAD_MAIN)),35,155),
+freeLook:clamp(Math.round(jit(bb*mult*1.08*tremorBr,SPREAD_MAIN)),60,185),
+fireBtn:(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola')?52:clamp(Math.round(jit(bb*mult*1.04*tremorBr,SPREAD_MAIN)),60,188),
+dragHead:clamp(Math.round(jit(bb*mult*1.10*tremorBr,SPREAD_MAIN)),60,188)
 };
 r.weapons=['Larga: AWM/Kar98k/M82B','Corta: MP40/AK/SCAR','Versatil: M4A1/Groza/XM8'];
 r.modeName='BR+DECLA Larga/Corta';r.color='green';
@@ -887,14 +896,14 @@ var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:'UN TOQUE = CRANEO',isPVP:true,
 customTags:custom.tags,customTxt:customTxt,
-general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headBoost*custom.gen*0.85),55,195),
-redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headBoost*custom.rd*0.85),55,195),
-scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headBoost*custom.s2*0.85),45,185),
-scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85),38,175),
-sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85),30,165),
-freeLook:clamp(Math.round(profile.fl*mult*headBoost*custom.fl*0.85),55,195),
-fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*custom.fb*0.85),55,195),
-dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*headBoost*custom.dh*0.88),55,198),
+general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headBoost*custom.gen*0.85,SPREAD_WPN)),55,195),
+redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headBoost*custom.rd*0.85,SPREAD_WPN)),55,195),
+scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headBoost*custom.s2*0.85,SPREAD_WPN)),45,185),
+scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN)),38,175),
+sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN)),30,165),
+freeLook:clamp(Math.round(jit(profile.fl*mult*headBoost*custom.fl*0.85,SPREAD_WPN)),55,195),
+fireBtn:isMotoG20?52:clamp(Math.round(jit(profile.fb*mult*custom.fb*0.85,SPREAD_WPN)),55,195),
+dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*headBoost*custom.dh*0.88,SPREAD_WPN)),55,198),
 id:'HS-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:isMotoG20?'FIJO 52':'CALIBRADO'
@@ -966,15 +975,15 @@ var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
 customTags:custom.tags,customTxt:customTxt,
-general:clamp(Math.round(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*custom.gen*0.85),55,195),
-redDot:clamp(Math.round(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*custom.rd*0.85),55,195),
-scope2x:clamp(Math.round(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85),45,185),
-scope4x:clamp(Math.round(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85),38,175),
-sniper:clamp(Math.round(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85),30,165),
-freeLook:clamp(Math.round(profile.fl*mult*fireAdj*headshotBoost*custom.fl*0.85),55,195),
-fireBtn:isMotoG20?52:clamp(Math.round(profile.fb*mult*fireAdj*fbMult*custom.fb*0.85),55,195),
+general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*custom.gen*0.85,SPREAD_WPN)),55,195),
+redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*custom.rd*0.85,SPREAD_WPN)),55,195),
+scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85,SPREAD_WPN)),45,185),
+scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN)),38,175),
+sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN)),30,165),
+freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*custom.fl*0.85,SPREAD_WPN)),55,195),
+fireBtn:isMotoG20?52:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*custom.fb*0.85,SPREAD_WPN)),55,195),
 // DRAG HEAD MAXIMO — con un toque al boton ya va al craneo
-dragHead:clamp(Math.round(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*custom.dh*0.88),55,198),
+dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*custom.dh*0.88,SPREAD_WPN)),55,198),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -1092,7 +1101,7 @@ dh:128*mult
 };
 }
 
-var ss=base0800[type]||150*mult;
+var ss=jit(base0800[type]||150*mult,SPREAD_CALIB);
 var maxVal=200;
 var minVal=50;
 
