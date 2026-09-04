@@ -336,6 +336,9 @@ body{background:#080000;color:#ff4444;font-family:'Courier New',monospace;paddin
 </div>
 <div class="ov-warn">🎯 CALIBRACION PRECISA — TODO ROJO A LA CABEZA SIN TEMBLAR</div>
 <div style="margin-top:12px">
+<div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
+<button id="hs100Btn" style="padding:10px 22px;font-size:.95rem;font-weight:bold;border:2px solid #2d1a4e;background:transparent;color:#666;border-radius:8px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button;letter-spacing:1px">🎯 100% HEADSHOT</button>
+</div>
 <h2 style="font-size:1rem;color:#c8a8e8;margin-bottom:8px">✍️ CONTAME COMO QUERES TU SENSI</h2>
 <textarea id="wpnCustom" placeholder="Ej: quiero que gire rapido, que la mira vaya sola a la cabeza, que no tiemble, tactil alto, para pegar de cerca..." style="width:100%;min-height:90px;background:rgba(15,10,30,.6);border:1px solid #a855f7;border-radius:10px;padding:12px;font-size:1rem;color:#e8d5ff;font-family:inherit;resize:vertical;box-shadow:0 0 12px rgba(168,85,247,.25)"></textarea>
 <div style="font-size:.8rem;color:#888;margin-top:6px;text-align:center">El generador lee lo que escribis y ajusta la sensi para tu arma + tu celular</div>
@@ -760,6 +763,27 @@ wpnTabPVP.classList.remove('act');
 wpnTabBR.classList.remove('act');
 });
 
+
+// === 100% HEADSHOT TOGGLE ===
+var hs100On=false;
+var hs100Btn=document.getElementById('hs100Btn');
+hs100Btn.addEventListener('click',function(){
+hs100On=!hs100On;
+if(hs100On){
+hs100Btn.style.border='2px solid #ff003c';
+hs100Btn.style.background='rgba(255,0,60,.15)';
+hs100Btn.style.color='#ff003c';
+hs100Btn.style.boxShadow='0 0 15px rgba(255,0,60,.5)';
+hs100Btn.textContent='🎯 100% HEADSHOT — ACTIVADO';
+}else{
+hs100Btn.style.border='2px solid #2d1a4e';
+hs100Btn.style.background='transparent';
+hs100Btn.style.color='#666';
+hs100Btn.style.boxShadow='none';
+hs100Btn.textContent='🎯 100% HEADSHOT';
+}
+});
+
 // === ANALIZADOR DE TEXTO — lee lo que el usuario pide y ajusta la sensi ===
 function analyzeCustomText(txt){
 var t=(txt||'').toLowerCase();
@@ -849,6 +873,11 @@ var profile=w.pvp;
 var isMotoG20=(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola');
 var customTxt=document.getElementById('wpnCustom')?document.getElementById('wpnCustom').value:'';
 var custom=analyzeCustomText(customTxt);
+if(hs100On){
+custom.gen*=1.15;custom.rd*=1.18;custom.dh*=1.25;custom.fl*=1.10;
+custom.s2*=1.08;custom.s4*=1.05;custom.sn*=1.05;
+custom.tags.push('100% HEADSHOT ACTIVADO');
+}
 var recoilAdj=w.recoil==='Alto'?1.08:w.recoil==='Medio-Alto'?1.06:w.recoil==='Medio'?1.04:1.0;
 var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.85:w.range.indexOf('Larga')>=0?0.90:w.range.indexOf('Media')>=0?1.0:1.10;
 var tremorStab=1+(1-b.antiTremor)*0.14;
@@ -872,7 +901,7 @@ fbSizeLabel:isMotoG20?'FIJO 52':'CALIBRADO'
 };
 var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:r.fireBtn===52?'FIJO 52':'CALIBRADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'MAXIMO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
-res.innerHTML='<div class="rc red" style="border-color:#ff003c;box-shadow:0 0 25px rgba(255,0,60,.4)"><div class="rh"><h3>\u{1f3af} UN TOQUE = CRANEO — '+r.weapon+'</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">\u{1f4f1} <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">Tipo: '+r.type+'</span><span class="wc red">Rango: '+r.range+'</span><span class="wc red">Recoil: '+r.recoil+'</span><span class="wc red">Fire: '+r.fireRate+'</span></div><div class="hs-tag" style="font-size:.92rem;padding:8px 12px">\u{1f3af} UN TOQUE AL BOTON Y VA AL CRANEO — MAXIMA PUNTERIA — TODO ROJO</div><div class="pm"><div class="pm-label">NIVEL PUNTERIA MAXIMA</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.weapon.toUpperCase()+' HEADSHOT</div></div><div class="sg">'+sH+'</div><div class="ai"><b>\u{1f3af} PUNTERIA:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">UN TOQUE = CRANEO — Calibrado para maxima punteria a la cabeza</span></div>'+getPhoneAdjustments(r.brand,r.model,r.hz)+'<button class="cp" id="wpnCopyBtn">\u{1f4cb} COPIAR</button></div>';
+res.innerHTML='<div class="rc red" style="border-color:#ff003c;box-shadow:0 0 25px rgba(255,0,60,.4)"><div class="rh"><h3>\u{1f3af} UN TOQUE = CRANEO — '+r.weapon+'</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">\u{1f4f1} <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">Tipo: '+r.type+'</span><span class="wc red">Rango: '+r.range+'</span><span class="wc red">Recoil: '+r.recoil+'</span><span class="wc red">Fire: '+r.fireRate+'</span></div>'+(hs100On?'<div class="hs-tag" style="font-size:.95rem;padding:10px 12px;border-color:#ff003c;box-shadow:0 0 15px rgba(255,0,60,.6)">\u{1f3af} 100% HEADSHOT ACTIVADO — TODO AL CRANEO — MAXIMO NIVEL</div>':'<div class="hs-tag" style="font-size:.92rem;padding:8px 12px">\u{1f3af} UN TOQUE AL BOTON Y VA AL CRANEO — MAXIMA PUNTERIA — TODO ROJO</div>')+'<div class="pm"><div class="pm-label">NIVEL PUNTERIA MAXIMA</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.weapon.toUpperCase()+' HEADSHOT</div></div><div class="sg">'+sH+'</div><div class="ai"><b>\u{1f3af} PUNTERIA:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">UN TOQUE = CRANEO — Calibrado para maxima punteria a la cabeza</span></div>'+getPhoneAdjustments(r.brand,r.model,r.hz)+'<button class="cp" id="wpnCopyBtn">\u{1f4cb} COPIAR</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
@@ -927,6 +956,12 @@ var isMotoG20=(model.toLowerCase().indexOf('g20')>=0&&brand==='motorola');
 // Leer lo que el usuario escribio y ajustar
 var customTxt=document.getElementById('wpnCustom')?document.getElementById('wpnCustom').value:'';
 var custom=analyzeCustomText(customTxt);
+// 100% HEADSHOT — TODO al craneo al maximo
+if(hs100On){
+custom.gen*=1.15;custom.rd*=1.18;custom.dh*=1.25;custom.fl*=1.10;
+custom.s2*=1.08;custom.s4*=1.05;custom.sn*=1.05;
+custom.tags.push('100% HEADSHOT ACTIVADO');
+}
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
