@@ -1512,7 +1512,7 @@ var lastClick=0;
 function playClick(){
 try{
 var now=Date.now();
-if(now-lastClick<90)return; // evita doble sonido en el mismo toque
+if(now-lastClick<150)return; // evita doble sonido en el mismo toque
 lastClick=now;
 if(!audioCtx){
 var AC=window.AudioContext||window.webkitAudioContext;
@@ -1532,16 +1532,13 @@ g.gain.exponentialRampToValueAtTime(0.001,t+start+dur);
 o.connect(g);g.connect(audioCtx.destination);
 o.start(t+start);o.stop(t+start+dur+0.02);
 }
-// 1. Cuerpo del click: pop suave y redondo
-tone('sine',700,240,0,0.09,0.85);
-// 2. AURA: campanita cristalina brillante (armonico del click)
-tone('sine',1560,1560,0.005,0.14,0.35);
-// 3. AURA: segundo armonico mas alto, muy sutil
-tone('sine',2340,2340,0.01,0.10,0.15);
-// 4. Eco magico: repeticion suave que le da el aura
-tone('sine',1040,1040,0.045,0.12,0.18);
-// 5. Calidez: sub-bajo cortito para que suene lleno
-tone('sine',180,120,0,0.07,0.4);
+// UN SOLO CLICK unificado — todas las capas arrancan JUNTAS (nada de ecos separados)
+// Cuerpo del click: pop redondo y suave
+tone('sine',700,240,0,0.07,0.85);
+// AURA: campanita cristalina brillante pegada al mismo instante
+tone('sine',1560,1560,0,0.10,0.3);
+// Calidez: sub-bajo cortito para que suene lleno, no apagado
+tone('sine',180,120,0,0.06,0.4);
 }catch(e){}
 }
 // Suena en CUALQUIER toque de la pantalla — todo el generador
