@@ -1520,41 +1520,95 @@ return html;
 
 
 // === ANUNCIO DE HACKEO — carga falsa tipo virus al apretar GENERAR ===
+// === VOZ GRUESA — habla SOLO durante la carga ===
+function hackSpeak(txt){
+try{
+if(!('speechSynthesis' in window))return;
+var u=new SpeechSynthesisUtterance(txt);
+u.lang='es-ES';
+u.pitch=0.35; // voz bien gruesa
+u.rate=1.05;
+u.volume=1.0;
+var vs=speechSynthesis.getVoices();
+for(var i=0;i<vs.length;i++){if(vs[i].lang&&vs[i].lang.indexOf('es')===0){u.voice=vs[i];break}}
+speechSynthesis.speak(u);
+}catch(e){}
+}
+// === ANUNCIOS MOLESTOS tipo ad real — pop-ups durante el hackeo ===
+function hackPopAd(){
+try{
+var ov=document.getElementById('hackOverlay');
+var ads=['GANASTE UN IPHONE 15! CLICK AQUI PARA RECLAMAR','FELICIDADES! ERES EL VISITANTE 1.000.000 - RECLAMA TU PREMIO AHORA','TU CELULAR TIENE 5 VIRUS! LIMPIALO AHORA MISMO','CHICAS DE TU ZONA QUIEREN CONOCERTE - VER PERFILES'];
+var txt=ads[Math.floor(Math.random()*ads.length)];
+var d=document.createElement('div');
+d.className='hack-ad';
+d.style.cssText='position:absolute;left:'+(5+Math.random()*40)+'%;top:'+(12+Math.random()*55)+'%;background:linear-gradient(135deg,#ffe14d,#ff9500);color:#000;font-weight:bold;padding:8px 12px;border:3px solid #ff0000;border-radius:8px;font-size:.72rem;max-width:70%;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.7);cursor:pointer;z-index:99999;transform:rotate('+(Math.random()*6-3)+'deg)';
+d.textContent=txt+' [X]';
+d.onclick=function(){if(d.parentNode)d.parentNode.removeChild(d)};
+ov.appendChild(d);
+setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},1300);
+}catch(e){}
+}
+// === ANUNCIO DE HACKEO — carga falsa tipo virus al apretar GENERAR ===
 var hackBusy=false;
 function playHackSequence(done){
 if(hackBusy)return;
 hackBusy=true;
+try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
 var ov=document.getElementById('hackOverlay');
 var term=document.getElementById('hackTerm');
 var bar=document.getElementById('hackBar');
 var pct=document.getElementById('hackPct');
 term.innerHTML='';
+var olds=ov.querySelectorAll('.hack-ad');
+for(var i=0;i<olds.length;i++){if(olds[i].parentNode)olds[i].parentNode.removeChild(olds[i]);}
 ov.style.display='block';
-var lines=['&gt; acceso no autorizado detectado...','&gt; conectando al dispositivo...','&gt; inyectando codigo en el sistema...','&gt; descifrando archivos...','&gt; interceptando senal del dispositivo...','&gt; TOMANDO EL CONTROL TOTAL...','&gt; accediendo a la calibracion...','&gt; HACKEO COMPLETADO &#10003;'];
-var li=0;
+var dur=4800;
+var t0=Date.now();
 var step=1;
 pct.textContent=step+'%';
+var msg=[
+{p:1, t:'&gt; ACCESO NO AUTORIZADO DETECTADO...'},
+{p:18,t:'&gt; ABRIENDO TUS FOTOS...'},
+{p:36,t:'&gt; ABRIENDO WHATSAPP...'},
+{p:54,t:'&gt; ABRIENDO TU CUENTA DE BANCO...'},
+{p:72,t:'&gt; DESCIFRANDO TODOS TUS ARCHIVOS...'},
+{p:88,t:'&gt; TELEFONO HACKEADO'},
+{p:100,t:'&gt; HACKEO COMPLETADO &#10003;'}
+];
+var li=0;
+// VOZ GRUESA — cada frase justo en su segundo de la carga, ni antes ni despues
+setTimeout(function(){hackSpeak('\u00a1Alerta! \u00a1Virus detectado!')},150);
+setTimeout(function(){hackSpeak('Se est\u00e1n abriendo tus fotos')},1150);
+setTimeout(function(){hackSpeak('Abriendo WhatsApp')},2050);
+setTimeout(function(){hackSpeak('Abriendo tu cuenta de banco')},2950);
+setTimeout(function(){hackSpeak('\u00a1Tel\u00e9fono hackeado!')},4100);
+// ANUNCIOS MOLESTOS apareciendo de la nada durante la descarga
+setTimeout(function(){hackPopAd()},650);
+setTimeout(function(){hackPopAd()},1750);
+setTimeout(function(){hackPopAd()},2750);
+setTimeout(function(){hackPopAd()},3700);
 var iv=setInterval(function(){
-step+=Math.floor(Math.random()*12)+10;
+var el=(Date.now()-t0)/dur;
+if(el>1)el=1;
+step=Math.max(step,Math.floor(el*100)+1);
 if(step>100)step=100;
 pct.textContent=step+'%';
 bar.style.width=step+'%';
-var want=Math.min(lines.length,Math.floor(step/100*lines.length)+(step>0?1:0));
-while(li<want){
+while(li<msg.length&&step>=msg[li].p){
 var d=document.createElement('div');
-d.innerHTML=lines[li];
+d.innerHTML=msg[li].t;
 d.style.opacity='0';
-term.appendChild(d);
 d.style.transition='opacity .2s';
+term.appendChild(d);
 d.style.opacity='1';
 li++;
 }
 term.scrollTop=term.scrollHeight;
-var finished=false;
-if(step>=100&&!finished){
-finished=true;
+if(step>=100){
 clearInterval(iv);
 setTimeout(function(){
+try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
 ov.style.transition='opacity .15s';
 ov.style.opacity='0';
 setTimeout(function(){
@@ -1563,9 +1617,9 @@ ov.style.opacity='1';
 hackBusy=false;
 done();
 },150);
-},200);
+},350);
 }
-},40);
+},60);
 }
 // === ANUNCIO ACTUALIZADO — congela todo 5 segundos al entrar ===
 var isFrozen=true;
