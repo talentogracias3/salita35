@@ -1621,10 +1621,18 @@ done();
 }
 },60);
 }
-// === ANUNCIO ACTUALIZADO — congela todo 5 segundos al entrar ===
+// === ANUNCIO ACTUALIZADO — SOLO UNA VEZ POR ACTUALIZACION ===
+var APP_VERSION='v2026-09-04-hackeo-voz';
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
+var updSeen=false;
+try{updSeen=(localStorage.getItem('salita35_upd')===APP_VERSION);}catch(e){}
+if(updSeen){
+// ya vio esta actualizacion — directo al generador
+updOverlay.style.display='none';
+isFrozen=false;
+}else{
 var updSec=5;
 var updTimer=setInterval(function(){
 updSec--;
@@ -1632,6 +1640,7 @@ if(updSec>0){
 updCount.textContent=updSec;
 }else{
 clearInterval(updTimer);
+try{localStorage.setItem('salita35_upd',APP_VERSION);}catch(e){}
 updOverlay.style.transition='opacity .4s';
 updOverlay.style.opacity='0';
 setTimeout(function(){
@@ -1640,6 +1649,7 @@ isFrozen=false;
 },400);
 }
 },1000);
+}
 
 // Prevent zoom
 document.addEventListener('gesturestart',function(e){e.preventDefault()});
