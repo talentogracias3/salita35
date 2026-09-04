@@ -625,17 +625,17 @@ if(m==='pvp'){
 var pb=118;
 var tremorAdj=1+(1-b.antiTremor)*0.18;
 var precisionAdj=b.precisionCurve*0.96;
-var antiOver=0.94; // recorte fino anti-overshoot: frena justo en la cabeza
+var antiOver=0.91; // recorte anti-overshoot reforzado: frena justo en la cabeza, calibrado viendo gameplay real de flick-a-cabeza
 r={
-general:clamp(Math.round(jit(pb*mult*1.04*tremorAdj*antiOver,SPREAD_MAIN*0.6)),72,160),
-redDot:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.6)),75,168),
+general:clamp(Math.round(jit(pb*mult*1.04*tremorAdj*antiOver,SPREAD_MAIN*0.45)),72,160),
+redDot:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.45)),75,168),
 scope2x:clamp(Math.round(jit(pb*mult*0.96*precisionAdj,SPREAD_MAIN*0.6)),62,152),
 scope4x:clamp(Math.round(jit(pb*mult*0.86*precisionAdj,SPREAD_MAIN*0.6)),52,142),
 sniper:clamp(Math.round(jit(pb*mult*0.76*precisionAdj,SPREAD_MAIN*0.6)),42,132),
-freeLook:clamp(Math.round(jit(pb*mult*1.06*tremorAdj,SPREAD_MAIN*0.6)),72,162),
-fireBtn:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.6)),72,168),
-// DRAG HEAD en zona dulce: sube derecho al craneo y frena ahi — no se pasa
-dragHead:clamp(Math.round(jit(pb*mult*1.16*tremorAdj*antiOver,SPREAD_MAIN*0.6)),78,172)
+freeLook:clamp(Math.round(jit(pb*mult*1.06*tremorAdj*antiOver,SPREAD_MAIN*0.5)),72,162),
+fireBtn:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.45)),72,168),
+// DRAG HEAD en zona dulce: sube derecho al craneo y frena ahi — no se pasa (calibrado con gameplay real)
+dragHead:clamp(Math.round(jit(pb*mult*1.16*tremorAdj*antiOver,SPREAD_MAIN*0.45)),78,172)
 };
 r.weapons=['Sirve para TODAS las armas','Deagle / MP40 / AK / M4A1','M1887 / AWM / Groza / XM8'];
 r.modeName='UNIVERSAL TODAS LAS ARMAS — TODO ROJO SIN PASARSE';r.color='red';
@@ -649,15 +649,16 @@ var tremorBr=1+(1-b.antiTremor)*0.06;
 var precisionBr=b.precisionCurve;
 var longRange=Math.min(1.0,0.90+b.precisionCurve*0.06);
 var shortRange=1.02+b.procBoost*0.02;
+var antiOverBr=0.93; // frena en la cabeza tambien en BR+DECLA, calibrado con gameplay real
 r={
-general:clamp(Math.round(jit(bb*mult*1.06*shortRange,SPREAD_MAIN)),60,185),
-redDot:clamp(Math.round(jit(bb*mult*1.02*shortRange,SPREAD_MAIN)),60,185),
+general:clamp(Math.round(jit(bb*mult*1.06*shortRange*antiOverBr,SPREAD_MAIN*0.75)),60,185),
+redDot:clamp(Math.round(jit(bb*mult*1.02*shortRange*antiOverBr,SPREAD_MAIN*0.75)),60,185),
 scope2x:clamp(Math.round(jit(bb*mult*0.98*precisionBr,SPREAD_MAIN)),50,175),
 scope4x:clamp(Math.round(jit(bb*mult*0.92*longRange,SPREAD_MAIN)),40,165),
 sniper:clamp(Math.round(jit(bb*mult*0.86*longRange,SPREAD_MAIN)),35,155),
-freeLook:clamp(Math.round(jit(bb*mult*1.08*tremorBr,SPREAD_MAIN)),60,185),
-fireBtn:clamp(Math.round(jit(bb*mult*1.04*tremorBr,SPREAD_MAIN)),60,188),
-dragHead:clamp(Math.round(jit(bb*mult*1.10*tremorBr,SPREAD_MAIN)),60,188)
+freeLook:clamp(Math.round(jit(bb*mult*1.08*tremorBr*antiOverBr,SPREAD_MAIN*0.75)),60,185),
+fireBtn:clamp(Math.round(jit(bb*mult*1.04*tremorBr*antiOverBr,SPREAD_MAIN*0.75)),60,188),
+dragHead:clamp(Math.round(jit(bb*mult*1.10*tremorBr*antiOverBr,SPREAD_MAIN*0.75)),60,188)
 };
 r.weapons=['Larga: AWM/Kar98k/M82B','Corta: MP40/AK/SCAR','Versatil: M4A1/Groza/XM8'];
 r.modeName='BR+DECLA Larga/Corta';r.color='green';
@@ -1023,19 +1024,20 @@ custom.gen*=1.15;custom.rd*=1.18;custom.dh*=1.25;custom.fl*=1.10;
 custom.s2*=1.08;custom.s4*=1.05;custom.sn*=1.05;
 custom.tags.push('100% HEADSHOT ACTIVADO');
 }
+var antiOverW=0.93; // frena en la cabeza sin pasarse — calibrado viendo gameplay real de flick-a-cabeza
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
 customTags:custom.tags,customTxt:customTxt,
-general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*custom.gen*0.85,SPREAD_WPN)),55,195),
-redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*custom.rd*0.85,SPREAD_WPN)),55,195),
+general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*custom.gen*0.85,SPREAD_WPN*0.8)),55,195),
+redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*custom.rd*0.85,SPREAD_WPN*0.8)),55,195),
 scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85,SPREAD_WPN)),45,185),
 scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN)),38,175),
 sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN)),30,165),
-freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*custom.fl*0.85,SPREAD_WPN)),55,195),
-fireBtn:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*custom.fb*0.85,SPREAD_WPN)),55,195),
-// DRAG HEAD MAXIMO — con un toque al boton ya va al craneo
-dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*custom.dh*0.88,SPREAD_WPN)),55,198),
+freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*antiOverW*custom.fl*0.85,SPREAD_WPN*0.8)),55,195),
+fireBtn:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*antiOverW*custom.fb*0.85,SPREAD_WPN*0.8)),55,195),
+// DRAG HEAD MAXIMO — con un toque al boton ya va al craneo, y FRENA ahi sin pasarse (calibrado con gameplay real)
+dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*antiOverW*custom.dh*0.88,SPREAD_WPN*0.8)),55,198),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -1161,38 +1163,40 @@ var corrected,correction=0;
 
 if(val>ss*1.15){
 // OVERSHOOT - muy arriba del 0800, la mira se pasa de la cabeza
+// Pullback reforzado (calibrado viendo gameplay real): frena mas firme para que el flick no pase de la cabeza
 var overshoot=val-ss;
 var pullback;
 if(isLongRange){
-pullback=0.78+(tremor*0.12);
+pullback=0.83+(tremor*0.12);
 corrected=Math.round(ss+overshoot*(1-pullback));
 if(overshoot>ss*0.35){
 corrected=Math.round(corrected*(0.93+precision*0.04));
 }
 }else if(isShortRange){
-pullback=0.60+(tremor*0.18);
+pullback=0.68+(tremor*0.18);
 corrected=Math.round(ss+overshoot*(1-pullback));
 }else{
-pullback=0.65+(tremor*0.15);
+pullback=0.72+(tremor*0.15);
 corrected=Math.round(ss+overshoot*(1-pullback));
 }
 correction=corrected-val;
 
 }else if(val<ss*0.75){
 // UNDERSHOOT - muy bajo, la mira no llega a la cabeza
+// Cierre mas rapido (calibrado viendo gameplay real): el flick llega derecho a la cabeza sin demorar
 var undershoot=ss-val;
 if(isLongRange){
-corrected=Math.round(val+undershoot*0.38*precision);
+corrected=Math.round(val+undershoot*0.46*precision);
 }else{
-corrected=Math.round(val+undershoot*0.48*precision);
+corrected=Math.round(val+undershoot*0.56*precision);
 }
 correction=corrected-val;
 
 }else{
-// EN ZONA 0800 - micro-ajuste fino al punto exacto
-var microPull=0.12;
-if(isLongRange)microPull=0.10;
-if(isSpecial)microPull=0.14;
+// EN ZONA 0800 - micro-ajuste fino al punto exacto (mas preciso: aterriza justo en la cabeza)
+var microPull=0.16;
+if(isLongRange)microPull=0.13;
+if(isSpecial)microPull=0.19;
 corrected=Math.round(val+(ss-val)*microPull);
 correction=corrected-val;
 }
@@ -1647,7 +1651,7 @@ done();
 },60);
 }
 // === ANUNCIO ACTUALIZADO — SOLO UNA VEZ POR ACTUALIZACION ===
-var APP_VERSION='v2026-09-04-logo-corporativo';
+var APP_VERSION='v2026-09-04-calibracion-gameplay';
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
