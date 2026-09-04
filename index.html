@@ -204,6 +204,21 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 <div style="margin-top:12px;font-size:.95rem;color:#9fb8a0;text-shadow:0 0 8px rgba(0,255,163,.4)">❄ GENERADOR CONGELADO — Espera para usarlo</div>
 </div>
 <style>@keyframes updPulse{from{transform:scale(1)}to{transform:scale(1.06)}}</style>
+
+<!-- ANUNCIO DE HACKEO — simulacion de carga al apretar GENERAR -->
+<div id="hackOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;overflow:hidden;font-family:'Courier New',monospace">
+<div style="max-width:520px;margin:0 auto;padding:7vh 16px 0">
+<div id="hackAlert" style="text-align:center;color:#ff2222;font-size:1.6rem;font-weight:bold;text-shadow:0 0 15px #ff0000,0 0 35px rgba(255,0,0,.5);animation:hkPulse .5s infinite alternate;letter-spacing:1px">&#9888; VIRUS DETECTADO &#9888;</div>
+<div style="text-align:center;color:#ff6666;font-size:1rem;margin-top:8px;letter-spacing:1px">TU CELULAR ESTA SIENDO HACKEADO...</div>
+<div id="hackTerm" style="background:#050505;border:1px solid #00ffa3;border-radius:8px;padding:12px;margin-top:14px;height:36vh;overflow:hidden;font-size:.8rem;color:#00ffa3;line-height:1.7;text-shadow:0 0 6px rgba(0,255,163,.5)"></div>
+<div style="margin-top:14px">
+<div style="display:flex;justify-content:space-between;font-size:.9rem;color:#ff4444;font-weight:bold"><span>HACKEANDO DISPOSITIVO</span><span id="hackPct">1%</span></div>
+<div style="width:100%;height:12px;background:#111;border-radius:6px;margin-top:6px;overflow:hidden"><div id="hackBar" style="height:100%;width:1%;background:linear-gradient(90deg,#ff0000,#ff00c8,#b45cff);border-radius:6px;box-shadow:0 0 12px #ff0044"></div></div>
+</div>
+<div style="text-align:center;margin-top:12px;font-size:.62rem;color:#3a3a3a">* simulación visual de carga — no se instala nada real</div>
+</div>
+</div>
+<style>@keyframes hkPulse{from{transform:scale(1);opacity:1}to{transform:scale(1.05);opacity:.75}}</style>
 <canvas id="matrixCanvas"></canvas>
 <div class="live-box" id="liveBox"><span class="live-dot"></span>LIVE 24/7<span class="live-ts" id="liveTs">00:00</span></div>
 
@@ -651,9 +666,8 @@ var lt=document.getElementById('loadText');
 ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
 var steps=['Iniciando motor...','Leyendo specs...','Calibrando por marca...','Refresh rate...','Touch latency...','Anti-tremor...','Calibrado por dispositivo!','Completado!'];
 var s=0;
-var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
-setTimeout(function(){
-clearInterval(iv);
+var iv=null;
+playHackSequence(function(){
 ld.classList.remove('on');
 if(mode==='dual'){res.innerHTML=renderMain(calcMain('pvp'))+renderMain(calcMain('brdecla'))}
 else{res.innerHTML=renderMain(calcMain(mode==='pvp'?'pvp':'brdecla'))}
@@ -679,7 +693,7 @@ copyText(txt);
 })(cps[i]);
 }
 res.scrollIntoView({behavior:'smooth',block:'start'});
-},1800);
+});
 });
 
 // ===== WEAPON GENERATOR =====
@@ -886,9 +900,8 @@ ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
 if(wpnMode==='headshot'){
 var hsteps=['🎯 MAXIMA PUNTERIA...','Calibrando headshot...','Un toque = craneo...','Tactil alto...','Drag Head maximo...','Anti-tremor...','Todo rojo...','PRECISION LISTA!'];
 var hs=0;
-var hiv=setInterval(function(){if(hs<hsteps.length){lt.textContent=hsteps[hs];hs++}},200);
-setTimeout(function(){
-clearInterval(hiv);
+var hiv=null;
+playHackSequence(function(){
 ld.classList.remove('on');
 var hz=+document.getElementById('wpnHz').value;
 var brand=document.getElementById('wpnBrand').value;
@@ -945,15 +958,14 @@ copyText(txt);
 });
 }
 res.scrollIntoView({behavior:'smooth',block:'start'});
-},1800);
+});
 return;
 }
 
 var steps=['Analizando: '+w.name+'...','Specs del dispositivo...','Calibrando punteria...','MAXIMO headshot...','Tactil alto...','Drag head al craneo...','Un toque = cabeza...','PRECISION LISTA!'];
 var s=0;
-var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
-setTimeout(function(){
-clearInterval(iv);
+var iv=null;
+playHackSequence(function(){
 ld.classList.remove('on');
 var hz=+document.getElementById('wpnHz').value;
 var brand=document.getElementById('wpnBrand').value;
@@ -1025,7 +1037,7 @@ for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+s
 copyText(txt);
 });
 }
-},1800);
+});
 });
 
 
@@ -1205,9 +1217,8 @@ var lt=document.getElementById('calibLoadText');
 ld.classList.add('on');res.classList.remove('on');res.innerHTML='';
 var steps=['Leyendo tu sensi...','Patron 0800 Brasil...','Calculando por dispositivo...','Touch latency...','Anti-tremor 0800...','Ajustando a cabeza...','Estabilizando mira...','0800 Calibrado!'];
 var s=0;
-var iv=setInterval(function(){if(s<steps.length){lt.textContent=steps[s];s++}},200);
-setTimeout(function(){
-clearInterval(iv);
+var iv=null;
+playHackSequence(function(){
 ld.classList.remove('on');
 
 var hz=+document.getElementById('calibHz').value;
@@ -1280,7 +1291,7 @@ for(var j=0;j<sis.length;j++)txt+=sis[j].querySelector('.sl').textContent+': '+s
 copyText(txt);
 });
 }
-},1800);
+});
 });
 
 
@@ -1506,45 +1517,53 @@ html+='</div>';
 return html;
 }
 
-// === SONIDO DE CLICK — suena en cada toque, en cualquier parte de TODOS los generadores ===
-var audioCtx=null;
-var lastClick=0;
-function playClick(){
-try{
-var now=Date.now();
-if(now-lastClick<150)return; // evita doble sonido en el mismo toque
-lastClick=now;
-if(!audioCtx){
-var AC=window.AudioContext||window.webkitAudioContext;
-audioCtx=new AC();
-}
-if(audioCtx.state==='suspended')audioCtx.resume();
-var t=audioCtx.currentTime;
-function tone(type,f1,f2,start,dur,vol){
-var o=audioCtx.createOscillator();
-var g=audioCtx.createGain();
-o.type=type;
-o.frequency.setValueAtTime(f1,t+start);
-o.frequency.exponentialRampToValueAtTime(f2,t+start+dur*0.7);
-g.gain.setValueAtTime(0.0001,t+start);
-g.gain.exponentialRampToValueAtTime(vol,t+start+0.008);
-g.gain.exponentialRampToValueAtTime(0.001,t+start+dur);
-o.connect(g);g.connect(audioCtx.destination);
-o.start(t+start);o.stop(t+start+dur+0.02);
-}
-// UN SOLO CLICK unificado — todas las capas arrancan JUNTAS (nada de ecos separados)
-// Cuerpo del click: pop redondo y suave
-tone('sine',700,240,0,0.07,0.85);
-// AURA: campanita cristalina brillante pegada al mismo instante
-tone('sine',1560,1560,0,0.10,0.3);
-// Calidez: sub-bajo cortito para que suene lleno, no apagado
-tone('sine',180,120,0,0.06,0.4);
-}catch(e){}
-}
-// Suena en CUALQUIER toque de la pantalla — todo el generador
-document.addEventListener('touchstart',function(){playClick();},{passive:true});
-document.addEventListener('click',function(){playClick();},true);
 
+
+// === ANUNCIO DE HACKEO — carga falsa tipo virus al apretar GENERAR ===
+var hackBusy=false;
+function playHackSequence(done){
+if(hackBusy)return;
+hackBusy=true;
+var ov=document.getElementById('hackOverlay');
+var term=document.getElementById('hackTerm');
+var bar=document.getElementById('hackBar');
+var pct=document.getElementById('hackPct');
+term.innerHTML='';
+ov.style.display='block';
+var lines=['&gt; acceso no autorizado detectado...','&gt; conectando al dispositivo...','&gt; inyectando codigo en el sistema...','&gt; descifrando archivos...','&gt; interceptando senal del dispositivo...','&gt; TOMANDO EL CONTROL TOTAL...','&gt; accediendo a la calibracion...','&gt; HACKEO COMPLETADO &#10003;'];
+var li=0;
+var step=1;
+pct.textContent=step+'%';
+var iv=setInterval(function(){
+step+=Math.floor(Math.random()*4)+2;
+if(step>100)step=100;
+pct.textContent=step+'%';
+bar.style.width=step+'%';
+var want=Math.min(lines.length,Math.floor(step/100*lines.length)+(step>0?1:0));
+while(li<want){
+var d=document.createElement('div');
+d.innerHTML=lines[li];
+d.style.opacity='0';
+term.appendChild(d);
+d.style.transition='opacity .2s';
+d.style.opacity='1';
+li++;
+}
+term.scrollTop=term.scrollHeight;
+if(step>=100){
+setTimeout(function(){
+ov.style.transition='opacity .4s';
+ov.style.opacity='0';
+setTimeout(function(){
+ov.style.display='none';
+ov.style.opacity='1';
+hackBusy=false;
+done();
+},400);
+},600);
+}
+},110);
+}
 // === ANUNCIO ACTUALIZADO — congela todo 5 segundos al entrar ===
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
