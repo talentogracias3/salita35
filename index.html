@@ -219,6 +219,15 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 </div>
 </div>
 <style>@keyframes hkPulse{from{transform:scale(1);opacity:1}to{transform:scale(1.05);opacity:.75}}</style>
+<!-- SPLASH LOGO OFICIAL — aparece al reiniciar (despues del anuncio de actualizacion) -->
+<div id="logoSplash" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(3,5,18,.97);z-index:99997;align-items:center;justify-content:center;flex-direction:column;text-align:center">
+<div id="logoPulse" style="animation:logoPulse 1.5s ease-in-out infinite">
+<div style="font-size:.95rem;font-weight:bold;letter-spacing:9px;color:#2bd6ff;text-shadow:0 0 12px rgba(43,214,255,.8);margin-bottom:2px">GENERADOR</div>
+<div style="font-size:3.2rem;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#ff2bd6,#2bd6ff,#b45cff,#3dffb5);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(255,43,214,.55))">SALITA FF</div>
+</div>
+<div style="margin-top:22px;font-size:.85rem;letter-spacing:4px;color:#8a93b8">LOS 3 GENERADORES OFICIALES</div>
+</div>
+<style>@keyframes logoPulse{0%,100%{transform:scale(.78)}50%{transform:scale(1.18)}}</style>
 <canvas id="matrixCanvas"></canvas>
 <div class="live-box" id="liveBox"><span class="live-dot"></span>LIVE 24/7<span class="live-ts" id="liveTs">00:00</span></div>
 
@@ -1622,16 +1631,30 @@ done();
 },60);
 }
 // === ANUNCIO ACTUALIZADO — SOLO UNA VEZ POR ACTUALIZACION ===
-var APP_VERSION='v2026-09-04-hackeo-voz';
+var APP_VERSION='v2026-09-04-logo-salita-ff';
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
 var updSeen=false;
 try{updSeen=(localStorage.getItem('salita35_upd')===APP_VERSION);}catch(e){}
 if(updSeen){
-// ya vio esta actualizacion — directo al generador
+// ya vio esta actualizacion — SPLASH del LOGO OFICIAL SALITA FF (5 segundos)
 updOverlay.style.display='none';
+var logoSplash=document.getElementById('logoSplash');
+var lsSec=5;
+logoSplash.style.display='flex';
+var lsTimer=setInterval(function(){
+lsSec--;
+if(lsSec<=0){
+clearInterval(lsTimer);
+logoSplash.style.transition='opacity .4s';
+logoSplash.style.opacity='0';
+setTimeout(function(){
+logoSplash.style.display='none';
 isFrozen=false;
+},400);
+}
+},1000);
 }else{
 var updSec=5;
 var updTimer=setInterval(function(){
