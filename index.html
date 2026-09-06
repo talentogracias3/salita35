@@ -390,9 +390,6 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
 <button id="hs100Btn" style="padding:10px 22px;font-size:.95rem;font-weight:bold;border:2px solid #2b1055;background:transparent;color:#666;border-radius:8px;cursor:pointer;touch-action:manipulation;-webkit-appearance:button;appearance:button;letter-spacing:1px">🎯 100% HEADSHOT</button>
 </div>
-<h2 style="font-size:1rem;color:#d0aaff;margin-bottom:8px">✍️ CONTAME COMO QUERES TU SENSI</h2>
-<textarea id="wpnCustom" placeholder="Ej: quiero que gire rapido, que la mira vaya sola a la cabeza, que no tiemble, tactil alto, para pegar de cerca..." style="width:100%;min-height:90px;background:rgba(15,10,30,.6);border:1px solid #b45cff;border-radius:10px;padding:12px;font-size:1rem;color:#e8d5ff;font-family:inherit;resize:vertical;box-shadow:0 0 12px rgba(180,92,255,.25)"></textarea>
-<div style="font-size:.8rem;color:#888;margin-top:6px;text-align:center">El generador lee lo que escribis y ajusta la sensi para tu arma + tu celular</div>
 </div>
 <button class="ov-btn" id="wpnGen">⚡ GENERAR SENSIBILIDAD POR ARMA ⚡</button>
 
@@ -935,8 +932,9 @@ var model=document.getElementById('wpnModel').value||'Desconocido';
 var b=brandData[brand]||brandData.otra;
 var mult=computeMult(brand,hz,'pvp');
 var profile=w.pvp;
-var customTxt=document.getElementById('wpnCustom')?document.getElementById('wpnCustom').value:'';
-var custom=analyzeCustomText(customTxt);
+// Sin texto custom: el generador calibra directo por arma + dispositivo
+var customTxt='';
+var custom={gen:1.0,rd:1.0,s2:1.0,s4:1.0,sn:1.0,fl:1.0,fb:1.0,dh:1.0,tags:[]};
 if(hs100On){
 custom.gen*=1.15;custom.rd*=1.18;custom.dh*=1.25;custom.fl*=1.10;
 custom.s2*=1.08;custom.s4*=1.05;custom.sn*=1.05;
@@ -947,18 +945,21 @@ var rangeAdj=w.range.indexOf('Muy Larga')>=0?0.85:w.range.indexOf('Larga')>=0?0.
 var tremorStab=1+(1-b.antiTremor)*0.14;
 var precCurve=b.precisionCurve;
 var headBoost=1.20;
+// PRECISION REFORZADA — frena exacto en el craneo + fluidez de disparo
+var antiOverH=0.94; // el headBoost no se pasa de la cabeza
+var fluidFireH=1.04; // fluidez de disparo al tracking del enemigo
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:'UN TOQUE = CRANEO',isPVP:true,
 customTags:custom.tags,customTxt:customTxt,
-general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headBoost*custom.gen*0.85,SPREAD_WPN)),55,195),
-redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headBoost*custom.rd*0.85,SPREAD_WPN)),55,195),
-scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headBoost*custom.s2*0.85,SPREAD_WPN)),45,185),
-scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN)),38,175),
-sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN)),30,165),
-freeLook:clamp(Math.round(jit(profile.fl*mult*headBoost*custom.fl*0.85,SPREAD_WPN)),55,195),
-fireBtn:clamp(Math.round(jit(profile.fb*mult*custom.fb*0.85,SPREAD_WPN)),55,195),
-dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*headBoost*custom.dh*0.88,SPREAD_WPN)),55,198),
+general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headBoost*antiOverH*custom.gen*0.85,SPREAD_WPN*0.6)),55,195),
+redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headBoost*antiOverH*custom.rd*0.85,SPREAD_WPN*0.6)),55,195),
+scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headBoost*custom.s2*0.85,SPREAD_WPN*0.8)),45,185),
+scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN*0.8)),38,175),
+sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN*0.8)),30,165),
+freeLook:clamp(Math.round(jit(profile.fl*mult*headBoost*antiOverH*custom.fl*0.85,SPREAD_WPN*0.6)),55,195),
+fireBtn:clamp(Math.round(jit(profile.fb*mult*fluidFireH*custom.fb*0.85,SPREAD_WPN*0.6)),55,195),
+dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*headBoost*antiOverH*fluidFireH*custom.dh*0.88,SPREAD_WPN*0.6)),55,198),
 id:'HS-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -1016,28 +1017,33 @@ var precCurve=b.precisionCurve;
 var fbMult=fbSize==='small'?0.92:fbSize==='big'?1.08:1;
 // Boton de disparo: se genera con su propia sensi recomendada
 // Leer lo que el usuario escribio y ajustar
-var customTxt=document.getElementById('wpnCustom')?document.getElementById('wpnCustom').value:'';
-var custom=analyzeCustomText(customTxt);
+// Sin texto custom: el generador calibra directo por arma + dispositivo
+var customTxt='';
+var custom={gen:1.0,rd:1.0,s2:1.0,s4:1.0,sn:1.0,fl:1.0,fb:1.0,dh:1.0,tags:[]};
 // 100% HEADSHOT — TODO al craneo al maximo
 if(hs100On){
 custom.gen*=1.15;custom.rd*=1.18;custom.dh*=1.25;custom.fl*=1.10;
 custom.s2*=1.08;custom.s4*=1.05;custom.sn*=1.05;
 custom.tags.push('100% HEADSHOT ACTIVADO');
 }
-var antiOverW=0.93; // frena en la cabeza sin pasarse — calibrado viendo gameplay real de flick-a-cabeza
+// PRECISION Y FLUIDEZ REFORZADAS — calibrado viendo gameplay real de flick-a-cabeza
+var antiOverW=0.92; // frena JUSTO en la cabeza, sin pasarse ni un pelo
+var fluidMove=1.03; // FLUIDEZ DE MOVIMIENTO: giro suave y continuo, sin trabas al perseguir al enemigo
+var fluidFire=1.04; // FLUIDEZ DE DISPARO: el dedo dispara sin frenar la mira, tracking continuo
+var headPrec=1.02;  // PRECISION AL CRANEO: el flick aterriza exacto en la cabeza
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
 customTags:custom.tags,customTxt:customTxt,
-general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*custom.gen*0.85,SPREAD_WPN*0.8)),55,195),
-redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*custom.rd*0.85,SPREAD_WPN*0.8)),55,195),
-scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85,SPREAD_WPN)),45,185),
-scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN)),38,175),
-sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN)),30,165),
-freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*antiOverW*custom.fl*0.85,SPREAD_WPN*0.8)),55,195),
-fireBtn:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*antiOverW*custom.fb*0.85,SPREAD_WPN*0.8)),55,195),
-// DRAG HEAD MAXIMO — con un toque al boton ya va al craneo, y FRENA ahi sin pasarse (calibrado con gameplay real)
-dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*antiOverW*custom.dh*0.88,SPREAD_WPN*0.8)),55,198),
+general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*fluidMove*custom.gen*0.85,SPREAD_WPN*0.55)),55,195),
+redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*headPrec*custom.rd*0.85,SPREAD_WPN*0.55)),55,195),
+scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85,SPREAD_WPN*0.8)),45,185),
+scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN*0.8)),38,175),
+sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN*0.8)),30,165),
+freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*antiOverW*fluidMove*custom.fl*0.85,SPREAD_WPN*0.55)),55,195),
+fireBtn:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*antiOverW*fluidFire*custom.fb*0.85,SPREAD_WPN*0.55)),55,195),
+// DRAG HEAD MAXIMO — con un toque al boton ya va al craneo, frena JUSTO ahi y sigue fluido al disparar
+dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*antiOverW*headPrec*fluidFire*custom.dh*0.88,SPREAD_WPN*0.55)),55,198),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -1651,7 +1657,7 @@ done();
 },60);
 }
 // === ANUNCIO ACTUALIZADO — SOLO UNA VEZ POR ACTUALIZACION ===
-var APP_VERSION='v2026-09-04-calibracion-gameplay';
+var APP_VERSION='v2026-09-06-arma-precision-fluidez';
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
