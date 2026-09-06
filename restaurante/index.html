@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESTAURANTE LA AZU — Cocina Elegante | La Paz, Mendoza</title>
+<meta name="description" content="RESTAURANTE LA AZU — Cocina elegante. Menú completo con fotos, precios y reseñas de clientes.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0b09;color:#f2ece1;font-family:'Inter',sans-serif}
+h1,h2,.logo{font-family:'Playfair Display',serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(13,11,9,.92);backdrop-filter:blur(10px);border-bottom:1px solid #2a2318}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+nav a{color:#d8b45a;text-decoration:none;font-weight:700;font-size:.9rem;letter-spacing:.05em}
+.logo-mini{font-family:'Playfair Display',serif;color:#f2ece1;font-weight:800;font-size:1.05rem}
+.logo-mini span{color:#d8b45a}
+/* HERO */
+header{position:relative;min-height:92vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.hero-img{position:absolute;inset:0;background:url('https://media.base44.com/images/public/6a8a5e9dbd1807968695b5db/44c2c84e2_generated_image.png') center/cover no-repeat;filter:brightness(.42) saturate(1.15)}
+header::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,#0d0b09 100%)}
+.hero-txt{position:relative;z-index:2;padding:20px}
+.logo{font-size:clamp(2.6rem,8vw,4.6rem);font-weight:800;letter-spacing:.12em;color:#f7f0e4;text-shadow:0 4px 40px rgba(0,0,0,.8)}
+.logo span{color:#d8b45a}
+.tagline{font-style:italic;font-family:'Playfair Display',serif;font-size:clamp(1rem,3vw,1.4rem);color:#e6d3a3;margin-top:10px}
+.sub{color:#b8a988;margin-top:14px;font-size:.95rem;letter-spacing:.15em;text-transform:uppercase}
+.stars-hero{color:#d8b45a;font-size:1.3rem;margin-top:18px;letter-spacing:.25em}
+.btn{display:inline-block;margin-top:26px;background:linear-gradient(135deg,#d8b45a,#b8923a);color:#14100a;font-weight:700;padding:15px 38px;border-radius:999px;text-decoration:none;letter-spacing:.08em;font-size:.95rem;box-shadow:0 10px 30px rgba(216,180,90,.35)}
+/* CONTADOR */
+.counter{background:#141009;border-top:1px solid #2a2318;border-bottom:1px solid #2a2318;padding:18px;text-align:center}
+.counter b{color:#d8b45a;font-size:1.3rem}
+.counter span{color:#8f836a;font-size:.85rem;margin-left:6px}
+/* MENÚ */
+section{padding:60px 0}
+.title{text-align:center;font-size:clamp(1.8rem,5vw,2.6rem);color:#f7f0e4}
+.title small{display:block;font-family:'Inter',sans-serif;font-size:.8rem;color:#d8b45a;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:28px 0 30px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.filters button{background:#1a150e;border:1px solid #3a2f1c;color:#c9bda3;padding:8px 16px;border-radius:999px;cursor:pointer;font-size:.82rem;font-weight:500;transition:.2s}
+.filters button:hover{border-color:#d8b45a;color:#f2ece1}
+.filters button.on{background:#d8b45a;color:#14100a;border-color:#d8b45a;font-weight:700}
+.search{background:#1a150e;border:1px solid #3a2f1c;color:#f2ece1;padding:9px 16px;border-radius:999px;font-size:.9rem;width:230px;outline:none}
+.search:focus{border-color:#d8b45a}
+/* GRID PLATOS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.dish{background:#17120c;border:1px solid #2e2413;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s}
+.dish:hover{transform:translateY(-6px);border-color:#d8b45a;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.dish .ph{height:140px;display:flex;align-items:center;justify-content:center;font-size:3.4rem;background:linear-gradient(135deg,#241b0f,#171208);overflow:hidden}
+.dish .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.dish:hover .ph img{transform:scale(1.08)}
+.dish .body{padding:14px 16px 16px}
+.dish h3{font-size:.98rem;color:#f7f0e4;font-weight:700}
+.dish .desc{font-size:.78rem;color:#9a8d72;margin-top:5px;min-height:32px}
+.dish .price{color:#d8b45a;font-weight:700;margin-top:8px;font-size:1.05rem}
+.dish .rate{display:flex;align-items:center;gap:5px;margin-top:6px;font-size:.78rem}
+.dish .rate .st{color:#d8b45a;letter-spacing:.1em}
+.dish .rate .rv{color:#8f836a}
+.noRes{text-align:center;color:#8f836a;padding:40px;font-style:italic;font-family:'Playfair Display',serif}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(8,6,3,.85);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:#17120c;border:1px solid #d8b45a55;border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+.modal .big{height:240px;display:flex;align-items:center;justify-content:center;font-size:6.5rem;background:linear-gradient(135deg,#2a2010,#171208);border-bottom:1px solid #d8b45a33;overflow:hidden}
+.modal .big img{width:100%;height:100%;object-fit:cover}
+.modal .big span{position:relative;z-index:2}
+.modal .body{padding:24px}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.6rem;color:#f7f0e4}
+.modal .cat{color:#d8b45a;font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;margin-top:4px}
+.modal .desc{color:#b8a988;margin-top:12px;font-size:.95rem;line-height:1.7}
+.modal .price{color:#d8b45a;font-size:1.5rem;font-weight:700;margin-top:14px}
+.modal .stars{color:#d8b45a;font-size:1.15rem;letter-spacing:.2em;margin-top:10px}
+.modal .review{margin-top:16px;background:#100c07;border-left:3px solid #d8b45a;border-radius:0 10px 10px 0;padding:13px 16px}
+.modal .review p{color:#e6d3a3;font-style:italic;font-size:.9rem;line-height:1.6}
+.modal .review span{display:block;color:#8f836a;font-size:.75rem;margin-top:8px;font-style:normal}
+.close{display:block;width:100%;background:#d8b45a;color:#14100a;font-weight:700;border:none;padding:14px;font-size:.95rem;letter-spacing:.08em;cursor:pointer}
+/* RESEÑAS */
+.reviews{background:#141009;border-top:1px solid #2a2318;border-bottom:1px solid #2a2318}
+.revGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:28px}
+.revCard{background:#17120c;border:1px solid #2e2413;border-radius:14px;padding:20px}
+.revCard .st{color:#d8b45a;letter-spacing:.15em}
+.revCard p{color:#d6c9ae;font-style:italic;margin-top:10px;font-size:.9rem;line-height:1.6}
+.revCard span{display:block;color:#8f836a;font-size:.78rem;margin-top:12px}
+footer{padding:50px 20px;text-align:center;color:#8f836a;font-size:.85rem}
+footer .fLogo{font-family:'Playfair Display',serif;font-size:1.5rem;color:#f2ece1;font-weight:800}
+footer .fLogo span{color:#d8b45a}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo-mini">LA <span>AZU</span></div>
+    <a href="#menu">VER MENÚ →</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-img"></div>
+  <div class="hero-txt">
+    <h1 class="logo">LA <span>AZU</span></h1>
+    <p class="tagline">"Cocina elegante en el corazón de La Paz"</p>
+    <p class="sub">Restaurante · Parrilla · Cocina de autor</p>
+    <div class="stars-hero">★★★★★</div>
+    <a href="#menu" class="btn">EXPLORAR EL MENÚ</a>
+  </div>
+</header>
+
+<div class="counter"><b id="nDishes">0</b><span>platos en esta demo — la estructura admite 1500+ cargando el menú real del cliente</span></div>
+
+<section id="menu">
+  <div class="wrap">
+    <h2 class="title"><small>Menú completo</small>Nuestros Platos</h2>
+    <div class="tools">
+      <input class="search" id="q" type="text" placeholder="🔍 Buscar plato...">
+    </div>
+    <div class="filters" id="filters"></div>
+    <p style="text-align:center;color:#8f836a;font-size:.8rem;margin-top:14px">Tocá cualquier plato para verlo en grande con su reseña completa</p>
+    <div class="grid" id="grid" style="margin-top:22px"></div>
+    <p class="noRes" id="noRes" style="display:none">No encontramos ese plato… probá con otro nombre.</p>
+  </div>
+</section>
+
+<section class="reviews">
+  <div class="wrap">
+    <h2 class="title"><small>Lo que dicen</small>Reseñas del Restaurante</h2>
+    <div class="revGrid">
+      <div class="revCard"><div class="st">★★★★★</div><p>"La mejor carne que comí en mi vida. El ambiente es hermoso y la atención de diez. Volvemos cada fin de semana."</p><span>— María G., clienta habitual</span></div>
+      <div class="revCard"><div class="st">★★★★★</div><p>"Celebramos nuestro aniversario y fue perfecto. Las pastas son artesanales, se nota la calidad. Recomendadísimo."</p><span>— Carlos y Ana P.</span></div>
+      <div class="revCard"><div class="st">★★★★★</div><p>"Pedí por el catálogo digital desde el celular y todo llegó rápido y caliente. Precios justos para la calidad."</p><span>— Diego M., pedido a domicilio</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fLogo">LA <span>AZU</span></div>
+  <p style="margin-top:10px">Av. San Martín 450 · La Paz, Mendoza · Reservas: 263 457-1625</p>
+  <p style="margin-top:6px">Lun a Dom · 12:00 a 23:30</p>
+  <p style="margin-top:16px;font-size:.75rem;color:#5a5140">Página de demostración diseñada por Luciano Sala</p>
+</footer>
+
+<div class="overlay" id="ov">
+  <div class="modal">
+    <div class="big" id="mPh"></div>
+    <div class="body">
+      <h3 id="mName"></h3>
+      <p class="cat" id="mCat"></p>
+      <p class="desc" id="mDesc"></p>
+      <p class="price" id="mPrice"></p>
+      <p class="stars" id="mStars"></p>
+      <div class="review"><p id="mRev"></p><span id="mWho"></span></div>
+    </div>
+    <button class="close" onclick="document.getElementById('ov').classList.remove('on')">CERRAR</button>
+  </div>
+</div>
+
+<script>
+const D = [
+// PARRILLA
+["Bife de Chorizo Premium","Corte de 400g madurado, con papas rústicas y chimichurri de la casa.","28000","🥩","★★★★★","El mejor bife de la zona, jugoso y en su punto exacto.","— Rodrigo V."],
+["Asado de Tira","Tira asada a leña lenta, criolla y ensalada completa.","24000","🥓","★★★★★","Sabor a asado de verdad, como el de la abuela.","— Lucía F."],
+["Costillar Entero","Para compartir, con provoleta y tortilla de papas.","36000","🍖","★★★★★","Pedimos para 4 y sobró de lo bueno que era.","— Familia Rojas"],
+["Vacío a la Brasa","Vacío tierno con vegetales grillados.","23000","🥩","★★★★☆","Tierno y sabroso, repetimos seguro.","— Sandra M."],
+["Matambre a la Pizza","Matambre con salsa, muzarella y morrones.","21500","🥩","★★★★★","Combinación perfecta, nunca había probado algo igual.","— Julián C."],
+["Chorizo y Morcilla","Clásica parrillada de entrada con pan casero.","9500","🌭","★★★★★","Los chorizos más sabrosos de La Paz.","— Pablo T."],
+["Provoleta de la Casa","Queso gratinado con orégano y aceite de oliva.","11000","🧀","★★★★★","Imperdible, pedimos dos siempre.","— Carla D."],
+["Parrillada Completa","Para dos: vacío, tira, chorizo, morcilla, chinchulín y pollo.","42000","🔥","★★★★★","Abundante y todo en su punto. Vengan con hambre.","— Matías R."],
+// PASTAS
+["Sorrentinos de Jamón y Queso","Pastas artesanales con salsa fileto o crema.","14500","🥟","★★★★★","Se nota que son hechas en el momento, espectaculares.","— Valentina S."],
+["Ravioles de Ricotta","Con salsa de tomate natural y albahaca.","13500","🥟","★★★★☆","Muy frescos, la salsa es de verdad casera.","— Germán L."],
+["Ñoquis de Papa Caseros","Con estofado de carne o salsa rosa.","12500","🥔","★★★★★","Livianos y con el gusto de los de siempre.","— Rosa A."],
+["Lasagna de la Abuela","Capas de pasta, carne, bechamel y muzarella.","15500","🍝","★★★★★","La mejor lasagna que comí fuera de casa.","— Ignacio B."],
+["Fideos al Pesto","Pesto de albahaca fresca con langostinos.","16500","🍝","★★★★☆","El pesto muy aromático, los langostinos justos.","— Sofía G."],
+["Canelones de Pollo","Con salsa blanca y gratinados.","14000","🍝","★★★★☆","Muy cremosos, porción abundante.","— Andrés P."],
+["Agnolotis de Calabaza","Con crema de nueces y parmesano.","15800","🥟","★★★★★","Sabores finos y delicados, un lujo.","— Marina K."],
+["Tortellini Carbonara","Con panceta crocante y yema de huevo.","15200","🍝","★★★★★","La carbonara más auténtica de la región.","— Franco D."],
+// PIZZAS
+["Pizza Muzarella Clásica","Salsa, muzarella y aceitunas. Masa de fermentación natural.","13500","🍕","★★★★★","La masa es algo aparte, finita y crocante.","— Eliana W."],
+["Pizza Napolitana","Tomate, muzarella, anchoas y albahaca.","14800","🍕","★★★★☆","Con mucho sabor, las anchoas muy buenas.","— Ramiro O."],
+["Pizza de Rúcula y Jamón","Jamón crudo, rúcula y parmesano.","16500","🍕","★★★★★","Combinación elegante, mi favorita del menú.","— Juliana M."],
+["Pizza Calzone","Relleno de jamón, queso y tomate.","15200","🥟","★★★★☆","Muy abundante y bien relleno.","— Tomás S."],
+["Pizza Cuatro Quesos","Muzarella, provolone, roquefort y parmesano.","16900","🧀","★★★★★","Para amantes del queso, imperdible.","— Belén R."],
+["Pizza Fugazzetta","Cebolla, muzarella y aceitunas negras.","14200","🍕","★★★★☆","Muy jugosa y sabrosa.","— Cristian F."],
+["Pizza de Palmitos","Salsa golf, palmitos y muzarella.","15800","🍕","★★★★☆","Fresca y diferente, me gustó mucho.","— Lorena V."],
+["Pizza de Roquefort","Queso roquefort, nueces y miel.","17200","🧀","★★★★★","Dulce y salado en equilibrio perfecto.","— Agustín H."],
+// EMPANADAS
+["Docena de Empanadas de Carne","Corte a cuchillo, huevo, aceituna y cebolla.","12000","🥟","★★★★★","El jugo de la carne en su punto, las mejores.","— Héctor N."],
+["Docena de Empanadas Variadas","Carne, pollo, jamón y queso, humita y caprese.","12500","🥟","★★★★★","Ideal para compartir, todas riquísimas.","— Silvina C."],
+["Empanadas de Humita","Chocío cremoso con queso y albahaca.","11500","🌽","★★★★☆","Muy cremosas y con mucho chocío.","— Damián L."],
+["Empanadas Árabes","Con jugo de limón y tomate, estilo Fatay.","11800","🥟","★★★★★","Un sabor distinto que engancha.","— Nadia P."],
+["Empanadas de Pollo","Pollo cremoso con verdeo y pimentón.","11500","🍗","★★★★☆","Muy sabrosas, el relleno es generoso.","— Marcos A."],
+["Empanadas de Jamón y Queso","Clásicas, crocantes y bien rellenas.","11200","🧀","★★★★☆","Simple pero perfecta para la merienda.","— Agustina T."],
+// MINUTAS
+["Milanesa Napolitana","Con salsa, jamón, muzarella y papas.","16200","🍽️","★★★★★","Enorme y deliciosa, clásico que nunca falla.","— Federico I."],
+["Milanesa Completa","Con huevo frito, panceta y queso.","15800","🍳","★★★★☆","Muy completa, no pude terminarla.","— Candela M."],
+["Suprema Maryland","Suprema con arroz, huevo y banana frita.","16400","🍗","★★★★☆","Un clásico bien hecho y abundante.","— Sergio B."],
+["Hamburguesa Doble Premium","Doble carne, cheddar, panceta y salsa BBQ.","13900","🍔","★★★★★","La carne se nota de calidad, no es congelada.","— Bruno G."],
+["Sandwich Caliente de Ternera","Ternera braseada con cebolla caramelizada.","13600","🥪","★★★★★","El pan tostado y la carne se deshacían.","— Milagros S."],
+["Lomito a la Plancha","Con ensalada o papas, tamaño generoso.","14700","🥩","★★★★☆","Muy tierno, bien acompañado.","— Hernán Q."],
+["Chivito Uruguayo","Lomo, panceta, huevo, muzarella y ensalada rusa.","17900","🍔","★★★★★","Un monstruo delicioso, traigan apetito.","— Victoria E."],
+["Tarta del Día","Tarta casera del día con ensalada.","11800","🥧","★★★★☆","Siempre fresca, la masa es increíble.","— Analía D."],
+// ENSALADAS
+["Ensalada César","Pollo grillado, croutones, parmesano y salsa César.","13800","🥗","★★★★★","Fresca, crocante y la salsa es un sueño.","— Camila R."],
+["Ensalada Caprese","Tomate, muzarella de búfala y albahaca.","12500","🍅","★★★★☆","Simple, fresca y con aceite de oliva bueno.","— Nicolás V."],
+["Ensalada de Quinoa","Quinoa, aguacate, tomates secos y nueces.","14200","🥗","★★★★☆","Muy completa, ideal para comer liviano.","— Josefina U."],
+["Ensalada Waldorf","Pollo, manzana, apio y salsa con nueces.","13400","🍎","★★★★☆","Dulce y crocante, muy original.","— Leandro W."],
+["Ensalada Mediterránea","Rúcula, queso de cabra, aceitunas y tomate.","13600","🫒","★★★★★","Con muchísimo sabor, la pido siempre.","— Daniela Z."],
+// PESCADOS Y MARISCOS
+["Salmón a la Plancha","Con puré de papas y salsa de maracuyá.","24800","🐟","★★★★★","El salmón se deshacía, salsa exquisita.","— Gonzalo A."],
+["Trucha Mendoza","Trucha regional con almendras y crema de limón.","23600","🐟","★★★★☆","Muy fresca, producto regional de calidad.","— Paulina J."],
+["Rabas a la Provenzal","Calamares fritos con ajo y perejil.","16800","🦑","★★★★★","Crocantes por fuera, tiernas por dentro.","— Emiliano K."],
+["Paella de Mariscos","Para dos, con camarones, mejillones y calamares.","32800","🥘","★★★★★","Traigan a alguien para compartirla, es enorme.","— Mariana X."],
+["Merluza a la Romana","Con papas españolas y limón.","18900","🐟","★★★★☆","Clásico bien hecho, muy liviana.","— Rubén H."],
+["Cazuela de Mariscos","Cazuela caliente con camarones y pescado.","21500","🍲","★★★★☆","Calorita y con mucho marisco dentro.","— Cecilia B."],
+// INTERNACIONAL
+["Wok de Pollo y Vegetales","Con salsa de soja y semillas de sésamo.","15400","🍜","★★★★☆","Los vegetales quedan crocantes, muy bueno.","— Iván M."],
+["Curry de Garbanzos","Curry suave con arroz basmati.","14600","🍛","★★★★★","Sabor increíble, pedí el picante medio.","— Lucía Ñ."],
+["Tacos Mexicanos","Tres tacos con carne, guacamole y pico de gallo.","15200","🌮","★★★★★","Saben a México de verdad, muy recomendable.","— Facundo T."],
+["Sushi Variado","12 piezas variadas con salsa de soja y jengibre.","19800","🍣","★★★★★","Fresquísimo, el arroz en su punto exacto.","— Abril G."],
+["Pollo al Curry","Pollo con salsa curry y arroz jazmín.","15800","🍛","★★★★☆","Muy cremoso y con un toque dulce.","— Kevin O."],
+["Pad Thai","Fideos de arroz con langostinos y maní.","16900","🍜","★★★★☆","Equilibrio perfecto entre dulce y salado.","— Rocío F."],
+["Pollo al Champiñón","Pollo cremoso con champiñones y papas noisette.","17200","🍄","★★★★★","La crema es espectacular.","— Ariel V."],
+// POSTRES
+["Volcán de Chocolate","Con helado de crema y coulis de frutos rojos.","8800","🍫","★★★★★","El centro líquido es puro placer, imperdible.","— Camila L."],
+["Flan Mixto","Con dulce de leche y crema.","6900","🍮","★★★★☆","El clásico de siempre, bien hecho.","— Diego R."],
+["Cheesecake de Frutos Rojos","Base de galleta, crema y coulis.","8200","🍰","★★★★★","Textura perfecta, no empalaga.","— Miranda S."],
+["Panqueque con Dulce de Leche","Flameado con ron y helado.","7500","🥞","★★★★★","Lo preparan en el momento en tu mesa.","— Nicolás P."],
+["Torta Rogel","Capas crocantes con dulce de leche y merengue.","7800","🍯","★★★★☆","Muy crujiente, bien casera.","— Brenda C."],
+["Helado Artesanal","2 bochas de producción propia.","5900","🍨","★★★★★","Los sabores son únicos, probá el de malbec.","— Sergio D."],
+["Brownie con Helado","Brownie tibio con helado de americana.","7600","🍫","★★★★☆","Tibio y húmedo, como debe ser.","— Tamara G."],
+["Crepas Suzette","Crepas al alcohol con naranja.","8400","🥞","★★★★☆","Show en la mesa y sabor espectacular.","— Julieta W."],
+// BEBIDAS
+["Vino Malbec Reserva","Botella de bodega mendocina premium.","18000","🍷","★★★★★","Maridaje perfecto con la parrilla.","— Héctor M."],
+["Vino Blanco Torrontés","Botella fresca y frutada.","14500","🥂","★★★★☆","Ideal con pescados, muy fresco.","— Ana L."],
+["Cerveza Artesanal IPA","Pinta de elaboración local.","6200","🍺","★★★★★","De producción local, muy buena.","— Marcos T."],
+["Limonada de la Casa","Con jengibre y menta fresca.","4800","🍋","★★★★☆","Refrescante y natural, no es en polvo.","— Lucía H."],
+["Café Espresso","Granos de especialidad tostados.","3800","☕","★★★★★","El mejor café de La Paz, sin exagerar.","— Fabián S."],
+["Submarino","Chocolate fundido en leche caliente.","5500","🍫","★★★★★","Me recuerda a la infancia, muy cremoso.","— Agustina R."],
+["Trago de la Casa","Caipiroska de maracuyá de autor.","8500","🍸","★★★★☆","Original y bien preparado.","— Iván G."],
+["Agua Mineral con Gas","Botella 500ml bien helada.","2800","💧","★★★★☆","Simple y bien fría.","— Ramiro N."]];
+
+const CATS=["Parrilla","Pastas","Pizzas","Empanadas","Minutas","Ensaladas","Pescados y Mariscos","Cocina Internacional","Postres","Bebidas"];
+const PER=[8,8,8,6,8,5,6,7,8,8];
+const KW=["steak","beef-ribs","ribs","grilled-beef","beef","sausage","grilled-cheese","barbecue","ravioli","ravioli","gnocchi","lasagna","pesto-pasta","cannelloni","stuffed-pasta","tortellini","pizza","pizza","pizza","calzone","cheese-pizza","onion-pizza","pizza","pizza","empanadas","empanadas","empanadas","empanadas","empanadas","empanadas","schnitzel","schnitzel","fried-chicken","burger","sandwich","steak-sandwich","sandwich","quiche","caesar-salad","caprese","quinoa-salad","salad","salad","salmon","trout","fried-calamari","paella","fried-fish","seafood-soup","stir-fry","chickpea-curry","tacos","sushi","chicken-curry","pad-thai","chicken-mushroom","chocolate-cake","flan","cheesecake","crepes","cake","ice-cream","brownie","crepes","red-wine","white-wine","craft-beer","lemonade","espresso","hot-chocolate","cocktail","water"];
+const M=D.map((d,i)=>{let s=0,k=0;while(i>=s+PER[k]){s+=PER[k];k++;}
+  return {id:i,n:d[0],d:d[1],p:d[2],e:d[3],r:d[5],w:d[6],c:CATS[k],rn:3+(i*7)%9+2,kw:KW[i]};});
+
+const grid=document.getElementById('grid'),filters=document.getElementById('filters'),q=document.getElementById('q'),noRes=document.getElementById('noRes');
+let activeCat='all';
+[['all','TODOS']].concat(CATS.map(c=>[c,c.toUpperCase()])).forEach(([id,label])=>{
+  const b=document.createElement('button');b.textContent=label;b.dataset.cat=id;if(id==='all')b.classList.add('on');
+  b.onclick=()=>{activeCat=id;[...filters.children].forEach(x=>x.classList.toggle('on',x.dataset.cat===id));render();};
+  filters.appendChild(b);
+});
+function render(){
+  const term=q.value.toLowerCase();
+  const list=M.filter(m=>(activeCat==='all'||m.c===activeCat)&&(!term||m.n.toLowerCase().includes(term)||m.d.toLowerCase().includes(term)));
+  grid.innerHTML=list.map(m=>`
+    <div class="dish" onclick="openM(${m.id})">
+      <div class="ph"><img src="https://loremflickr.com/420/300/${m.kw}?lock=${m.id+1}" alt="${m.n}" loading="lazy" onerror="this.onerror=null;this.replaceWith(document.createTextNode(this.dataset.e))" data-e="${m.e}"></div>
+      <div class="body">
+        <h3>${m.n}</h3>
+        <p class="desc">${m.d}</p>
+        <p class="price">$${m.p}</p>
+        <div class="rate"><span class="st">★★★★★</span><span class="rv">${m.rn} reseñas</span></div>
+      </div>
+    </div>`).join('');
+  noRes.style.display=list.length?'none':'block';
+  document.getElementById('nDishes').textContent=M.length;
+}
+function openM(i){
+  const m=M[i];
+  document.getElementById('mPh').innerHTML='<img src=\'https://loremflickr.com/640/480/'+m.kw+'?lock='+(m.id+1)+'\' alt=\''+m.n+'\' onerror=\'this.onerror=null;this.remove()\'><span>'+m.e+'</span>';
+  document.getElementById('mName').textContent=m.n;
+  document.getElementById('mCat').textContent=m.c;
+  document.getElementById('mDesc').textContent=m.d;
+  document.getElementById('mPrice').textContent='$'+m.p;
+  document.getElementById('mStars').textContent='★★★★★';
+  document.getElementById('mRev').textContent='"'+m.r+'"';
+  document.getElementById('mWho').textContent=m.w;
+  document.getElementById('ov').classList.add('on');
+}
+document.getElementById('ov').onclick=e=>{if(e.target.id==='ov')e.target.classList.remove('on')};
+q.oninput=render;
+render();
+</script>
+</body>
+</html>
