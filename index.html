@@ -1026,24 +1026,43 @@ custom.gen*=1.15;custom.rd*=1.18;custom.dh*=1.25;custom.fl*=1.10;
 custom.s2*=1.08;custom.s4*=1.05;custom.sn*=1.05;
 custom.tags.push('100% HEADSHOT ACTIVADO');
 }
-// PRECISION Y FLUIDEZ REFORZADAS — calibrado viendo gameplay real de flick-a-cabeza
-var antiOverW=0.92; // frena JUSTO en la cabeza, sin pasarse ni un pelo
-var fluidMove=1.03; // FLUIDEZ DE MOVIMIENTO: giro suave y continuo, sin trabas al perseguir al enemigo
-var fluidFire=1.04; // FLUIDEZ DE DISPARO: el dedo dispara sin frenar la mira, tracking continuo
-var headPrec=1.02;  // PRECISION AL CRANEO: el flick aterriza exacto en la cabeza
+// ===== SISTEMA IA ANTI-OVERSHOOT =====
+// La IA lee el tipo de arma y calcula la logica para que la mira frene SOLO en la cabeza, sin pasarse
+var isOneShot=(w.type==='Shotgun'||w.type==='Sniper'||w.fireRate==='Lento');
+var antiOverW,fluidMove,fluidFire,headPrec,spreadIA,iaMode,iaNote;
+if(isOneShot){
+// IA ARMA DE UN TIRO (M1887/AWM/Kar98k/etc): la mira se PLANTA en el craneo y no rebasa. Un tiro = una cabeza.
+antiOverW=0.88;  // frenado MUY firme: cero pasarse
+spreadIA=0.35;    // sensi casi exacta: cada generacion da el mismo valor letal
+headPrec=1.00;    // flick aterriza en el centro exacto del craneo
+fluidMove=1.02;   // movimiento sereno: apuntas tranquilo y certero
+fluidFire=1.02;   // disparo limpio: un toque y el tiro sale derecho a la cabeza
+iaMode='UN TIRO = UNA CABEZA';
+iaNote='IA UN-TIRO: analizo el arma, freno la mira en el craneo y no la dejo rebasar. Cada generacion es casi identica — confiá en el valor que te dé.';
+}else{
+// IA ARMA RAPIDA (MP40/AK/M4A1/etc): flick a cabeza + tracking fluido mientras tiras
+antiOverW=0.92;  // frena JUSTO en la cabeza, sin pasarse ni un pelo
+spreadIA=0.55;   // variacion minima por click
+headPrec=1.02;   // el flick aterriza exacto en la cabeza
+fluidMove=1.03;  // FLUIDEZ DE MOVIMIENTO: giro suave y continuo, sin trabas al perseguir al enemigo
+fluidFire=1.04;  // FLUIDEZ DE DISPARO: el dedo dispara sin frenar la mira, tracking continuo
+iaMode='FLICK A CABEZA + TRACKING FLUIDO';
+iaNote='IA TRACKING: la mira sube al craneo, frena ahi y sigue al enemigo mientras disparas. Matas en segundos sin que se te escape.';
+}
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
 modeName:isPVP?'PVP TODO ROJO POR ARMA':'BR+DECLA POR ARMA',isPVP:isPVP,
 customTags:custom.tags,customTxt:customTxt,
-general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*fluidMove*custom.gen*0.85,SPREAD_WPN*0.55)),55,195),
-redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*headPrec*custom.rd*0.85,SPREAD_WPN*0.55)),55,195),
-scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85,SPREAD_WPN*0.8)),45,185),
-scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN*0.8)),38,175),
-sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN*0.8)),30,165),
-freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*antiOverW*fluidMove*custom.fl*0.85,SPREAD_WPN*0.55)),55,195),
-fireBtn:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*antiOverW*fluidFire*custom.fb*0.85,SPREAD_WPN*0.55)),55,195),
-// DRAG HEAD MAXIMO — con un toque al boton ya va al craneo, frena JUSTO ahi y sigue fluido al disparar
-dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*antiOverW*headPrec*fluidFire*custom.dh*0.88,SPREAD_WPN*0.55)),55,198),
+iaMode:iaMode,iaNote:iaNote,isOneShot:isOneShot,
+general:clamp(Math.round(jit(profile.gen*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*fluidMove*custom.gen*0.85,SPREAD_WPN*spreadIA)),55,195),
+redDot:clamp(Math.round(jit(profile.rd*mult*recoilAdj*tremorStab*headshotBoost*antiOverW*headPrec*custom.rd*0.85,SPREAD_WPN*spreadIA)),55,195),
+scope2x:clamp(Math.round(jit(profile.s2*mult*rangeAdj*tremorStab*headshotBoost*custom.s2*0.85,SPREAD_WPN*(isOneShot?0.6:0.8))),45,185),
+scope4x:clamp(Math.round(jit(profile.s4*mult*rangeAdj*precCurve*custom.s4*0.85,SPREAD_WPN*(isOneShot?0.6:0.8))),38,175),
+sniper:clamp(Math.round(jit(profile.sn*mult*rangeAdj*precCurve*custom.sn*0.85,SPREAD_WPN*(isOneShot?0.5:0.8))),30,165),
+freeLook:clamp(Math.round(jit(profile.fl*mult*fireAdj*headshotBoost*antiOverW*fluidMove*custom.fl*0.85,SPREAD_WPN*spreadIA)),55,195),
+fireBtn:clamp(Math.round(jit(profile.fb*mult*fireAdj*fbMult*antiOverW*fluidFire*custom.fb*0.85,SPREAD_WPN*spreadIA)),55,195),
+// DRAG HEAD — la IA lo congela en el craneo: con un toque va a la cabeza y NO rebasa
+dragHead:clamp(Math.round(jit(profile.dh*mult*recoilAdj*fireAdj*headshotBoost*antiOverW*headPrec*fluidFire*custom.dh*0.88,SPREAD_WPN*spreadIA)),55,198),
 id:'WP-'+Math.random().toString(36).substr(2,6).toUpperCase(),
 hz:hz,brand:brand,model:model,mult:mult.toFixed(4),
 fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
@@ -1051,7 +1070,7 @@ fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
 var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'RECOMENDADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'CALIBRADO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
 var recoilColor=r.recoil==='Alto'?'#ff00c8':r.recoil==='Medio'?'#ffaa00':'#00ffa3';
-res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 MAXIMA PUNTERIA — UN TOQUE AL BOTON = CRANEO — TODO ROJO</div><div class="pm" style="border-color:#b45cff"><div class="pm-label" style="color:#d0aaff">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#6320c9,#b45cff)"></div></div><div class="pm-val" style="color:#b45cff">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
+res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 MAXIMA PUNTERIA — UN TOQUE AL BOTON = CRANEO — TODO ROJO</div><div class="hs-tag" style="border-color:#2bd6ff;color:#7fdcff;box-shadow:0 0 15px rgba(43,214,255,.35);font-size:.95rem;padding:10px 12px">🤖 IA ANTI-OVERSHOOT: '+iaMode+' — LOGICA CALCULADA PARA ESTA ARMA — NO SE PASA DE LA CABEZA</div><div class="pm" style="border-color:#b45cff"><div class="pm-label" style="color:#d0aaff">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#6320c9,#b45cff)"></div></div><div class="pm-val" style="color:#b45cff">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span><span class="fm">🤖 '+r.iaNote+'</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
 res.classList.add('on');
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
@@ -1657,7 +1676,7 @@ done();
 },60);
 }
 // === ANUNCIO ACTUALIZADO — SOLO UNA VEZ POR ACTUALIZACION ===
-var APP_VERSION='v2026-09-06-arma-precision-fluidez';
+var APP_VERSION='v2026-09-07-ia-anti-overshoot';
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
