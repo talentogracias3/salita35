@@ -125,6 +125,8 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
 .pGo{margin-left:auto;background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;border:none;border-radius:10px;padding:8px 16px;font-size:.72rem;font-weight:900;letter-spacing:.06em}
 .pNote{font-size:.66rem;color:#4fae83;text-align:center;padding:8px 0 16px;line-height:1.5}
 
+.pStop{margin-top:12px;width:100%;background:#28101a;color:#ffb3c1;border:1px solid rgba(255,45,111,.4);border-radius:10px;padding:10px;font-size:.72rem;font-weight:900;letter-spacing:.06em}
+
 /* ===== overlay modo juego ===== */
 #gMode{position:fixed;inset:0;z-index:60;background:rgba(1,8,4,.96);display:none;
   flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
@@ -222,6 +224,14 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <div class="pT">🔥 SUPER TURBO</div>
       <div class="pD">Permite silenciar las notificaciones y liberar la memoria de las apps en segundo plano mientras jugás.</div>
       <div class="pRow2"><span class="pStat" id="psDnd">…</span><button class="pGo" id="pbDnd">CONCEDER</button></div>
+    </div>
+    <div class="permRow">
+      <div class="pT">⚡ SEGUNDO PLANO (anti-desactivación)</div>
+      <div class="pD">Turbo Hack sigue corriendo mientras jugás: notificación activa y watchdog que re-aplica tus modos cada 20 segundos si algo los apaga.</div>
+      <div class="pRow2"><span class="pStat" id="psNotif">…</span><button class="pGo" id="pbNotif">CONCEDER</button></div>
+      <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psBat">…</span><button class="pGo" id="pbBat">CONCEDER</button></div>
+      <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psSvc">…</span></div>
+      <button class="pStop" id="pbStop">🛑 DETENER MODO EN 2º PLANO</button>
     </div>
     <div class="pNote">🔑 Se piden UNA SOLA VEZ. Después TURBO HACK funciona sin errores, 100% offline.</div>
   </div>
@@ -369,6 +379,11 @@ document.getElementById('bPlay').onclick=()=>{
       if(S.turbo&&Turbo.hasDnd()==='1')Turbo.dndSet(1);
       if(S.lag)Turbo.cleanNow();
       if(S.turbo)Turbo.killBg(S.pkg||'');
+      Turbo.applyMods(S.perf?1:0,S.turbo?1:0);
+      if(S.perf||S.turbo||S.lag){
+        Turbo.startService2();
+        toast('⚡ Turbo Hack activo en 2º plano protegiendo tus modos');
+      }
       const r=Turbo.launchGame(S.pkg);
       if(r!=='ok')toast(r==='notfound'?'⚠️ No se pudo abrir ese juego':'⚠️ Error al abrir el juego');
     }else{
@@ -383,11 +398,22 @@ document.getElementById('bPerm').onclick=()=>{refreshPerms();permPanel.classList
 document.getElementById('permClose').onclick=()=>permPanel.classList.remove('open');
 function setPill(el,ok2,txt){el.className='pStat '+(ok2?'pOk':'pNo');el.textContent=txt}
 function refreshPerms(){
-  if(!NATIVE){setPill(document.getElementById('psWrite'),true,'WEB');setPill(document.getElementById('psDnd'),true,'WEB');return}
+  if(!NATIVE){setPill(document.getElementById('psWrite'),true,'WEB');setPill(document.getElementById('psDnd'),true,'WEB');
+    setPill(document.getElementById('psNotif'),true,'WEB');setPill(document.getElementById('psBat'),true,'WEB');
+    setPill(document.getElementById('psSvc'),false,'WEB');return}
   const w=Turbo.hasWriteSettings()==='1', d=Turbo.hasDnd()==='1';
   setPill(document.getElementById('psWrite'),w,w?'✓ CONCEDIDO':'⚠ FALTA');
   setPill(document.getElementById('psDnd'),d,d?'✓ CONCEDIDO':'⚠ FALTA');
+  const nn=Turbo.hasNotif()==='1';
+  setPill(document.getElementById('psNotif'),nn,nn?'✓ CONCEDIDO':'⚠ FALTA');
+  const b=Turbo.hasBattery()==='1';
+  setPill(document.getElementById('psBat'),b,b?'✓ SIN OPTIMIZAR':'⚠ FALTA');
+  const sv=Turbo.isServiceRunning()==='1';
+  setPill(document.getElementById('psSvc'),sv,sv?'⚡ ACTIVO EN 2º PLANO':'· DETENIDO');
 }
+document.getElementById('pbNotif').onclick=()=>NATIVE&&Turbo.requestNotif();
+document.getElementById('pbBat').onclick=()=>NATIVE&&Turbo.requestBattery();
+document.getElementById('pbStop').onclick=()=>{if(NATIVE){Turbo.stopService2();toast('🛑 Modo 2º plano detenido');setTimeout(refreshPerms,300)}};
 document.getElementById('pbWrite').onclick=()=>NATIVE&&Turbo.requestWriteSettings();
 document.getElementById('pbDnd').onclick=()=>NATIVE&&Turbo.requestDnd();
 setInterval(()=>{if(permPanel.classList.contains('open'))refreshPerms()},1200);
