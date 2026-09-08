@@ -127,6 +127,21 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
 
 .pStop{margin-top:12px;width:100%;background:#28101a;color:#ffb3c1;border:1px solid rgba(255,45,111,.4);border-radius:10px;padding:10px;font-size:.72rem;font-weight:900;letter-spacing:.06em}
 
+.gear{margin-left:8px;font-size:.95rem;opacity:.9}
+#miraPanel{position:fixed;inset:0;z-index:43;background:rgba(1,7,4,.94);backdrop-filter:blur(8px);display:flex;flex-direction:column;padding:16px;opacity:0;visibility:hidden;transition:.25s}
+#miraPanel.open{opacity:1;visibility:visible}
+#mpPad{position:relative;height:44vh;min-height:230px;margin-top:10px;
+  background:linear-gradient(180deg,#03150c,#06281a);border:1px solid rgba(0,255,157,.25);
+  border-radius:15px;overflow:hidden;touch-action:none;
+  background-image:repeating-linear-gradient(0deg,transparent 0 24px,rgba(0,255,157,.05) 24px 25px),repeating-linear-gradient(90deg,transparent 0 24px,rgba(0,255,157,.05) 24px 25px)}
+#mpDot{position:absolute;width:56px;height:56px;transform:translate(-50%,-50%);pointer-events:none}
+.mLbl{font-size:.6rem;color:#4fae83;letter-spacing:.2em;text-transform:uppercase;margin-top:12px}
+.mRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.chip{background:#06281a;border:1px solid rgba(0,255,157,.25);color:#b8ffd9;border-radius:99px;padding:8px 14px;font-size:.7rem;font-weight:800;letter-spacing:.05em}
+.chip.on{background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;border-color:transparent}
+.sw{width:34px;height:34px;border-radius:10px;border:2px solid transparent}
+.sw.on{border-color:#fff;box-shadow:0 0 10px rgba(255,255,255,.4)}
+
 /* ===== overlay modo juego ===== */
 #gMode{position:fixed;inset:0;z-index:60;background:rgba(1,8,4,.96);display:none;
   flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
@@ -191,6 +206,10 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <span class="ic">🧹</span> ACTIVAR ANTI-LAG
       <span class="st">DESACTIVADO</span>
     </button>
+    <button class="btn btnOff" id="bMira">
+      <span class="ic">🎯</span> ACTIVAR MIRA
+      <span class="st">DESACTIVADO</span><span class="gear" id="gMira">⚙</span>
+    </button>
     <button class="btn btnPlay" id="bPlay">
       <span class="ic" style="filter:drop-shadow(0 0 8px #01131d)">▶</span>
       JUGAR EL JUEGO SELECCIONADO
@@ -233,7 +252,36 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psSvc">…</span></div>
       <button class="pStop" id="pbStop">🛑 DETENER MODO EN 2º PLANO</button>
     </div>
+        <div class="permRow">
+      <div class="pT">🎯 MIRA SOBRE EL JUEGO</div>
+      <div class="pD">Permite dibujar la mira flotante encima de cualquier juego mientras jugás.</div>
+      <div class="pRow2"><span class="pStat" id="psOver">…</span><button class="pGo" id="pbOver">CONCEDER</button></div>
+    </div>
     <div class="pNote">🔑 Se piden UNA SOLA VEZ. Después TURBO HACK funciona sin errores, 100% offline.</div>
+  </div>
+</div>
+
+<div id="miraPanel">
+  <div class="pHead">
+    <h2>🎯 Ajustar tu mira</h2>
+    <button class="pClose" id="miraClose">CERRAR</button>
+  </div>
+  <div class="permList">
+    <div class="permRow">
+      <div class="pT">📍 Posición — arrastrá el punto</div>
+      <div id="mpPad"><canvas id="mpDot" width="56" height="56"></canvas></div>
+      <div class="mRow"><button class="chip" id="mpCenter">🎯 CENTRAR</button>
+        <span style="font-size:.62rem;color:#4fae83;margin-left:6px">La mira se mueve en vivo sobre el juego</span></div>
+    </div>
+    <div class="permRow">
+      <div class="pT">✨ Estilo</div>
+      <div class="mRow"><button class="chip" id="ms0">● PUNTO</button><button class="chip" id="ms1">✚ CRUZ</button><button class="chip" id="ms2">◎ CÍRCULO</button></div>
+      <div class="mLbl">Color</div>
+      <div class="mRow" id="mColors"></div>
+      <div class="mLbl">Tamaño</div>
+      <div class="mRow"><button class="chip" id="mz0">S</button><button class="chip" id="mz1">M</button><button class="chip" id="mz2">L</button></div>
+    </div>
+    <div class="pNote">La mira es una referencia visual que se dibuja sobre el juego. La sensibilidad real se ajusta con tus modos ⚡ y el Generador Salita.</div>
   </div>
 </div>
 
@@ -270,7 +318,7 @@ setTimeout(()=>document.getElementById('splash').classList.add('out'),3000);
 
 /* ===== estado ===== */
 const KEY='turbo_state_v1';
-let S={perf:false,turbo:false,fps:false,lag:false,game:null,icon:null,pkg:null};
+let S={perf:false,turbo:false,fps:false,lag:false,mira:false,miraX:50,miraY:50,miraStyle:1,miraColor:0,miraSize:1,game:null,icon:null,pkg:null};
 try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=j}catch(e){}
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
 
@@ -286,7 +334,8 @@ const togs=[
   {id:'bPerf',k:'perf',name:'RENDIMIENTO',mods:'RENDIMIENTO 🚀'},
   {id:'bTurbo',k:'turbo',name:'SUPER TURBO',mods:'SUPER TURBO 🔥'},
   {id:'bFps',k:'fps',name:'FPS 144HZ',mods:'FPS 144HZ 🎯'},
-  {id:'bLag',k:'lag',name:'ANTI-LAG',mods:'ANTI-LAG 🧹'}
+  {id:'bLag',k:'lag',name:'ANTI-LAG',mods:'ANTI-LAG 🧹'},
+  {id:'bMira',k:'mira',name:'MIRA',mods:'MIRA FLOTANTE 🎯'}
 ];
 function paint(){
   togs.forEach(t=>{
@@ -303,6 +352,7 @@ function paint(){
 }
 togs.forEach(t=>{
   document.getElementById(t.id).onclick=()=>{
+    if(t.k==='mira'){miraToggle();return}
     S[t.k]=!S[t.k];save();paint();
     if(NATIVE){
       if(t.k==='perf'){
@@ -380,7 +430,7 @@ document.getElementById('bPlay').onclick=()=>{
       if(S.lag)Turbo.cleanNow();
       if(S.turbo)Turbo.killBg(S.pkg||'');
       Turbo.applyMods(S.perf?1:0,S.turbo?1:0);
-      if(S.perf||S.turbo||S.lag){
+      if(S.perf||S.turbo||S.lag||S.mira){
         Turbo.startService2();
         toast('⚡ Turbo Hack activo en 2º plano protegiendo tus modos');
       }
@@ -400,6 +450,7 @@ function setPill(el,ok2,txt){el.className='pStat '+(ok2?'pOk':'pNo');el.textCont
 function refreshPerms(){
   if(!NATIVE){setPill(document.getElementById('psWrite'),true,'WEB');setPill(document.getElementById('psDnd'),true,'WEB');
     setPill(document.getElementById('psNotif'),true,'WEB');setPill(document.getElementById('psBat'),true,'WEB');
+    setPill(document.getElementById('psOver'),true,'WEB');
     setPill(document.getElementById('psSvc'),false,'WEB');return}
   const w=Turbo.hasWriteSettings()==='1', d=Turbo.hasDnd()==='1';
   setPill(document.getElementById('psWrite'),w,w?'✓ CONCEDIDO':'⚠ FALTA');
@@ -408,11 +459,14 @@ function refreshPerms(){
   setPill(document.getElementById('psNotif'),nn,nn?'✓ CONCEDIDO':'⚠ FALTA');
   const b=Turbo.hasBattery()==='1';
   setPill(document.getElementById('psBat'),b,b?'✓ SIN OPTIMIZAR':'⚠ FALTA');
+  const ov=Turbo.hasOverlay()==='1';
+  setPill(document.getElementById('psOver'),ov,ov?'✓ CONCEDIDO':'⚠ FALTA');
   const sv=Turbo.isServiceRunning()==='1';
   setPill(document.getElementById('psSvc'),sv,sv?'⚡ ACTIVO EN 2º PLANO':'· DETENIDO');
 }
 document.getElementById('pbNotif').onclick=()=>NATIVE&&Turbo.requestNotif();
 document.getElementById('pbBat').onclick=()=>NATIVE&&Turbo.requestBattery();
+document.getElementById('pbOver').onclick=()=>NATIVE&&Turbo.requestOverlay();
 document.getElementById('pbStop').onclick=()=>{if(NATIVE){Turbo.stopService2();toast('🛑 Modo 2º plano detenido');setTimeout(refreshPerms,300)}};
 document.getElementById('pbWrite').onclick=()=>NATIVE&&Turbo.requestWriteSettings();
 document.getElementById('pbDnd').onclick=()=>NATIVE&&Turbo.requestDnd();
@@ -420,7 +474,7 @@ setInterval(()=>{if(permPanel.classList.contains('open'))refreshPerms()},1200);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshPerms()});
 /* primer uso: abrir panel si falta un permiso */
 setTimeout(()=>{
-  if(NATIVE&&!localStorage.getItem('turbo_perm_seen')&&(Turbo.hasWriteSettings()!=='1'||Turbo.hasDnd()!=='1')){
+  if(NATIVE&&!localStorage.getItem('turbo_perm_seen')&&(Turbo.hasWriteSettings()!=='1'||Turbo.hasDnd()!=='1'||Turbo.hasOverlay()!=='1')){
     localStorage.setItem('turbo_perm_seen','1');refreshPerms();permPanel.classList.add('open');
   }
 },3400);
