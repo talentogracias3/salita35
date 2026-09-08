@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>TURBO HACK</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;touch-action:manipulation;overscroll-behavior:none}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#020a06;
+  color:#d8ffe9;
+  display:flex;flex-direction:column;
+}
+/* ===== fondo matriz ===== */
+#matrix{position:fixed;inset:0;z-index:0;opacity:.55}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.14) 2px 4px)}
+.glow{position:fixed;z-index:0;border-radius:50%;filter:blur(90px);pointer-events:none}
+.gA{width:60vw;height:60vw;background:#00ff9d22;top:-20%;left:-15%}
+.gB{width:50vw;height:50vw;background:#00c8ff18;bottom:-18%;right:-12%}
+
+/* ===== SPLASH ===== */
+#splash{position:fixed;inset:0;z-index:50;background:#020a06;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  transition:opacity .6s,visibility .6s}
+#splash.out{opacity:0;visibility:hidden}
+.glitch{position:relative;font-size:clamp(2.6rem,11vw,4.6rem);font-weight:900;letter-spacing:.08em;
+  color:#00ff9d;text-transform:uppercase;line-height:1.05;text-align:center;
+  text-shadow:0 0 18px #00ff9d88,0 0 46px #00ff9d44;animation:tglitch 2.4s infinite}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;overflow:hidden}
+.glitch::before{color:#ff2d6f;animation:tslide1 2.4s infinite;clip-path:inset(12% 0 58% 0)}
+.glitch::after{color:#00c8ff;animation:tslide2 2.4s infinite;clip-path:inset(60% 0 8% 0)}
+@keyframes tslide1{0%,86%,100%{transform:translate(0)}88%{transform:translate(-6px,2px)}92%{transform:translate(4px,-2px)}96%{transform:translate(-2px,1px)}}
+@keyframes tslide2{0%,86%,100%{transform:translate(0)}88%{transform:translate(5px,-2px)}92%{transform:translate(-4px,2px)}96%{transform:translate(3px,1px)}}
+@keyframes tglitch{0%,85%,100%{transform:translate(0)}90%{transform:translate(2px,0)}95%{transform:translate(-2px,0)}}
+.sTag{font-size:.8rem;letter-spacing:.5em;color:#00c8ff;text-transform:uppercase;text-shadow:0 0 12px #00c8ff88}
+.sBarW{width:min(72vw,300px);height:4px;border-radius:99px;background:#0a2b1a;overflow:hidden}
+.sBar{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#00ff9d,#00c8ff);
+  box-shadow:0 0 14px #00ff9d;animation:sload 3s ease forwards}
+@keyframes sload{to{width:100%}}
+.sTxt{font-size:.72rem;color:#4fae83;letter-spacing:.2em}
+
+/* ===== APP ===== */
+.wrap{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;min-height:0;padding:env(safe-area-inset-top) 14px calc(10px + env(safe-area-inset-bottom))}
+header{padding:14px 4px 6px;text-align:center}
+h1{font-size:clamp(1.5rem,6.5vw,2.3rem);font-weight:900;letter-spacing:.06em;color:#00ff9d;
+  text-transform:uppercase;text-shadow:0 0 14px #00ff9d66}
+header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppercase;margin-top:3px}
+
+.gameCard{margin:8px 0 10px;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;
+  background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.22)}
+.gameCard .gIcon{width:44px;height:44px;border-radius:11px;background:#0a2b1a;display:flex;
+  align-items:center;justify-content:center;font-size:1.5rem;overflow:hidden;flex:none}
+.gameCard .gIcon img{width:100%;height:100%;object-fit:cover}
+.gameCard .gTxt{min-width:0}
+.gameCard .gLbl{font-size:.6rem;color:#4fae83;letter-spacing:.22em;text-transform:uppercase}
+.gameCard .gName{font-size:1.02rem;font-weight:800;color:#eafff3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gameCard .gS{margin-left:auto;font-size:.6rem;color:#00c8ff;letter-spacing:.18em;text-align:right}
+
+.menu{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:2px 2px 8px}
+.btn{position:relative;border:none;border-radius:15px;padding:15px 16px;font-size:.95rem;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;color:#02170d;display:flex;align-items:center;gap:12px;
+  background:#06281a;transition:transform .12s;user-select:none}
+.btn:active{transform:scale(.97)}
+.btn .ic{font-size:1.25rem;width:1.6em;text-align:center;flex:none;filter:drop-shadow(0 0 6px currentColor)}
+.btn .st{margin-left:auto;font-size:.62rem;letter-spacing:.14em;padding:4px 9px;border-radius:99px;font-weight:900}
+
+.btnOn{background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;
+  box-shadow:0 0 22px rgba(0,255,157,.45),inset 0 1px 0 rgba(255,255,255,.25)}
+.btnOn .st{background:#014d2a;color:#7dffc8}
+.btnOff{background:#28101a;color:#ffb3c1;box-shadow:inset 0 0 0 1px rgba(255,45,111,.35)}
+.btnOff .st{background:#4d0a1f;color:#ff7d97}
+.btnOff:active{background:#31141f}
+
+.btnNeutral{background:linear-gradient(135deg,#0a3d4d,#072a38);color:#bff4ff;
+  box-shadow:0 0 18px rgba(0,200,255,.25),inset 0 1px 0 rgba(255,255,255,.15)}
+.btnNeutral .st{background:#062531;color:#7de4ff}
+
+.btnPlay{background:linear-gradient(135deg,#00ff9d,#00c8ff 60%,#00a3ff);color:#01131d;
+  font-size:1.02rem;padding:17px 16px;box-shadow:0 0 28px rgba(0,255,157,.5);letter-spacing:.06em}
+
+#toasts{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;
+  display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast{background:#03150c;border:1px solid rgba(0,255,157,.4);color:#b8ffd9;font-size:.8rem;font-weight:600;
+  padding:10px 18px;border-radius:99px;box-shadow:0 0 18px rgba(0,255,157,.25);max-width:88vw;text-align:center;
+  animation:tin .25s}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}}
+
+/* ===== selector de juegos ===== */
+#picker{position:fixed;inset:0;z-index:45;background:rgba(1,7,4,.92);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;padding:14px;opacity:0;visibility:hidden;transition:.25s}
+#picker.open{opacity:1;visibility:visible}
+.pHead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pHead h2{font-size:1rem;letter-spacing:.12em;color:#00ff9d;text-transform:uppercase;flex:1;
+  text-shadow:0 0 10px #00ff9d55}
+.pClose{background:#06281a;color:#7dffc8;border:1px solid rgba(0,255,157,.3);border-radius:10px;
+  padding:8px 14px;font-size:.78rem;font-weight:800}
+#pSearch{width:100%;border-radius:12px;border:1px solid rgba(0,255,157,.3);background:#03150c;
+  color:#d8ffe9;padding:12px 14px;font-size:.9rem;margin-bottom:12px;outline:none}
+#pSearch:focus{box-shadow:0 0 12px rgba(0,255,157,.25)}
+#pList{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));
+  gap:10px;align-content:start;padding-bottom:10px}
+.app{background:#06281a;border:1px solid rgba(0,255,157,.18);border-radius:13px;padding:10px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:7px;transition:transform .12s}
+.app:active{transform:scale(.94)}
+.app img{width:48px;height:48px;border-radius:12px}
+.app span{font-size:.62rem;color:#b8ffd9;text-align:center;line-height:1.25;max-width:100%;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.appSel{border-color:#00ff9d;box-shadow:0 0 14px rgba(0,255,157,.35)}
+.pEmpty{text-align:center;color:#4fae83;font-size:.8rem;padding:30px 20px;line-height:1.6;grid-column:1/-1}
+
+/* ===== overlay modo juego ===== */
+#gMode{position:fixed;inset:0;z-index:60;background:rgba(1,8,4,.96);display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
+#gMode.show{display:flex}
+.gmBolt{font-size:4.2rem;filter:drop-shadow(0 0 22px #00ff9d);animation:pulse .9s infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+.gmTxt{font-size:clamp(1.5rem,7vw,2.4rem);font-weight:900;letter-spacing:.1em;color:#00ff9d;
+  text-transform:uppercase;text-shadow:0 0 20px #00ff9d77;text-align:center;line-height:1.2}
+.gmMods{display:flex;flex-direction:column;gap:6px;align-items:center;font-size:.78rem;color:#bff4ff}
+.gmMods div{background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.25);padding:6px 16px;
+  border-radius:99px;letter-spacing:.08em}
+.gmGo{font-size:.7rem;color:#4fae83;letter-spacing:.3em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="glow gA"></div><div class="glow gB"></div>
+<div class="scan"></div>
+
+<div id="splash">
+  <div class="glitch" data-t="TURBO HACK">TURBO HACK</div>
+  <div class="sTag">⚡ Performance Gamer ⚡</div>
+  <div class="sBarW"><div class="sBar"></div></div>
+  <div class="sTxt">INICIANDO SISTEMA…</div>
+</div>
+
+<div class="wrap">
+  <header>
+    <h1>⚡ Turbo Hack</h1>
+    <p>Performance Gamer</p>
+  </header>
+
+  <div class="gameCard" id="gameCard">
+    <div class="gIcon" id="gcIcon">🎮</div>
+    <div class="gTxt">
+      <div class="gLbl">Juego seleccionado</div>
+      <div class="gName" id="gcName">Ninguno todavía</div>
+    </div>
+    <div class="gS" id="gcStatus">SIN JUEGO</div>
+  </div>
+
+  <div class="menu">
+    <button class="btn btnNeutral" id="bPick">
+      <span class="ic">🎮</span> SELECCIONAR JUEGO
+      <span class="st" id="stPick">ELEGIR</span>
+    </button>
+    <button class="btn btnOff" id="bPerf">
+      <span class="ic">🚀</span> ACTIVAR RENDIMIENTO
+      <span class="st">DESACTIVADO</span>
+    </button>
+    <button class="btn btnOff" id="bTurbo">
+      <span class="ic">🔥</span> ACTIVAR SUPER TURBO
+      <span class="st">DESACTIVADO</span>
+    </button>
+    <button class="btn btnOff" id="bFps">
+      <span class="ic">🎯</span> ACTIVAR FPS AL 144HZ
+      <span class="st">DESACTIVADO</span>
+    </button>
+    <button class="btn btnOff" id="bLag">
+      <span class="ic">🧹</span> ACTIVAR ANTI-LAG
+      <span class="st">DESACTIVADO</span>
+    </button>
+    <button class="btn btnPlay" id="bPlay">
+      <span class="ic" style="filter:drop-shadow(0 0 8px #01131d)">▶</span>
+      JUGAR EL JUEGO SELECCIONADO
+    </button>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<div id="picker">
+  <div class="pHead">
+    <h2>🎮 Tus juegos instalados</h2>
+    <button class="pClose" id="pClose">CERRAR</button>
+  </div>
+  <input id="pSearch" type="text" placeholder="Buscar juego o app…" autocomplete="off">
+  <div id="pList"></div>
+</div>
+
+<div id="gMode">
+  <div class="gmBolt">⚡</div>
+  <div class="gmTxt">Modo juego<br>activado</div>
+  <div class="gmMods" id="gMods"></div>
+  <div class="gmGo">Abriendo tu juego…</div>
+</div>
+
+<script>
+/* ===== fondo matriz ===== */
+const mc=document.getElementById('matrix'),mx=mc.getContext('2d');
+let cols,drops;
+function mSize(){mc.width=innerWidth;mc.height=innerHeight;
+  cols=Math.floor(mc.width/14);drops=Array(cols).fill(0).map(()=>Math.random()*-40)}
+mSize();addEventListener('resize',mSize);
+const glyphs='01アイウエオカキクケコサシスセソＦＰＳＴＵＲＢＯ'.split('');
+function mDraw(){
+  mx.fillStyle='rgba(2,10,6,.09)';mx.fillRect(0,0,mc.width,mc.height);
+  mx.font='13px monospace';
+  for(let i=0;i<cols;i++){
+    const ch=glyphs[Math.floor(Math.random()*glyphs.length)];
+    const y=drops[i]*14;
+    if(y>0){mx.fillStyle=Math.random()<.08?'#bfffe4':'#00e58a';
+      mx.fillText(ch,i*14,y)}
+    if(y>mc.height&&Math.random()>.975)drops[i]=0;else drops[i]++;
+  }
+}
+setInterval(mDraw,55);
+
+/* ===== splash ===== */
+setTimeout(()=>document.getElementById('splash').classList.add('out'),3000);
+
+/* ===== estado ===== */
+const KEY='turbo_state_v1';
+let S={perf:false,turbo:false,fps:false,lag:false,game:null,icon:null,pkg:null};
+try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=j}catch(e){}
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+
+const NATIVE=(window.Turbo&&Turbo.isNative&&Turbo.isNative()==='1')?Turbo:null;
+let APPS=null;
+
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='.4s';setTimeout(()=>t.remove(),400)},2600)}
+
+/* ===== botones toggle ===== */
+const togs=[
+  {id:'bPerf',k:'perf',name:'RENDIMIENTO',mods:'RENDIMIENTO 🚀'},
+  {id:'bTurbo',k:'turbo',name:'SUPER TURBO',mods:'SUPER TURBO 🔥'},
+  {id:'bFps',k:'fps',name:'FPS 144HZ',mods:'FPS 144HZ 🎯'},
+  {id:'bLag',k:'lag',name:'ANTI-LAG',mods:'ANTI-LAG 🧹'}
+];
+function paint(){
+  togs.forEach(t=>{
+    const b=document.getElementById(t.id),on=S[t.k],st=b.querySelector('.st');
+    b.className='btn '+(on?'btnOn':'btnOff');
+    st.textContent=on?'✓ ACTIVADO':'✗ DESACTIVADO';
+  });
+  const sel=!!S.game;
+  document.getElementById('gcName').textContent=sel?S.game:'Ninguno todavía';
+  document.getElementById('gcStatus').textContent=sel?'LISTO ⚡':'SIN JUEGO';
+  const gi=document.getElementById('gcIcon');
+  if(sel&&S.icon){gi.innerHTML='<img src="data:image/png;base64,'+S.icon+'">'}
+  else{gi.textContent=sel?'🎮':'🎮'}
+}
+togs.forEach(t=>{
+  document.getElementById(t.id).onclick=()=>{
+    S[t.k]=!S[t.k];save();paint();
+    if(NATIVE){
+      if(t.k==='perf'){
+        if(S.perf){if(Turbo.hasWriteSettings()==='1'){Turbo.perfSet(1);toast('🚀 Rendimiento: animaciones del sistema reducidas')}
+          else{Turbo.requestWriteSettings();toast('Concedé el permiso ⚙ y volvé a tocar el botón')}}
+        else{if(Turbo.hasWriteSettings()==='1')Turbo.perfSet(0);toast('Rendimiento desactivado')}
+      }
+      if(t.k==='turbo'){
+        if(S.turbo){if(Turbo.hasDnd()==='1'){Turbo.dndSet(1);toast('🔥 Super Turbo: notificaciones silenciadas')}
+          else{Turbo.requestDnd();toast('Concedé el acceso "No molestar" y volvé a tocar')}}
+        else{if(Turbo.hasDnd()==='1')Turbo.dndSet(0);toast('Super Turbo desactivado')}
+      }
+      if(t.k==='lag'){
+        if(S.lag){Turbo.cleanNow();toast('🧹 Anti-Lag: memoria liberada y caché limpia')}
+        else toast('Anti-Lag desactivado');
+      }
+      if(t.k==='fps'){
+        toast(S.fps?'🎯 FPS 144HZ activado':'FPS desactivado');
+      }
+    }else{
+      toast(S[t.k]?'✓ '+t.name+' ACTIVADO':'✗ '+t.name+' DESACTIVADO');
+    }
+  };
+});
+
+/* ===== selector de juegos ===== */
+document.getElementById('bPick').onclick=openPicker;
+document.getElementById('pClose').onclick=()=>document.getElementById('picker').classList.remove('open');
+function openPicker(){
+  const list=document.getElementById('pList');
+  if(!NATIVE){
+    list.innerHTML='<div class="pEmpty">🌐 Esta es la vista previa web.<br><br>En el <b>APK de TURBO HACK</b> instalada en tu celular, acá aparecen <b>tus juegos de verdad</b> para elegir y abrirlos directo.</div>';
+    document.getElementById('picker').classList.add('open');return;
+  }
+  if(!APPS){
+    list.innerHTML='<div class="pEmpty">⏳ Buscando tus apps…</div>';
+    try{APPS=JSON.parse(Turbo.listApps())}catch(e){APPS=[]}
+  }
+  renderApps('');
+  document.getElementById('picker').classList.add('open');
+}
+document.getElementById('pSearch').oninput=e=>{if(APPS)renderApps(e.target.value)};
+function renderApps(q){
+  const list=document.getElementById('pList');
+  q=(q||'').toLowerCase();
+  const items=APPS.filter(a=>!q||a.label.toLowerCase().includes(q));
+  list.innerHTML='';
+  if(!items.length){list.innerHTML='<div class="pEmpty">Sin resultados 😕</div>';return}
+  items.forEach(a=>{
+    const d=document.createElement('div');
+    d.className='app'+(a.pkg===S.pkg?' appSel':'');
+    d.innerHTML='<img src="data:image/png;base64,'+a.icon+'"><span>'+a.label.replace(/</g,'&lt;')+'</span>';
+    d.onclick=()=>{
+      S.game=a.label;S.pkg=a.pkg;S.icon=a.icon;save();paint();
+      document.getElementById('picker').classList.remove('open');
+      toast('🎮 '+a.label+' seleccionado');
+    };
+    list.appendChild(d);
+  });
+}
+
+/* ===== JUGAR ===== */
+document.getElementById('bPlay').onclick=()=>{
+  if(!S.game){toast('⚠️ Primero seleccioná un juego con el botón 1');return}
+  const mods=document.getElementById('gMods');mods.innerHTML='';
+  const act=togs.filter(t=>S[t.k]);
+  mods.innerHTML=act.length?act.map(t=>'<div>'+t.mods+'</div>').join(''):'<div>NINGÚN MODO EXTRA — solo abrir juego</div>';
+  document.getElementById('gMode').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('gMode').classList.remove('show');
+    if(NATIVE){
+      /* aplicar modos activados */
+      if(S.perf&&Turbo.hasWriteSettings()==='1')Turbo.perfSet(1);
+      if(S.turbo&&Turbo.hasDnd()==='1')Turbo.dndSet(1);
+      if(S.lag)Turbo.cleanNow();
+      Turbo.launchGame(S.pkg);
+    }else{
+      toast('🌐 Vista previa: en el APK abre tu juego de verdad');
+    }
+  },2300);
+};
+
+paint();
+</script>
+</body>
+</html>
