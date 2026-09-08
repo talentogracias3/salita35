@@ -7,88 +7,137 @@
 <meta name="description" content="Ruleta de sorteo: hasta 250 nombres, cantidad de ganadores configurable, lista de ganadores y música al girar.">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
-body{background:radial-gradient(ellipse at top,#1a1440 0%,#0b0d1e 55%,#07080f 100%);min-height:100vh;color:#eef0ff}
-.wrap{max-width:1180px;margin:0 auto;padding:18px}
-header{text-align:center;padding:22px 10px 6px}
-h1{font-size:clamp(1.7rem,6vw,2.6rem);font-weight:800;letter-spacing:.06em;background:linear-gradient(90deg,#ff4d9d,#a04fff,#4fe0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-header p{color:#8d93c9;font-size:.9rem;margin-top:4px}
-.layout{display:grid;grid-template-columns:1fr;gap:20px;margin-top:14px}
+body{background:#07080f;color:#eef0ff;min-height:100vh;overflow-x:hidden}
+/* fondo con luces flotantes */
+.bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bgfx .g{position:absolute;border-radius:50%;filter:blur(100px);opacity:.42}
+.g1{width:46vw;height:46vw;background:#7a2bd8;top:-12%;left:-8%;animation:drift1 22s ease-in-out infinite alternate}
+.g2{width:38vw;height:38vw;background:#e6388f;bottom:-14%;right:-6%;animation:drift2 26s ease-in-out infinite alternate}
+.g3{width:30vw;height:30vw;background:#149dd4;top:38%;right:22%;opacity:.25;animation:drift1 30s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(9vw,7vh) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-7vw,-8vh) scale(1.1)}}
+.wrap{max-width:1180px;margin:0 auto;padding:18px;position:relative}
+header{text-align:center;padding:24px 10px 6px}
+h1{font-size:clamp(1.8rem,6.5vw,2.9rem);font-weight:900;letter-spacing:.05em;
+  background:linear-gradient(110deg,#ff4d9d,#a04fff,#4fe0ff,#ff4d9d);background-size:250% auto;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmer 7s linear infinite;filter:drop-shadow(0 0 26px rgba(160,79,255,.35))}
+@keyframes shimmer{to{background-position:250% center}}
+header p{color:#9aa0d6;font-size:.92rem;margin-top:6px}
+.layout{display:grid;grid-template-columns:1fr;gap:20px;margin-top:16px}
 @media(min-width:900px){.layout{grid-template-columns:330px 1fr}}
 /* PANEL PERSONALIZACION */
-.panel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;backdrop-filter:blur(10px);height:fit-content;overflow:hidden}
-.pToggle{width:100%;background:none;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;color:#c7ccf5;font-weight:800;letter-spacing:.12em;font-size:.9rem}
+.panel{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:22px;
+  backdrop-filter:blur(16px);height:fit-content;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.pToggle{width:100%;background:none;display:flex;align-items:center;justify-content:space-between;
+  padding:17px 19px;color:#d8dcff;font-weight:800;letter-spacing:.12em;font-size:.9rem}
+.pToggle:hover{color:#fff}
 .pToggle .chev{transition:transform .3s;color:#a04fff;font-size:1rem}
 .panel.open .pToggle .chev{transform:rotate(180deg)}
-.pBody{display:none;padding:0 18px 18px}
-.panel.open .pBody{display:block}
+.pBody{display:none;padding:0 19px 19px}
+.panel.open .pBody{display:block;animation:slideDown .35s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1}}
 .addRow{display:flex;gap:8px}
-input[type=text]{flex:1;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15);color:#fff;padding:12px 14px;border-radius:12px;font-size:.95rem;outline:none;min-width:0}
-input[type=text]:focus{border-color:#a04fff;box-shadow:0 0 0 3px rgba(160,79,255,.2)}
-button{cursor:pointer;border:none;border-radius:12px;font-weight:700;transition:.2s;font-family:inherit}
-.btnAdd{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;padding:12px 18px;font-size:.9rem}
-.btnAdd:hover{filter:brightness(1.15)}
-.hint{color:#7d84b8;font-size:.75rem;margin-top:8px}
-/* ganadores setting */
-.setWin{margin:16px 0 4px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 14px}
-.setWin label{font-size:.8rem;color:#c7ccf5;display:block;margin-bottom:8px}
-.winCtrl{display:flex;gap:8px;align-items:center}
-.winCtrl button{width:38px;height:38px;font-size:1.15rem;background:rgba(255,255,255,.1);color:#fff;font-weight:800}
-.winCtrl button:hover{background:rgba(255,255,255,.2)}
-.winCtrl b{font-size:1.3rem;color:#ff8fbf;min-width:34px;text-align:center}
-.tools{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.tools button{background:rgba(255,255,255,.08);color:#c7ccf5;padding:8px 12px;font-size:.78rem;font-weight:500}
-.tools button:hover{background:rgba(255,255,255,.16)}
-.count{margin-top:14px;font-size:.8rem;color:#8d93c9;display:flex;justify-content:space-between}
+input[type=text]{flex:1;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);color:#fff;
+  padding:13px 15px;border-radius:13px;font-size:.95rem;outline:none;min-width:0;transition:.25s}
+input[type=text]:focus{border-color:#a04fff;box-shadow:0 0 0 4px rgba(160,79,255,.18);background:rgba(0,0,0,.45)}
+button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:.25s;font-family:inherit}
+.btnAdd{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;padding:13px 20px;font-size:.9rem;
+  box-shadow:0 8px 22px rgba(200,60,180,.35)}
+.btnAdd:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.hint{color:#7d84b8;font-size:.75rem;margin-top:9px}
+.setWin{margin:16px 0 4px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:13px 15px}
+.setWin label{font-size:.8rem;color:#c7ccf5;display:block;margin-bottom:9px}
+.winCtrl{display:flex;gap:10px;align-items:center}
+.winCtrl button{width:40px;height:40px;font-size:1.2rem;background:rgba(255,255,255,.09);color:#fff;font-weight:800}
+.winCtrl button:hover{background:linear-gradient(135deg,#ff4d9d,#a04fff);box-shadow:0 6px 16px rgba(200,60,180,.4)}
+.winCtrl b{font-size:1.4rem;color:#ff8fbf;min-width:36px;text-align:center}
+.tools{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}
+.tools button{background:rgba(255,255,255,.07);color:#c7ccf5;padding:9px 13px;font-size:.78rem;font-weight:600}
+.tools button:hover{background:rgba(255,255,255,.16);color:#fff}
+.count{margin-top:15px;font-size:.8rem;color:#8d93c9;display:flex;justify-content:space-between}
 .names{margin-top:10px;display:flex;flex-wrap:wrap;gap:7px;max-height:300px;overflow-y:auto;padding-right:4px}
-.chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 8px 6px 12px;font-size:.82rem;max-width:100%}
-.chip .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);
+  border-radius:999px;padding:6px 8px 6px 12px;font-size:.82rem;max-width:100%;transition:.2s}
+.chip:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
+.chip .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
 .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
-.chip b{color:#ff8fbf;font-weight:700;font-size:.78rem;padding:2px 6px;border-radius:8px;cursor:pointer}
+.chip b{color:#ff8fbf;font-weight:700;font-size:.78rem;padding:2px 7px;border-radius:8px;cursor:pointer}
 .chip b:hover{background:rgba(255,77,157,.3)}
 .empty{text-align:center;color:#7d84b8;font-size:.85rem;padding:20px 8px;font-style:italic}
 /* STAGE */
 .stage{display:flex;flex-direction:column;align-items:center;padding:10px 0 30px}
-.stageRow{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
-.wheelBox{position:relative;width:min(88vw,470px);height:min(88vw,470px);margin-top:12px}
+.stageRow{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.wheelBox{position:relative;width:min(88vw,470px);height:min(88vw,470px);margin-top:14px;
+  filter:drop-shadow(0 18px 55px rgba(160,79,255,.45))}
 canvas{width:100%;height:100%;display:block}
-.pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:34px solid #ff4d9d;filter:drop-shadow(0 4px 10px rgba(255,77,157,.6));z-index:3}
-.spinBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:27%;height:27%;border-radius:50%;background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;font-size:clamp(.9rem,3.4vw,1.15rem);font-weight:800;letter-spacing:.08em;box-shadow:0 8px 30px rgba(160,79,255,.55),inset 0 -6px 14px rgba(0,0,0,.3);border:5px solid #0b0d1e;z-index:4}
+.pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;
+  border-left:18px solid transparent;border-right:18px solid transparent;border-top:36px solid #ff4d9d;
+  filter:drop-shadow(0 4px 12px rgba(255,77,157,.8));z-index:3;
+  animation:ptrPulse 2s ease-in-out infinite;transform-origin:top center}
+@keyframes ptrPulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.1)}}
+.spinBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:27%;height:27%;border-radius:50%;
+  background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;font-size:clamp(.95rem,3.4vw,1.2rem);font-weight:900;letter-spacing:.09em;
+  border:4px solid #0b0d1e;z-index:4;text-shadow:0 2px 8px rgba(0,0,0,.45);
+  box-shadow:0 0 0 6px rgba(255,255,255,.05),0 12px 40px rgba(255,77,157,.55),0 0 70px rgba(160,79,255,.4),
+    inset 0 2px 10px rgba(255,255,255,.3),inset 0 -8px 16px rgba(0,0,0,.35);
+  animation:btnGlow 2.4s ease-in-out infinite}
+@keyframes btnGlow{0%,100%{box-shadow:0 0 0 6px rgba(255,255,255,.05),0 12px 40px rgba(255,77,157,.55),0 0 70px rgba(160,79,255,.4),inset 0 2px 10px rgba(255,255,255,.3),inset 0 -8px 16px rgba(0,0,0,.35)}
+  50%{box-shadow:0 0 0 6px rgba(255,255,255,.09),0 12px 52px rgba(255,77,157,.8),0 0 100px rgba(160,79,255,.6),inset 0 2px 10px rgba(255,255,255,.35),inset 0 -8px 16px rgba(0,0,0,.35)}}
 .spinBtn:active{transform:translate(-50%,-50%) scale(.93)}
-.spinBtn:disabled{filter:grayscale(.5) brightness(.7);cursor:not-allowed}
-.status{margin-top:16px;color:#8d93c9;font-size:.9rem;min-height:20px;text-align:center;padding:0 10px}
+.spinBtn:disabled{filter:grayscale(.5) brightness(.65);cursor:not-allowed}
+.status{margin-top:18px;color:#c0c5f2;font-size:.88rem;text-align:center;padding:10px 20px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:999px;backdrop-filter:blur(10px)}
 /* LISTA DE GANADORES AL COSTADO */
-.winPanel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;width:min(88vw,280px);margin-top:12px}
-.winPanel h3{font-size:.82rem;color:#c7ccf5;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
-.winPanel .prog{font-size:.78rem;color:#8d93c9;margin-bottom:12px}
-.winList{display:flex;flex-direction:column;gap:8px;min-height:60px}
-.wRow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:9px 12px;animation:popIn .35s}
-@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-.wRow .pos{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;font-weight:800;font-size:.72rem;border-radius:8px;padding:4px 8px;flex-shrink:0;white-space:nowrap}
-.wRow .nm{font-size:.9rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.winPanel{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:19px;
+  width:min(88vw,285px);margin-top:14px;backdrop-filter:blur(16px);
+  box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.winPanel h3{font-size:.82rem;color:#d8dcff;letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
+.winPanel .prog{font-size:.78rem;color:#9aa0d6;margin-bottom:13px}
+.winList{display:flex;flex-direction:column;gap:9px;min-height:60px}
+.wRow{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:14px;animation:popIn .4s cubic-bezier(.2,1.4,.4,1);
+  background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.11);
+  transition:.2s}
+.wRow:hover{transform:translateY(-2px);border-color:rgba(255,217,61,.35);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+@keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.wRow .pos{background:linear-gradient(135deg,#ffd93d,#ff9a3d);color:#3a2500;font-weight:900;font-size:.7rem;
+  border-radius:9px;padding:5px 9px;flex-shrink:0;white-space:nowrap;box-shadow:0 4px 12px rgba(255,180,60,.35)}
+.wRow .nm{font-size:.92rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .winPanel .empty{padding:14px 6px}
-.btnNew{width:100%;margin-top:14px;background:rgba(255,255,255,.1);color:#c7ccf5;padding:11px;font-size:.85rem}
-.btnNew:hover{background:rgba(255,255,255,.2)}
+.btnNew{width:100%;margin-top:15px;background:rgba(255,255,255,.07);color:#d8dcff;padding:12px;font-size:.85rem;
+  border:1px solid rgba(255,255,255,.13)}
+.btnNew:hover{background:rgba(255,255,255,.15);color:#fff}
 /* MODAL GANADOR */
-.overlay{position:fixed;inset:0;background:rgba(5,5,15,.88);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
-.overlay.on{display:flex}
-.modal{background:linear-gradient(160deg,#1d1540,#12101f);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:36px 30px;text-align:center;max-width:440px;width:100%}
-.modal small{color:#a66bff;letter-spacing:.3em;text-transform:uppercase;font-size:.72rem}
-.modal .win{font-size:clamp(1.8rem,7vw,2.6rem);font-weight:800;margin:14px 0 4px;color:#fff;word-break:break-word}
-.modal .gan{color:#ff4d9d;font-size:1.35rem;font-weight:800;text-shadow:0 0 18px rgba(255,77,157,.45)}
-.modal .cup{font-size:3.6rem;display:block;margin-bottom:4px}
-.modal .sub{color:#8d93c9;font-size:.85rem;margin-top:10px}
-.modal .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}
-.modal .btns button{padding:13px 22px;font-size:.9rem}
-.mPrimary{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff}
-.mSec{background:rgba(255,255,255,.1);color:#c7ccf5}
-.mSec:hover{background:rgba(255,255,255,.18)}
+.overlay{position:fixed;inset:0;background:rgba(5,5,15,.85);backdrop-filter:blur(10px);z-index:100;display:none;
+  align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:linear-gradient(160deg,#241a4d,#12101f 65%);border:1px solid rgba(255,255,255,.16);border-radius:26px;
+  padding:38px 32px;text-align:center;max-width:450px;width:100%;animation:modalIn .4s cubic-bezier(.2,1.4,.4,1);
+  box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 80px rgba(160,79,255,.25),inset 0 1px 0 rgba(255,255,255,.08)}
+@keyframes modalIn{from{transform:scale(.8) translateY(20px);opacity:0}to{transform:scale(1);opacity:1}}
+.modal small{color:#a66bff;letter-spacing:.32em;text-transform:uppercase;font-size:.72rem}
+.modal .win{font-size:clamp(1.9rem,7vw,2.7rem);font-weight:900;margin:14px 0 4px;color:#fff;word-break:break-word;
+  text-shadow:0 4px 34px rgba(255,77,157,.4)}
+.modal .gan{color:#ff4d9d;font-size:1.4rem;font-weight:900;text-shadow:0 0 22px rgba(255,77,157,.55)}
+.modal .cup{font-size:3.8rem;display:block;margin-bottom:4px;animation:cupFloat 2s ease-in-out infinite}
+@keyframes cupFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.modal .sub{color:#9aa0d6;font-size:.86rem;margin-top:11px}
+.modal .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.modal .btns button{padding:14px 24px;font-size:.9rem}
+.mPrimary{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;box-shadow:0 10px 30px rgba(200,60,180,.45)}
+.mPrimary:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.mSec{background:rgba(255,255,255,.09);color:#d8dcff;border:1px solid rgba(255,255,255,.13)}
+.mSec:hover{background:rgba(255,255,255,.17)}
 /* CONFETI */
 .confetti{position:fixed;top:-16px;width:10px;height:10px;z-index:99;pointer-events:none;border-radius:2px}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
-footer{text-align:center;color:#565b8c;font-size:.75rem;padding:26px 10px}
+footer{text-align:center;color:#565b8c;font-size:.75rem;padding:28px 10px}
 </style>
 </head>
 <body>
+<div class="bgfx"><span class="g g1"></span><span class="g g2"></span><span class="g g3"></span></div>
 <div class="wrap">
   <header>
     <h1>🎡 RULETA DEL SORTEO</h1>
@@ -190,14 +239,20 @@ function fanfare(big){const a=audio();if(!a)return;
   o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.55)})}
 
 /* ---- DIBUJO ---- */
-function draw(){
-  const n=names.length, R=cv.width/2-6;
+function draw(now){
+  now=now||0;
+  const n=names.length, R=cv.width/2-8;
   ctx.clearRect(0,0,cv.width,cv.height);
   ctx.save();ctx.translate(cv.width/2,cv.height/2);ctx.rotate(rot);
+  // sombra base
+  ctx.beginPath();ctx.arc(0,0,R+10,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.45)';ctx.fill();
   if(n===0){
     ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle='#171335';ctx.fill();
-    ctx.fillStyle='#7d84b8';ctx.font='16px system-ui';ctx.textAlign='center';
-    ctx.fillText('La ruleta está vacía',0,-R*0.55);ctx.fillText('Abrí ⚙ Personalización y agregá nombres',0,-R*0.42);ctx.restore();return;
+    ctx.fillStyle='#9aa0d6';ctx.font='16px system-ui';ctx.textAlign='center';
+    ctx.fillText('La ruleta está vacía',0,-R*0.55);
+    ctx.font='13px system-ui';
+    ctx.fillText('Abrí ⚙ Personalización y agregá nombres',0,-R*0.42);
+    rimAndLights(R,now);ctx.restore();return;
   }
   const seg=Math.PI*2/n;
   for(let i=0;i<n;i++){
@@ -208,19 +263,45 @@ function draw(){
   if(n<=50){
     for(let i=0;i<n;i++){
       ctx.save();ctx.rotate(i*seg+seg/2);ctx.textAlign='right';
-      ctx.fillStyle='#10101c';ctx.font=(n>28?'bold 11px':'bold 13px')+' system-ui';
+      ctx.fillStyle='#10101c';ctx.font='bold 900 '+(n>28?'11px':'13px')+' system-ui';
       let t=names[i];if(t.length>(n>28?9:13))t=t.slice(0,(n>28?8:12))+'…';
-      ctx.fillText(t,R-12,4);ctx.restore();
+      ctx.fillText(t,R-14,4);ctx.restore();
     }
   } else {
     ctx.save();ctx.rotate(-Math.PI/2-rot);
-    ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='bold 15px system-ui';ctx.textAlign='center';
-    ctx.fillText(names.length+' participantes',0,-cv.width/2+34);ctx.restore();
+    ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 15px system-ui';ctx.textAlign='center';
+    ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=6;
+    ctx.fillText(names.length+' participantes',0,-cv.width/2+38);ctx.restore();
+    ctx.shadowBlur=0;
   }
-  ctx.beginPath();ctx.arc(0,0,R+3,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=3;ctx.stroke();
+  // profundidad: degradado interior hacia el borde
+  const grd=ctx.createRadialGradient(0,0,R*.5,0,0,R);
+  grd.addColorStop(0,'rgba(0,0,0,0)');grd.addColorStop(1,'rgba(0,0,0,.28)');
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+  rimAndLights(R,now);
   ctx.restore();
 }
+function rimAndLights(R,now){
+  // aro neón
+  const g2=ctx.createLinearGradient(-R,-R,R,R);
+  g2.addColorStop(0,'#ff4d9d');g2.addColorStop(.5,'#a04fff');g2.addColorStop(1,'#4fe0ff');
+  ctx.beginPath();ctx.arc(0,0,R+6,0,Math.PI*2);
+  ctx.strokeStyle=g2;ctx.lineWidth=4;ctx.stroke();
+  // luces que titilan alrededor
+  const NL=24;
+  for(let k=0;k<NL;k++){
+    const a=k*(Math.PI*2/NL), x=Math.cos(a)*(R+6), y=Math.sin(a)*(R+6);
+    const b=.35+.65*Math.abs(Math.sin(now*2.6+k*.55));
+    ctx.beginPath();ctx.arc(x,y,3.6,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,235,160,'+b+')';
+    ctx.shadowColor='rgba(255,220,120,'+b+')';ctx.shadowBlur=10;
+    ctx.fill();ctx.shadowBlur=0;
+  }
+}
+/* bucle suave de animacion (luces siempre vivas) */
+function loop(ts){draw(ts/1000);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+
 function idxUnder(rotv,n){const seg=Math.PI*2/n;return Math.floor(norm(-Math.PI/2-rotv)/seg)%n}
 
 /* ---- RENDER UI ---- */
@@ -229,7 +310,7 @@ function render(){
   const box=document.getElementById('names');box.innerHTML='';
   names.forEach((nm,i)=>{
     const c=document.createElement('div');c.className='chip';
-    c.innerHTML='<span class="sw" style="background:'+colorAt(i)+'"></span><span>'+esc(nm)+'</span><b data-i="'+i+'">✕</b>';
+    c.innerHTML='<span class="sw" style="background:'+colorAt(i)+';color:'+colorAt(i)+'"></span><span>'+esc(nm)+'</span><b data-i="'+i+'">✕</b>';
     c.querySelector('b').onclick=()=>{if(spinning)return;names.splice(i,1);save();render()};
     box.appendChild(c);
   });
@@ -237,7 +318,6 @@ function render(){
   document.getElementById('cnt').textContent=names.length+' / '+MAX+' nombres';
   document.getElementById('nWin').textContent=target;
 
-  // lista de ganadores al costado
   const wl=document.getElementById('winList');
   wl.innerHTML=winners.map((w,i)=>'<div class="wRow"><span class="pos">'+(i+1)+'º GANADOR</span><span class="nm">'+esc(w)+'</span></div>').join('')||'<p class="empty">Todavía no hay ganadores</p>';
   document.getElementById('prog').textContent=winners.length+' de '+target+' ganador'+(target>1?'es':'')+' sorteado'+(winners.length===1?'':'s');
@@ -252,7 +332,6 @@ function render(){
     names.length===1?'Con 1 solo nombre no hay sorteo, agregá otro':
     names.length>50?names.length+' participantes girando — el texto se oculta para que no se amontone':
     'Listo para girar: '+names.length+' participantes · salen '+target+' ganador'+(target>1?'es':'');
-  draw();
 }
 function showMsg(t){const m=document.getElementById('msg');m.textContent=t;m.style.color='#ff8fbf';setTimeout(()=>m.textContent='',2600)}
 
@@ -271,7 +350,7 @@ function spin(){
   let lastIdx=idxUnder(rot,n);
   function step(now){
     const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,4);
-    rot=from+dist*e;draw();
+    rot=from+dist*e;
     const ci=idxUnder(rot,n);
     if(ci!==lastIdx){tick();lastIdx=ci}
     if(t<1)requestAnimationFrame(step);
@@ -281,8 +360,8 @@ function spin(){
 }
 function announce(i){
   const name=names[i];
-  names.splice(i,1);            // sale de la ruleta
-  winners.push(name);           // entra a la lista de ganadores
+  names.splice(i,1);
+  winners.push(name);
   save();render();
   document.getElementById('winName').textContent=name;
   const pos=winners.length;
@@ -331,7 +410,7 @@ document.getElementById('btnMore').onclick=()=>{if(spinning)return;target=Math.m
 document.getElementById('btnLess').onclick=()=>{if(spinning)return;target=Math.max(1,target-1);save();render()};
 document.getElementById('btnNew').onclick=()=>{
   if(spinning)return;
-  names=names.concat(winners); // los ganadores vuelven a la ruleta
+  names=names.concat(winners);
   winners=[];save();render();
 };
 document.getElementById('btnEx').onclick=()=>{if(spinning)return;names=['Ana','Bruno','Camila','Diego','Emma','Facundo','Gina','Hugo'];winners=[];save();render()};
