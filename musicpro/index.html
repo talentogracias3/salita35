@@ -724,7 +724,8 @@ function loadDevice(){
     devLoaded=true;
     const has=new Set(tracks.map(t=>t.key));
     arr.forEach(t=>{
-      if(has.has(t.k))return;
+      const i=tracks.findIndex(x=>x.key===t.k);
+      if(i>=0){tracks[i].url=t.uri;return} /* refresca URLs viejas (content:// de versiones anteriores) */
       has.add(t.k);
       tracks.push({id:t.id,url:t.uri,title:t.title||'Sin título',artist:t.artist||'',album:t.album||'',
         art:null,dur:(t.dur||0)/1000,dev:1,key:t.k});
