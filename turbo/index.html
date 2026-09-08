@@ -88,6 +88,24 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
   animation:tin .25s}
 @keyframes tin{from{opacity:0;transform:translateY(10px)}}
 
+/* ===== ACTIVAR TODO: 5 modos de una, nada se apaga por 2 horas ===== */
+document.getElementById('bAll').onclick=function(){
+  if(!NATIVE){toast('🚀 Activá todo desde el APK instalado en tu celular');return}
+  S.perf=true;S.turbo=true;S.lag=true;S.fps=true;S.mira=true;save();paint();
+  try{
+    if(Turbo.hasOverlay()!=='1'){Turbo.requestOverlay();toast('⚙️ Concedé "Mostrar sobre otras apps" para que quede la mira');}
+    else{Turbo.setMira(1,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);}
+    if(Turbo.hasWriteSettings()==='1'){Turbo.perfSet(1);Turbo.fpsSet(1)}
+    else{Turbo.requestWriteSettings();toast('⚙️ Concedé el permiso de ajustes para el modo S25 ULTRA')}
+    if(Turbo.hasDnd()==='1'){Turbo.dndSet(1)}
+    else{Turbo.requestDnd();toast('🔕 Concedé "No molestar" y tocá ACTIVAR TODO de nuevo')}
+    Turbo.killBg(S.pkg||'');
+    Turbo.cleanNow();
+    Turbo.syncAll(1,1,1,1,1);
+  }catch(e){}
+  toast('🚀 TODO ACTIVO: mira + S25 ULTRA + frío + anti-lag + FPS — quedan prendidos 2 horas');
+};
+
 /* ===== selector de juegos ===== */
 #picker{position:fixed;inset:0;z-index:45;background:rgba(1,7,4,.92);backdrop-filter:blur(8px);
   display:flex;flex-direction:column;padding:14px;opacity:0;visibility:hidden;transition:.25s}
@@ -232,11 +250,15 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <span class="ic">📜</span> MIS SCRIPTS
       <span class="st" style="background:#2a1450;color:#c9a6ff">EDITOR</span>
     </button>
+    <button class="btn btnPlay" id="bAll" style="background:linear-gradient(135deg,#ff4dd8,#ff9d00 60%,#ffe14d);color:#26001b">
+      <span class="ic">🚀</span> ACTIVAR TODO — 2 HORAS PRENDIDO
+      <span class="st" style="background:#3d0026;color:#ffb3e6">MAX</span>
+    </button>
     <button class="btn btnPlay" id="bPlay">
       <span class="ic" style="filter:drop-shadow(0 0 8px #01131d)">▶</span>
       JUGAR EL JUEGO SELECCIONADO
     </button>
-    <p class="hint">👆 DENTRO DEL JUEGO: 3 toques con tus 3 dedos → se abre UNA SOLA VEZ el MENÚ TURBO con mira, rendimiento máximo y modo frío. Después ya no vuelve a aparecer: todo queda activo y solo se apaga desde esta app 🔑</p>
+    <p class="hint">👆 DENTRO DEL JUEGO: 3 toques con tus 3 dedos → aparece el MENÚ TURBO TRANSPARENTE (lo arrastrás desde arriba y lo cerrás cuando querés). CERRARLO NO DESACTIVA NADA: los modos quedan prendidos 2 horas y en pantalla queda solo el puntito de la mira 🎯 — solo se apaga todo desde esta app 🔑</p>
   </div>
 </div>
 
@@ -390,7 +412,7 @@ function toast(msg){const t=document.createElement('div');t.className='toast';t.
 
 /* ===== botones toggle ===== */
 const togs=[
-  {id:'bPerf',k:'perf',name:'RENDIMIENTO',mods:'RENDIMIENTO 🚀'},
+  {id:'bPerf',k:'perf',name:'S25 ULTRA',mods:'S25 ULTRA 🚀'},
   {id:'bTurbo',k:'turbo',name:'SUPER TURBO',mods:'SUPER TURBO 🔥'},
   {id:'bFps',k:'fps',name:'FPS 200HZ',mods:'FPS 200HZ 🎯'},
   {id:'bLag',k:'lag',name:'ANTI-LAG',mods:'ANTI-LAG 🧹'},
