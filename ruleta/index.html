@@ -74,7 +74,7 @@ canvas{width:100%;height:100%;display:block}
 .modal{background:linear-gradient(160deg,#1d1540,#12101f);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:36px 30px;text-align:center;max-width:440px;width:100%}
 .modal small{color:#a66bff;letter-spacing:.3em;text-transform:uppercase;font-size:.72rem}
 .modal .win{font-size:clamp(1.8rem,7vw,2.6rem);font-weight:800;margin:14px 0 4px;color:#fff;word-break:break-word}
-.modal .gan{color:#ff8fbf;font-size:1.15rem;font-weight:700}
+.modal .gan{color:#ff4d9d;font-size:1.35rem;font-weight:800;text-shadow:0 0 18px rgba(255,77,157,.45)}
 .modal .cup{font-size:3.6rem;display:block;margin-bottom:4px}
 .modal .sub{color:#8d93c9;font-size:.85rem;margin-top:10px}
 .modal .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}
@@ -96,7 +96,7 @@ footer{text-align:center;color:#565b8c;font-size:.75rem;padding:26px 10px}
   </header>
 
   <div class="layout">
-    <aside class="panel open" id="panel">
+    <aside class="panel" id="panel">
       <button class="pToggle" id="pToggle">⚙ PERSONALIZACIÓN <span class="chev">▼</span></button>
       <div class="pBody">
         <div class="addRow">
@@ -196,8 +196,8 @@ function draw(){
   ctx.save();ctx.translate(cv.width/2,cv.height/2);ctx.rotate(rot);
   if(n===0){
     ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle='#171335';ctx.fill();
-    ctx.fillStyle='#7d84b8';ctx.font='17px system-ui';ctx.textAlign='center';
-    ctx.fillText('La ruleta está vacía',0,6);ctx.restore();return;
+    ctx.fillStyle='#7d84b8';ctx.font='16px system-ui';ctx.textAlign='center';
+    ctx.fillText('La ruleta está vacía',0,-R*0.55);ctx.fillText('Abrí ⚙ Personalización y agregá nombres',0,-R*0.42);ctx.restore();return;
   }
   const seg=Math.PI*2/n;
   for(let i=0;i<n;i++){
@@ -275,7 +275,7 @@ function spin(){
     const ci=idxUnder(rot,n);
     if(ci!==lastIdx){tick();lastIdx=ci}
     if(t<1)requestAnimationFrame(step);
-    else{spinning=false;announce(win)}
+    else{spinning=false;btnSpin.textContent='GIRAR';announce(win)}
   }
   requestAnimationFrame(step);
 }
