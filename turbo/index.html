@@ -217,7 +217,7 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <span class="ic" style="filter:drop-shadow(0 0 8px #01131d)">▶</span>
       JUGAR EL JUEGO SELECCIONADO
     </button>
-    <p class="hint">👆 DENTRO DEL JUEGO: hacé 3 toques juntos con tus 3 dedos → se abre el MENÚ TURBO flotante para activar la mira y el rendimiento máximo sin salir del juego</p>
+    <p class="hint">👆 DENTRO DEL JUEGO: 3 toques con tus 3 dedos → se abre UNA SOLA VEZ el MENÚ TURBO con mira, rendimiento máximo y modo frío. Después ya no vuelve a aparecer: todo queda activo y solo se apaga desde esta app 🔑</p>
   </div>
 </div>
 
@@ -254,6 +254,8 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <div class="pRow2"><span class="pStat" id="psNotif">…</span><button class="pGo" id="pbNotif">CONCEDER</button></div>
       <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psBat">…</span><button class="pGo" id="pbBat">CONCEDER</button></div>
       <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psSvc">…</span></div>
+      <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psMax">…</span><button class="pGo" id="pbMaxOff" style="background:#4d0a1f;color:#ff7d97">🛑 APAGAR</button></div>
+      <div class="pRow2" style="margin-top:8px"><span class="pStat" id="psCold">…</span><button class="pGo" id="pbColdOff" style="background:#4d0a1f;color:#ff7d97">🛑 APAGAR</button></div>
       <button class="pStop" id="pbStop">🛑 DETENER MODO EN 2º PLANO</button>
     </div>
         <div class="permRow">
@@ -456,7 +458,10 @@ function refreshPerms(){
   if(!NATIVE){setPill(document.getElementById('psWrite'),true,'WEB');setPill(document.getElementById('psDnd'),true,'WEB');
     setPill(document.getElementById('psNotif'),true,'WEB');setPill(document.getElementById('psBat'),true,'WEB');
     setPill(document.getElementById('psOver'),true,'WEB');
-    setPill(document.getElementById('psSvc'),false,'WEB');return}
+    setPill(document.getElementById('psSvc'),false,'WEB');
+    setPill(document.getElementById('psMax'),false,'WEB');
+    setPill(document.getElementById('psCold'),false,'WEB');
+    return}
   const w=Turbo.hasWriteSettings()==='1', d=Turbo.hasDnd()==='1';
   setPill(document.getElementById('psWrite'),w,w?'✓ CONCEDIDO':'⚠ FALTA');
   setPill(document.getElementById('psDnd'),d,d?'✓ CONCEDIDO':'⚠ FALTA');
@@ -469,10 +474,16 @@ function refreshPerms(){
   const sv=Turbo.isServiceRunning()==='1';
   setPill(document.getElementById('psSvc'),sv,sv?'⚡ ACTIVO EN 2º PLANO':'· DETENIDO');
   svcBtn();
+  const mxp=Turbo.hasMaxPerf()==='1';
+  setPill(document.getElementById('psMax'),mxp,mxp?'⚡ TURBO MÁX ACTIVO':'· TURBO MÁX APAGADO');
+  const cd=Turbo.hasCold()==='1';
+  setPill(document.getElementById('psCold'),cd,cd?'❄️ MODO FRÍO ACTIVO':'· MODO FRÍO APAGADO');
 }
 document.getElementById('pbNotif').onclick=()=>NATIVE&&Turbo.requestNotif();
 document.getElementById('pbBat').onclick=()=>NATIVE&&Turbo.requestBattery();
 document.getElementById('pbOver').onclick=()=>NATIVE&&Turbo.requestOverlay();
+document.getElementById('pbMaxOff').onclick=()=>{if(NATIVE){Turbo.clearMaxPerf();toast('🛑 Turbo máximo apagado desde la app');setTimeout(refreshPerms,400)}};
+document.getElementById('pbColdOff').onclick=()=>{if(NATIVE){Turbo.clearCold();toast('🧊 Modo frío apagado — brillo normal restaurado');setTimeout(refreshPerms,400)}};
 function svcBtn(){
   const running=NATIVE&&Turbo.isServiceRunning()==='1';
   const b=document.getElementById('pbStop');
