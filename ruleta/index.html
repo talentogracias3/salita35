@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RULETA — Sorteo de Nombres</title>
+<meta name="description" content="Ruleta de sorteo moderna: agregá hasta 250 nombres, tocá girar y ganá.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+body{background:radial-gradient(ellipse at top,#1a1440 0%,#0b0d1e 55%,#07080f 100%);min-height:100vh;color:#eef0ff}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+header{text-align:center;padding:22px 10px 6px}
+h1{font-size:clamp(1.7rem,6vw,2.6rem);font-weight:800;letter-spacing:.06em;background:linear-gradient(90deg,#ff4d9d,#a04fff,#4fe0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{color:#8d93c9;font-size:.9rem;margin-top:4px}
+.layout{display:grid;grid-template-columns:1fr;gap:20px;margin-top:14px}
+@media(min-width:820px){.layout{grid-template-columns:340px 1fr}}
+/* PANEL */
+.panel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px;backdrop-filter:blur(10px);height:fit-content}
+.panel h2{font-size:.95rem;color:#c7ccf5;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.addRow{display:flex;gap:8px}
+input[type=text]{flex:1;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15);color:#fff;padding:12px 14px;border-radius:12px;font-size:.95rem;outline:none;min-width:0}
+input[type=text]:focus{border-color:#a04fff;box-shadow:0 0 0 3px rgba(160,79,255,.2)}
+button{cursor:pointer;border:none;border-radius:12px;font-weight:700;transition:.2s}
+.btnAdd{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;padding:12px 18px;font-size:.9rem}
+.btnAdd:hover{filter:brightness(1.15)}
+.hint{color:#7d84b8;font-size:.75rem;margin-top:8px}
+.tools{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.tools button{background:rgba(255,255,255,.08);color:#c7ccf5;padding:8px 12px;font-size:.78rem;font-weight:500}
+.tools button:hover{background:rgba(255,255,255,.16)}
+.count{margin-top:14px;font-size:.8rem;color:#8d93c9;display:flex;justify-content:space-between}
+.names{margin-top:10px;display:flex;flex-wrap:wrap;gap:7px;max-height:340px;overflow-y:auto;padding-right:4px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 8px 6px 12px;font-size:.82rem;max-width:100%}
+.chip .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+.chip b{color:#ff8fbf;font-weight:700;font-size:.78rem;padding:2px 6px;border-radius:8px;cursor:pointer}
+.chip b:hover{background:rgba(255,77,157,.3)}
+.empty{text-align:center;color:#7d84b8;font-size:.85rem;padding:24px 8px;font-style:italic}
+/* RULETA */
+.stage{display:flex;flex-direction:column;align-items:center;padding:10px 0 30px}
+.wheelBox{position:relative;width:min(88vw,480px);height:min(88vw,480px);margin-top:8px}
+canvas{width:100%;height:100%;display:block}
+.pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:34px solid #ff4d9d;filter:drop-shadow(0 4px 10px rgba(255,77,157,.6));z-index:3}
+.spinBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:27%;height:27%;border-radius:50%;background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;font-size:clamp(.9rem,3.4vw,1.15rem);font-weight:800;letter-spacing:.08em;box-shadow:0 8px 30px rgba(160,79,255,.55),inset 0 -6px 14px rgba(0,0,0,.3);border:5px solid #0b0d1e;z-index:4}
+.spinBtn:active{transform:translate(-50%,-50%) scale(.93)}
+.spinBtn:disabled{filter:grayscale(.5) brightness(.7);cursor:not-allowed}
+.status{margin-top:16px;color:#8d93c9;font-size:.85rem;min-height:20px;text-align:center}
+/* MODAL GANADOR */
+.overlay{position:fixed;inset:0;background:rgba(5,5,15,.88);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:linear-gradient(160deg,#1d1540,#12101f);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:36px 30px;text-align:center;max-width:420px;width:100%}
+.modal small{color:#a66bff;letter-spacing:.3em;text-transform:uppercase;font-size:.72rem}
+.modal .win{font-size:clamp(1.8rem,7vw,2.6rem);font-weight:800;margin:14px 0 6px;color:#fff;word-break:break-word}
+.modal .cup{font-size:3.6rem;display:block;margin-bottom:4px}
+.modal .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+.modal .btns button{padding:13px 22px;font-size:.9rem}
+.mPrimary{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff}
+.mSec{background:rgba(255,255,255,.1);color:#c7ccf5}
+.mSec:hover{background:rgba(255,255,255,.18)}
+/* CONFETI */
+.confetti{position:fixed;top:-16px;width:10px;height:10px;z-index:99;pointer-events:none;border-radius:2px}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+footer{text-align:center;color:#565b8c;font-size:.75rem;padding:26px 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎡 RULETA DEL SORTEO</h1>
+    <p>Agregá los nombres, tocá GIRAR y que gane el que caiga</p>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <h2>Nombres en la ruleta</h2>
+      <div class="addRow">
+        <input type="text" id="inp" placeholder="Escribí un nombre..." maxlength="40">
+        <button class="btnAdd" id="btnAdd">AGREGAR</button>
+      </div>
+      <p class="hint">💡 Podés pegar varios separados por comas. Máximo 250.</p>
+      <div class="tools">
+        <button id="btnEx">Cargar ejemplo</button>
+        <button id="btnShuf">🔀 Mezclar</button>
+        <button id="btnClear">Borrar todo</button>
+      </div>
+      <div class="count"><span id="cnt">0 / 250 nombres</span><span id="msg"></span></div>
+      <div class="names" id="names"></div>
+    </aside>
+
+    <main class="stage">
+      <div class="wheelBox">
+        <div class="pointer"></div>
+        <canvas id="cv" width="480" height="480"></canvas>
+        <button class="spinBtn" id="btnSpin">GIRAR</button>
+      </div>
+      <p class="status" id="status">Agregá al menos 2 nombres para empezar</p>
+    </main>
+  </div>
+
+  <footer>Ruleta hecha por Luciano Sala · Funciona sin internet una vez cargada · Tus nombres se guardan solos en tu dispositivo</footer>
+</div>
+
+<div class="overlay" id="ov">
+  <div class="modal">
+    <span class="cup">🏆</span>
+    <small>El ganador es</small>
+    <div class="win" id="winName"></div>
+    <div class="btns">
+      <button class="mPrimary" id="btnAgain">GIRAR DE NUEVO</button>
+      <button class="mSec" id="btnDrop">SACAR AL GANADOR Y SEGUIR</button>
+      <button class="mSec" id="btnClose">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MAX=250, KEY='ruleta_nombres_v1';
+let names=[]; try{names=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+const PAL=['#ff4d9d','#ff9a3d','#ffd93d','#6be585','#4fe0ff','#4d9dff','#a04fff','#ff6b6b','#2ee6a8','#f36bff'];
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+const btnSpin=document.getElementById('btnSpin'), statusEl=document.getElementById('status');
+let rot=0, spinning=false, sel=-1;
+
+function save(){localStorage.setItem(KEY,JSON.stringify(names))}
+function colorAt(i){return PAL[i%PAL.length]}
+function draw(){
+  const n=names.length, R=cv.width/2-6;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.save();ctx.translate(cv.width/2,cv.height/2);ctx.rotate(rot);
+  if(n===0){
+    ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle='#171335';ctx.fill();
+    ctx.fillStyle='#7d84b8';ctx.font='17px system-ui';ctx.textAlign='center';
+    ctx.fillText('La ruleta está vacía',0,6);ctx.restore();return;
+  }
+  const seg=Math.PI*2/n;
+  for(let i=0;i<n;i++){
+    const a0=i*seg, a1=a0+seg;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R,a0,a1);ctx.closePath();
+    ctx.fillStyle=colorAt(i);ctx.fill();
+    ctx.strokeStyle='rgba(7,8,15,.85)';ctx.lineWidth=2;ctx.stroke();
+  }
+  // texto solo si hay lugar
+  if(n<=50){
+    for(let i=0;i<n;i++){
+      const mid=i*seg+seg/2, r=R*0.62;
+      ctx.save();ctx.rotate(mid);ctx.textAlign='right';
+      ctx.fillStyle='#10101c';ctx.font=(n>28?'bold 11px':'bold 13px')+' system-ui';
+      let t=names[i]; if(t.length>(n>28?9:13)) t=t.slice(0,(n>28?8:12))+'…';
+      ctx.fillText(t,R-12,4);ctx.restore();
+    }
+  } else {
+    ctx.save();ctx.rotate(-Math.PI/2-rot);
+    ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='bold 15px system-ui';ctx.textAlign='center';
+    ctx.fillText(names.length+' participantes',0,-cv.width/2+34);ctx.restore();
+  }
+  // borde exterior
+  ctx.beginPath();ctx.arc(0,0,R+3,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=3;ctx.stroke();
+  ctx.restore();
+}
+function render(){
+  const box=document.getElementById('names');box.innerHTML='';
+  names.forEach((nm,i)=>{
+    const c=document.createElement('div');c.className='chip';
+    c.innerHTML='<span class="sw" style="background:'+colorAt(i)+'"></span><span>'+esc(nm)+'</span><b data-i="'+i+'">✕</b>';
+    c.querySelector('b').onclick=()=>{if(spinning)return;names.splice(i,1);sel=-1;save();render()};
+    box.appendChild(c);
+  });
+  if(!names.length)box.innerHTML='<p class="empty">Todavía no hay nadie en la ruleta…</p>';
+  document.getElementById('cnt').textContent=names.length+' / '+MAX+' nombres';
+  btnSpin.disabled=spinning||names.length<2;
+  statusEl.textContent=names.length===0?'Agregá al menos 2 nombres para empezar':
+    names.length===1?'Con 1 solo nombre no hay sorteo, agregá otro':
+    names.length>50?'Mucha gente! '+names.length+' nombres girando — el texto se oculta para que no se amontone':'Listos para girar: '+names.length+' participantes';
+  draw();
+}
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function add(){
+  if(spinning)return;
+  const v=document.getElementById('inp').value.trim();if(!v)return;
+  const parts=v.split(',').map(s=>s.trim()).filter(Boolean);
+  let added=0;
+  for(const p of parts){
+    if(names.length>=MAX)break;
+    if(p.length>40){showMsg('Máximo 40 letras por nombre');break}
+    names.push(p);added++;
+  }
+  if(parts.length&&names.length>=MAX)showMsg('Llegaste al máximo de '+MAX);
+  save();render();document.getElementById('inp').value='';
+  if(added&&parts.length>added)showMsg('Solo entraron '+added+' (máx '+MAX+')');
+}
+function showMsg(t){const m=document.getElementById('msg');m.textContent=t;m.style.color='#ff8fbf';setTimeout(()=>m.textContent='',2600)}
+function spin(){
+  if(spinning||names.length<2)return;
+  spinning=true;btnSpin.disabled=true;btnSpin.textContent='...';statusEl.textContent='Girando…';
+  const n=names.length, seg=Math.PI*2/n;
+  const win=Math.floor(Math.random()*n);
+  // angulo final: centro del ganador bajo la flecha con leve variacion
+  const jitter=(Math.random()*0.6-0.3)*seg;
+  let target=-Math.PI/2-(win+0.5)*seg-jitter;
+  const turns=5+Math.floor(Math.random()*3);
+  target=rot+turns*Math.PI*2+((((target-rot)%(Math.PI*2))+Math.PI*2)%(Math.PI*2));
+  const from=rot, dist=target-from, dur=4200+Math.random()*1600, t0=performance.now();
+  function step(now){
+    const t=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-t,4);
+    rot=from+dist*e;draw();
+    if(t<1)requestAnimationFrame(step);
+    else{spinning=false;sel=win;btnSpin.disabled=false;btnSpin.textContent='GIRAR';announce(win)}
+  }
+  requestAnimationFrame(step);
+}
+function announce(i){
+  document.getElementById('winName').textContent=names[i];
+  document.getElementById('ov').classList.add('on');
+  statusEl.textContent='Ganó '+names[i]+' 🎉';confetti();
+}
+function confetti(){
+  const cols=['#ff4d9d','#ffd93d','#4fe0ff','#a04fff','#6be585','#ff9a3d'];
+  for(let k=0;k<70;k++){
+    const d=document.createElement('div');d.className='confetti';
+    d.style.left=Math.random()*100+'vw';
+    d.style.background=cols[k%cols.length];
+    d.style.animation='fall '+(1.6+Math.random()*1.6)+'s linear '+Math.random()*0.7+'s forwards';
+    d.style.transform='rotate('+Math.random()*360+'deg)';
+    document.body.appendChild(d);setTimeout(()=>d.remove(),4200);
+  }
+}
+document.getElementById('btnAdd').onclick=add;
+document.getElementById('inp').addEventListener('keydown',e=>{if(e.key==='Enter')add()});
+document.getElementById('btnSpin').onclick=spin;
+document.getElementById('btnEx').onclick=()=>{if(spinning)return;names=['Ana','Bruno','Camila','Diego','Emma','Facundo','Gina','Hugo'];save();render()};
+document.getElementById('btnShuf').onclick=()=>{if(spinning)return;for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]]}save();render()};
+document.getElementById('btnClear').onclick=()=>{if(spinning)return;names=[];sel=-1;save();render()};
+document.getElementById('btnAgain').onclick=()=>{document.getElementById('ov').classList.remove('on');spin()};
+document.getElementById('btnClose').onclick=()=>document.getElementById('ov').classList.remove('on');
+document.getElementById('btnDrop').onclick=()=>{if(spinning)return;names.splice(sel,1);save();document.getElementById('ov').classList.remove('on');render()};
+document.getElementById('ov').onclick=e=>{if(e.target.id==='ov')e.target.classList.remove('on')};
+render();
+</script>
+</body>
+</html>
