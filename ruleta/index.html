@@ -129,6 +129,30 @@ button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:
 .mPrimary:hover{filter:brightness(1.15);transform:translateY(-1px)}
 .mSec{background:rgba(255,255,255,.09);color:#d8dcff;border:1px solid rgba(255,255,255,.13)}
 .mSec:hover{background:rgba(255,255,255,.17)}
+
+/* ---- MODO CELULAR ---- */
+@media (max-width:760px){
+  header{padding:12px 8px 2px}
+  h1{font-size:1.25rem}
+  header p{font-size:.66rem}
+  .pToggle{top:8px;left:8px;padding:9px 12px;font-size:.68rem}
+  .pDrop{top:50px;left:8px;width:min(92vw,350px)}
+  .stage{padding:2px 4px}
+  .stageRow{flex-direction:column;gap:8px}
+  .wheelBox{width:min(84vw,46vh)}
+  .spinBtn{border-width:3px}
+  .winPanel{width:min(94vw,430px);padding:10px 12px;border-radius:16px}
+  .winPanel h3{font-size:.66rem;margin-bottom:2px}
+  .winPanel .prog{font-size:.62rem;margin-bottom:7px}
+  .winList{flex-direction:row;flex-wrap:wrap;gap:6px;max-height:12.5vh;justify-content:center}
+  .wRow{padding:5px 10px;gap:7px;border-radius:999px}
+  .wRow .pos{font-size:.56rem;padding:3px 6px;border-radius:7px}
+  .wRow .nm{font-size:.76rem;white-space:nowrap}
+  .btnNew{margin-top:9px;padding:9px;font-size:.74rem}
+  .status{margin:6px 10px 8px;font-size:.72rem;padding:7px 13px}
+  .modal{padding:26px 20px}
+}
+
 /* CONFETI */
 .confetti{position:fixed;top:-16px;width:10px;height:10px;z-index:99;pointer-events:none;border-radius:2px}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
