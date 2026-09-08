@@ -11,10 +11,25 @@ html,body{height:100%;overflow:hidden}
 body{background:#07080f;color:#eef0ff;display:flex;flex-direction:column;touch-action:manipulation;overscroll-behavior:none}
 /* fondo con luces flotantes */
 .bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden}
-.bgfx .g{position:absolute;border-radius:50%;filter:blur(100px);opacity:.42}
-.g1{width:46vw;height:46vw;background:#7a2bd8;top:-12%;left:-8%;animation:drift1 22s ease-in-out infinite alternate}
-.g2{width:38vw;height:38vw;background:#e6388f;bottom:-14%;right:-6%;animation:drift2 26s ease-in-out infinite alternate}
-.g3{width:30vw;height:30vw;background:#149dd4;top:38%;right:22%;opacity:.25;animation:drift1 30s ease-in-out infinite alternate-reverse}
+.bgfx .g{position:absolute;border-radius:50%;filter:blur(100px);opacity:.5}
+.g1{width:46vw;height:46vw;background:#8a35ff;top:-12%;left:-8%;animation:drift1 22s ease-in-out infinite alternate}
+.g2{width:40vw;height:40vw;background:#ff4d9d;bottom:-14%;right:-6%;animation:drift2 26s ease-in-out infinite alternate}
+.g3{width:32vw;height:32vw;background:#28c8ff;top:34%;right:20%;opacity:.32;animation:drift1 30s ease-in-out infinite alternate-reverse}
+.g4{width:34vw;height:34vw;background:#35e08a;bottom:-16%;left:18%;opacity:.3;animation:drift2 34s ease-in-out infinite alternate}
+.g5{width:22vw;height:22vw;background:#ffb84d;top:-6%;right:28%;opacity:.22;animation:drift1 27s ease-in-out infinite alternate}
+.bgfx::after{content:'';position:absolute;inset:0;
+  background-image:
+   radial-gradient(1.6px 1.6px at 12% 22%,#fff9,transparent),
+   radial-gradient(1.2px 1.2px at 28% 68%,#fff7,transparent),
+   radial-gradient(1.8px 1.8px at 44% 14%,#9df,transparent 60%),
+   radial-gradient(1.2px 1.2px at 61% 42%,#fff8,transparent),
+   radial-gradient(1.6px 1.6px at 74% 18%,#f9d,transparent 60%),
+   radial-gradient(1.2px 1.2px at 86% 64%,#fff7,transparent),
+   radial-gradient(1.8px 1.8px at 8% 78%,#9df,transparent 60%),
+   radial-gradient(1.2px 1.2px at 52% 88%,#fff8,transparent),
+   radial-gradient(1.4px 1.4px at 92% 8%,#fff6,transparent);
+  animation:twinkle 5s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.45}to{opacity:1}}
 @keyframes drift1{to{transform:translate(9vw,7vh) scale(1.15)}}
 @keyframes drift2{to{transform:translate(-7vw,-8vh) scale(1.1)}}
 /* BOTON FLOTANTE PERSONALIZACION */
@@ -135,7 +150,7 @@ button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:
   header{padding:12px 8px 2px}
   h1{font-size:1.25rem}
   header p{font-size:.66rem}
-  .pToggle{top:8px;left:8px;padding:9px 12px;font-size:.68rem}
+  .pToggle{position:static;display:block;margin:10px auto 0;width:fit-content;padding:9px 12px;font-size:.68rem}
   .pDrop{top:50px;left:8px;width:min(92vw,350px)}
   .stage{padding:2px 4px}
   .stageRow{flex-direction:column;gap:8px}
@@ -159,9 +174,7 @@ button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:
 </style>
 </head>
 <body>
-<div class="bgfx"><span class="g g1"></span><span class="g g2"></span><span class="g g3"></span></div>
-
-<button class="pToggle" id="pToggle">⚙ PERSONALIZACIÓN <span class="chev">▼</span></button>
+<div class="bgfx"><span class="g g1"></span><span class="g g2"></span><span class="g g3"></span><span class="g g4"></span><span class="g g5"></span></div>
 
 <div class="pDrop" id="panel">
   <div class="addRow">
@@ -192,6 +205,8 @@ button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:
   <h1>🎡 RULETA DEL SORTEO</h1>
   <p>Tocá GIRAR y que la suerte decida</p>
 </header>
+
+<button class="pToggle" id="pToggle">⚙ PERSONALIZACIÓN <span class="chev">▼</span></button>
 
 <main class="stage">
   <div class="stageRow">
@@ -406,7 +421,12 @@ function confetti(){
 
 /* ---- EVENTOS ---- */
 const pBtn=document.getElementById('pToggle'), pDrop=document.getElementById('panel');
-pBtn.onclick=e=>{const open=pDrop.classList.toggle('open');pBtn.classList.toggle('open',open);e.stopPropagation()};
+function placeDrop(){const r=pBtn.getBoundingClientRect();
+  const w=Math.min(window.innerWidth*0.92,350);
+  pDrop.style.left=Math.max(8,Math.min(window.innerWidth-8-w,r.left+r.width/2-w/2))+'px';
+  pDrop.style.top=Math.max(8,r.bottom+8)+'px'}
+pBtn.onclick=e=>{const open=pDrop.classList.toggle('open');pBtn.classList.toggle('open',open);if(open)placeDrop();e.stopPropagation()};
+window.addEventListener('resize',()=>{if(pDrop.classList.contains('open'))placeDrop()});
 document.addEventListener('click',e=>{
   if(!pDrop.classList.contains('open'))return;
   if(e.target.closest('#panel')||e.target.closest('#pToggle'))return;
