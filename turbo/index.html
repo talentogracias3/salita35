@@ -217,7 +217,7 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <span class="st">DESACTIVADO</span>
     </button>
     <button class="btn btnOff" id="bFps">
-      <span class="ic">🎯</span> ACTIVAR FPS AL 144HZ
+      <span class="ic">🎯</span> ACTIVAR FPS AL 200HZ
       <span class="st">DESACTIVADO</span>
     </button>
     <button class="btn btnOff" id="bLag">
@@ -392,7 +392,7 @@ function toast(msg){const t=document.createElement('div');t.className='toast';t.
 const togs=[
   {id:'bPerf',k:'perf',name:'RENDIMIENTO',mods:'RENDIMIENTO 🚀'},
   {id:'bTurbo',k:'turbo',name:'SUPER TURBO',mods:'SUPER TURBO 🔥'},
-  {id:'bFps',k:'fps',name:'FPS 144HZ',mods:'FPS 144HZ 🎯'},
+  {id:'bFps',k:'fps',name:'FPS 200HZ',mods:'FPS 200HZ 🎯'},
   {id:'bLag',k:'lag',name:'ANTI-LAG',mods:'ANTI-LAG 🧹'},
   {id:'bMira',k:'mira',name:'MIRA',mods:'MIRA FLOTANTE 🎯'}
 ];
@@ -429,12 +429,14 @@ togs.forEach(t=>{
         else toast('Anti-Lag desactivado');
       }
       if(t.k==='fps'){
-        toast(S.fps?'🎯 FPS 144HZ activado':'FPS desactivado');
+        if(S.fps){if(Turbo.hasWriteSettings()==='1'){Turbo.fpsSet(1);toast('🎯 FPS 200HZ: pantalla a máxima frecuencia + cero animaciones')}
+          else{Turbo.requestWriteSettings();toast('Concedé el permiso ⚙ y volvé a tocar el botón')}}
+        else{if(Turbo.hasWriteSettings()==='1')Turbo.fpsSet(0);toast('FPS desactivado')}
       }
     }else{
       toast(S[t.k]?'✓ '+t.name+' ACTIVADO':'✗ '+t.name+' DESACTIVADO');
     }
-    if(NATIVE)Turbo.syncAll(S.perf?1:0,S.turbo?1:0,S.lag?1:0,S.mira?1:0);
+    if(NATIVE)Turbo.syncAll(S.perf?1:0,S.turbo?1:0,S.lag?1:0,S.mira?1:0,S.fps?1:0);
   };
 });
 
@@ -489,8 +491,8 @@ document.getElementById('bPlay').onclick=()=>{
       if(S.turbo&&Turbo.hasDnd()==='1')Turbo.dndSet(1);
       if(S.lag)Turbo.cleanNow();
       if(S.turbo)Turbo.killBg(S.pkg||'');
-      Turbo.applyMods(S.perf?1:0,S.turbo?1:0);
-      if(S.perf||S.turbo||S.lag||S.mira){
+      if(S.fps&&Turbo.hasWriteSettings()==='1')Turbo.fpsSet(1);
+      if(S.perf||S.turbo||S.lag||S.mira||S.fps){
         Turbo.startService2();
         toast('⚡ Turbo Hack activo en 2º plano protegiendo tus modos');
       }
