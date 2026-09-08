@@ -425,7 +425,7 @@ togs.forEach(t=>{
         else{if(Turbo.hasDnd()==='1')Turbo.dndSet(0);toast('Super Turbo desactivado')}
       }
       if(t.k==='lag'){
-        if(S.lag){Turbo.cleanNow();toast('🧹 Anti-Lag: memoria liberada y caché limpia')}
+        if(S.lag){Turbo.cleanNow();toast('🧹 Anti-Lag PRO: limpieza cada 20s + cero animaciones')}
         else toast('Anti-Lag desactivado');
       }
       if(t.k==='fps'){
@@ -579,7 +579,7 @@ const mPanel=document.getElementById('miraPanel');
 document.getElementById('miraClose').onclick=()=>mPanel.classList.remove('open');
 document.getElementById('gMira').onclick=(e)=>{e.stopPropagation();openMiraCfg()};
 function openMiraCfg(){mPaint();mPanel.classList.add('open')}
-const mColors=['#00ff9d','#00e5ff','#ffffff','#ff4d6d'];
+const mColors=['#00ff9d','#00e5ff','#ffffff','#ff4d6d','#101010'];
 let mThrottle=0;
 function syncMira(force){
   if(!NATIVE)return;
@@ -594,13 +594,17 @@ function mPaint(){
   mPlace();mChips();
   const c=mpDot.getContext('2d');c.clearRect(0,0,56,56);
   const col=mColors[S.miraColor],cx=28,cy=28;
-  c.fillStyle=col;c.strokeStyle=col;c.shadowColor='rgba(0,0,0,.7)';c.shadowBlur=6;
-  if(S.miraStyle===0){c.beginPath();c.arc(cx,cy,10,0,7);c.fill()}
+  c.fillStyle=col;c.strokeStyle='#fff';
+  c.shadowColor=S.miraColor===4?'rgba(255,255,255,.95)':'rgba(0,0,0,.7)';c.shadowBlur=6;
+  if(S.miraStyle===0){c.beginPath();c.arc(cx,cy,10,0,7);c.fill();c.lineWidth=S.miraColor===4?2:0;c.stroke()}
   else if(S.miraStyle===1){
     const w=3,gap=9,len=28;
     c.fillRect(cx-w/2,cy-len,w,len-gap);c.fillRect(cx-w/2,cy+gap,w,len-gap);
     c.fillRect(cx-len,cy-w/2,len-gap,w);c.fillRect(cx+gap,cy-w/2,len-gap,w);
     c.beginPath();c.arc(cx,cy,3,0,7);c.fill();
+    if(S.miraColor===4){c.lineWidth=1.5;
+      c.strokeRect(cx-w/2,cy-len,w,len-gap);c.strokeRect(cx-w/2,cy+gap,w,len-gap);
+      c.strokeRect(cx-len,cy-w/2,len-gap,w);c.strokeRect(cx+gap,cy-w/2,len-gap,w);}
   }else{
     c.lineWidth=4;c.beginPath();c.arc(cx,cy,17,0,7);c.stroke();
     c.beginPath();c.arc(cx,cy,4,0,7);c.fill();
