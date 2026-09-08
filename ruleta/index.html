@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>RULETA — Sorteo de Nombres y Ganadores</title>
 <meta name="description" content="Ruleta de sorteo: hasta 250 nombres, cantidad de ganadores configurable, lista de ganadores y música al girar.">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
-body{background:#07080f;color:#eef0ff;min-height:100vh;overflow-x:hidden}
+html,body{height:100%;overflow:hidden}
+body{background:#07080f;color:#eef0ff;display:flex;flex-direction:column;touch-action:manipulation;overscroll-behavior:none}
 /* fondo con luces flotantes */
 .bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden}
 .bgfx .g{position:absolute;border-radius:50%;filter:blur(100px);opacity:.42}
@@ -16,60 +17,29 @@ body{background:#07080f;color:#eef0ff;min-height:100vh;overflow-x:hidden}
 .g3{width:30vw;height:30vw;background:#149dd4;top:38%;right:22%;opacity:.25;animation:drift1 30s ease-in-out infinite alternate-reverse}
 @keyframes drift1{to{transform:translate(9vw,7vh) scale(1.15)}}
 @keyframes drift2{to{transform:translate(-7vw,-8vh) scale(1.1)}}
-.wrap{max-width:1180px;margin:0 auto;padding:18px;position:relative}
-header{text-align:center;padding:24px 10px 6px}
-h1{font-size:clamp(1.8rem,6.5vw,2.9rem);font-weight:900;letter-spacing:.05em;
+/* BOTON FLOTANTE PERSONALIZACION */
+.pToggle{position:fixed;top:10px;left:10px;z-index:60;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(12px);color:#d8dcff;padding:10px 15px;font-size:.76rem;font-weight:800;letter-spacing:.09em;border-radius:999px}
+.pToggle:hover{background:rgba(255,255,255,.16);color:#fff}
+.pToggle .chev{color:#a04fff;margin-left:6px;display:inline-block;transition:transform .3s}
+.pToggle.open .chev{transform:rotate(180deg)}
+/* PANEL DESPLEGABLE */
+.pDrop{position:fixed;top:56px;left:10px;z-index:59;width:min(90vw,350px);max-height:min(74vh,560px);overflow-y:auto;
+  display:none;background:rgba(17,15,40,.92);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:17px;
+  backdrop-filter:blur(18px);box-shadow:0 30px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08)}
+.pDrop.open{display:block;animation:dropIn .3s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1}}
+header{text-align:center;padding:16px 10px 4px;flex:none}
+h1{font-size:clamp(1.3rem,5.5vw,2.2rem);font-weight:900;letter-spacing:.05em;
   background:linear-gradient(110deg,#ff4d9d,#a04fff,#4fe0ff,#ff4d9d);background-size:250% auto;
   -webkit-background-clip:text;background-clip:text;color:transparent;
   animation:shimmer 7s linear infinite;filter:drop-shadow(0 0 26px rgba(160,79,255,.35))}
 @keyframes shimmer{to{background-position:250% center}}
-header p{color:#9aa0d6;font-size:.92rem;margin-top:6px}
-.layout{display:grid;grid-template-columns:1fr;gap:20px;margin-top:16px}
-@media(min-width:900px){.layout{grid-template-columns:330px 1fr}}
-/* PANEL PERSONALIZACION */
-.panel{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:22px;
-  backdrop-filter:blur(16px);height:fit-content;overflow:hidden;
-  box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
-.pToggle{width:100%;background:none;display:flex;align-items:center;justify-content:space-between;
-  padding:17px 19px;color:#d8dcff;font-weight:800;letter-spacing:.12em;font-size:.9rem}
-.pToggle:hover{color:#fff}
-.pToggle .chev{transition:transform .3s;color:#a04fff;font-size:1rem}
-.panel.open .pToggle .chev{transform:rotate(180deg)}
-.pBody{display:none;padding:0 19px 19px}
-.panel.open .pBody{display:block;animation:slideDown .35s ease}
-@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1}}
-.addRow{display:flex;gap:8px}
-input[type=text]{flex:1;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);color:#fff;
-  padding:13px 15px;border-radius:13px;font-size:.95rem;outline:none;min-width:0;transition:.25s}
-input[type=text]:focus{border-color:#a04fff;box-shadow:0 0 0 4px rgba(160,79,255,.18);background:rgba(0,0,0,.45)}
-button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:.25s;font-family:inherit}
-.btnAdd{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;padding:13px 20px;font-size:.9rem;
-  box-shadow:0 8px 22px rgba(200,60,180,.35)}
-.btnAdd:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.hint{color:#7d84b8;font-size:.75rem;margin-top:9px}
-.setWin{margin:16px 0 4px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:13px 15px}
-.setWin label{font-size:.8rem;color:#c7ccf5;display:block;margin-bottom:9px}
-.winCtrl{display:flex;gap:10px;align-items:center}
-.winCtrl button{width:40px;height:40px;font-size:1.2rem;background:rgba(255,255,255,.09);color:#fff;font-weight:800}
-.winCtrl button:hover{background:linear-gradient(135deg,#ff4d9d,#a04fff);box-shadow:0 6px 16px rgba(200,60,180,.4)}
-.winCtrl b{font-size:1.4rem;color:#ff8fbf;min-width:36px;text-align:center}
-.tools{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}
-.tools button{background:rgba(255,255,255,.07);color:#c7ccf5;padding:9px 13px;font-size:.78rem;font-weight:600}
-.tools button:hover{background:rgba(255,255,255,.16);color:#fff}
-.count{margin-top:15px;font-size:.8rem;color:#8d93c9;display:flex;justify-content:space-between}
-.names{margin-top:10px;display:flex;flex-wrap:wrap;gap:7px;max-height:300px;overflow-y:auto;padding-right:4px}
-.chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);
-  border-radius:999px;padding:6px 8px 6px 12px;font-size:.82rem;max-width:100%;transition:.2s}
-.chip:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
-.chip .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
-.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
-.chip b{color:#ff8fbf;font-weight:700;font-size:.78rem;padding:2px 7px;border-radius:8px;cursor:pointer}
-.chip b:hover{background:rgba(255,77,157,.3)}
-.empty{text-align:center;color:#7d84b8;font-size:.85rem;padding:20px 8px;font-style:italic}
-/* STAGE */
-.stage{display:flex;flex-direction:column;align-items:center;padding:10px 0 30px}
-.stageRow{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
-.wheelBox{position:relative;width:min(88vw,470px);height:min(88vw,470px);margin-top:14px;
+header p{color:#9aa0d6;font-size:.74rem;margin-top:3px}
+/* STAGE FIJO */
+.stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px}
+.stageRow{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;max-height:100%}
+.wheelBox{position:relative;width:min(86vw,56vh,420px);aspect-ratio:1;flex:none;
   filter:drop-shadow(0 18px 55px rgba(160,79,255,.45))}
 canvas{width:100%;height:100%;display:block}
 .pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;
@@ -78,7 +48,7 @@ canvas{width:100%;height:100%;display:block}
   animation:ptrPulse 2s ease-in-out infinite;transform-origin:top center}
 @keyframes ptrPulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.1)}}
 .spinBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:27%;height:27%;border-radius:50%;
-  background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;font-size:clamp(.95rem,3.4vw,1.2rem);font-weight:900;letter-spacing:.09em;
+  background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;font-size:clamp(.8rem,3vw,1.1rem);font-weight:900;letter-spacing:.09em;
   border:4px solid #0b0d1e;z-index:4;text-shadow:0 2px 8px rgba(0,0,0,.45);
   box-shadow:0 0 0 6px rgba(255,255,255,.05),0 12px 40px rgba(255,77,157,.55),0 0 70px rgba(160,79,255,.4),
     inset 0 2px 10px rgba(255,255,255,.3),inset 0 -8px 16px rgba(0,0,0,.35);
@@ -87,25 +57,54 @@ canvas{width:100%;height:100%;display:block}
   50%{box-shadow:0 0 0 6px rgba(255,255,255,.09),0 12px 52px rgba(255,77,157,.8),0 0 100px rgba(160,79,255,.6),inset 0 2px 10px rgba(255,255,255,.35),inset 0 -8px 16px rgba(0,0,0,.35)}}
 .spinBtn:active{transform:translate(-50%,-50%) scale(.93)}
 .spinBtn:disabled{filter:grayscale(.5) brightness(.65);cursor:not-allowed}
-.status{margin-top:18px;color:#c0c5f2;font-size:.88rem;text-align:center;padding:10px 20px;
+.status{flex:none;margin:8px 12px 10px;color:#c0c5f2;font-size:.8rem;text-align:center;padding:8px 16px;max-width:94vw;
   background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:999px;backdrop-filter:blur(10px)}
-/* LISTA DE GANADORES AL COSTADO */
-.winPanel{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:19px;
-  width:min(88vw,285px);margin-top:14px;backdrop-filter:blur(16px);
+/* PANEL INTERNO */
+.addRow{display:flex;gap:8px}
+input[type=text]{flex:1;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);color:#fff;
+  padding:12px 14px;border-radius:13px;font-size:16px;outline:none;min-width:0;transition:.25s}
+input[type=text]:focus{border-color:#a04fff;box-shadow:0 0 0 4px rgba(160,79,255,.18);background:rgba(0,0,0,.45)}
+button{cursor:pointer;border:none;border-radius:13px;font-weight:700;transition:.25s;font-family:inherit}
+.btnAdd{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;padding:12px 18px;font-size:.88rem;
+  box-shadow:0 8px 22px rgba(200,60,180,.35);flex:none}
+.btnAdd:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.hint{color:#7d84b8;font-size:.72rem;margin-top:9px}
+.setWin{margin:14px 0 4px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:12px 14px}
+.setWin label{font-size:.78rem;color:#c7ccf5;display:block;margin-bottom:8px}
+.winCtrl{display:flex;gap:10px;align-items:center}
+.winCtrl button{width:38px;height:38px;font-size:1.2rem;background:rgba(255,255,255,.09);color:#fff;font-weight:800;flex:none}
+.winCtrl button:hover{background:linear-gradient(135deg,#ff4d9d,#a04fff);box-shadow:0 6px 16px rgba(200,60,180,.4)}
+.winCtrl b{font-size:1.3rem;color:#ff8fbf;min-width:34px;text-align:center}
+.tools{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+.tools button{background:rgba(255,255,255,.07);color:#c7ccf5;padding:9px 12px;font-size:.76rem;font-weight:600}
+.tools button:hover{background:rgba(255,255,255,.16);color:#fff}
+.count{margin-top:13px;font-size:.76rem;color:#8d93c9;display:flex;justify-content:space-between;gap:8px}
+.names{margin-top:9px;display:flex;flex-wrap:wrap;gap:7px;max-height:22vh;overflow-y:auto;padding-right:4px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);
+  border-radius:999px;padding:6px 8px 6px 12px;font-size:.8rem;max-width:100%;transition:.2s}
+.chip:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
+.chip .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.chip b{color:#ff8fbf;font-weight:700;font-size:.76rem;padding:2px 7px;border-radius:8px;cursor:pointer}
+.chip b:hover{background:rgba(255,77,157,.3)}
+.empty{text-align:center;color:#7d84b8;font-size:.8rem;padding:14px 6px;font-style:italic}
+/* LISTA DE GANADORES */
+.winPanel{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:14px;
+  width:min(88vw,265px);backdrop-filter:blur(16px);flex:none;
   box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
-.winPanel h3{font-size:.82rem;color:#d8dcff;letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
-.winPanel .prog{font-size:.78rem;color:#9aa0d6;margin-bottom:13px}
-.winList{display:flex;flex-direction:column;gap:9px;min-height:60px}
-.wRow{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:14px;animation:popIn .4s cubic-bezier(.2,1.4,.4,1);
+.winPanel h3{font-size:.74rem;color:#d8dcff;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.winPanel .prog{font-size:.7rem;color:#9aa0d6;margin-bottom:10px}
+.winList{display:flex;flex-direction:column;gap:7px;max-height:16vh;overflow-y:auto}
+@media(min-height:800px){.winList{max-height:24vh}}
+.wRow{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:12px;animation:popIn .4s cubic-bezier(.2,1.4,.4,1);
   background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.11);
   transition:.2s}
 .wRow:hover{transform:translateY(-2px);border-color:rgba(255,217,61,.35);box-shadow:0 10px 24px rgba(0,0,0,.35)}
 @keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
-.wRow .pos{background:linear-gradient(135deg,#ffd93d,#ff9a3d);color:#3a2500;font-weight:900;font-size:.7rem;
-  border-radius:9px;padding:5px 9px;flex-shrink:0;white-space:nowrap;box-shadow:0 4px 12px rgba(255,180,60,.35)}
-.wRow .nm{font-size:.92rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.winPanel .empty{padding:14px 6px}
-.btnNew{width:100%;margin-top:15px;background:rgba(255,255,255,.07);color:#d8dcff;padding:12px;font-size:.85rem;
+.wRow .pos{background:linear-gradient(135deg,#ffd93d,#ff9a3d);color:#3a2500;font-weight:900;font-size:.62rem;
+  border-radius:8px;padding:4px 8px;flex-shrink:0;white-space:nowrap;box-shadow:0 4px 12px rgba(255,180,60,.35)}
+.wRow .nm{font-size:.86rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btnNew{width:100%;margin-top:12px;background:rgba(255,255,255,.07);color:#d8dcff;padding:11px;font-size:.8rem;
   border:1px solid rgba(255,255,255,.13)}
 .btnNew:hover{background:rgba(255,255,255,.15);color:#fff}
 /* MODAL GANADOR */
@@ -114,18 +113,18 @@ canvas{width:100%;height:100%;display:block}
 .overlay.on{display:flex;animation:fadeIn .25s}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .modal{background:linear-gradient(160deg,#241a4d,#12101f 65%);border:1px solid rgba(255,255,255,.16);border-radius:26px;
-  padding:38px 32px;text-align:center;max-width:450px;width:100%;animation:modalIn .4s cubic-bezier(.2,1.4,.4,1);
+  padding:32px 28px;text-align:center;max-width:450px;width:100%;animation:modalIn .4s cubic-bezier(.2,1.4,.4,1);
   box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 80px rgba(160,79,255,.25),inset 0 1px 0 rgba(255,255,255,.08)}
 @keyframes modalIn{from{transform:scale(.8) translateY(20px);opacity:0}to{transform:scale(1);opacity:1}}
-.modal small{color:#a66bff;letter-spacing:.32em;text-transform:uppercase;font-size:.72rem}
-.modal .win{font-size:clamp(1.9rem,7vw,2.7rem);font-weight:900;margin:14px 0 4px;color:#fff;word-break:break-word;
+.modal small{color:#a66bff;letter-spacing:.32em;text-transform:uppercase;font-size:.7rem}
+.modal .win{font-size:clamp(1.8rem,7vw,2.6rem);font-weight:900;margin:12px 0 4px;color:#fff;word-break:break-word;
   text-shadow:0 4px 34px rgba(255,77,157,.4)}
-.modal .gan{color:#ff4d9d;font-size:1.4rem;font-weight:900;text-shadow:0 0 22px rgba(255,77,157,.55)}
-.modal .cup{font-size:3.8rem;display:block;margin-bottom:4px;animation:cupFloat 2s ease-in-out infinite}
+.modal .gan{color:#ff4d9d;font-size:1.35rem;font-weight:900;text-shadow:0 0 22px rgba(255,77,157,.55)}
+.modal .cup{font-size:3.4rem;display:block;margin-bottom:2px;animation:cupFloat 2s ease-in-out infinite}
 @keyframes cupFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.modal .sub{color:#9aa0d6;font-size:.86rem;margin-top:11px}
-.modal .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
-.modal .btns button{padding:14px 24px;font-size:.9rem}
+.modal .sub{color:#9aa0d6;font-size:.84rem;margin-top:10px}
+.modal .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+.modal .btns button{padding:13px 22px;font-size:.88rem}
 .mPrimary{background:linear-gradient(135deg,#ff4d9d,#a04fff);color:#fff;box-shadow:0 10px 30px rgba(200,60,180,.45)}
 .mPrimary:hover{filter:brightness(1.15);transform:translateY(-1px)}
 .mSec{background:rgba(255,255,255,.09);color:#d8dcff;border:1px solid rgba(255,255,255,.13)}
@@ -133,66 +132,60 @@ canvas{width:100%;height:100%;display:block}
 /* CONFETI */
 .confetti{position:fixed;top:-16px;width:10px;height:10px;z-index:99;pointer-events:none;border-radius:2px}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
-footer{text-align:center;color:#565b8c;font-size:.75rem;padding:28px 10px}
 </style>
 </head>
 <body>
 <div class="bgfx"><span class="g g1"></span><span class="g g2"></span><span class="g g3"></span></div>
-<div class="wrap">
-  <header>
-    <h1>🎡 RULETA DEL SORTEO</h1>
-    <p>Tocá GIRAR y que la suerte decida</p>
-  </header>
 
-  <div class="layout">
-    <aside class="panel" id="panel">
-      <button class="pToggle" id="pToggle">⚙ PERSONALIZACIÓN <span class="chev">▼</span></button>
-      <div class="pBody">
-        <div class="addRow">
-          <input type="text" id="inp" placeholder="Escribí un nombre..." maxlength="40">
-          <button class="btnAdd" id="btnAdd">AGREGAR</button>
-        </div>
-        <p class="hint">💡 Podés pegar varios separados por comas. Máximo 250 nombres.</p>
+<button class="pToggle" id="pToggle">⚙ PERSONALIZACIÓN <span class="chev">▼</span></button>
 
-        <div class="setWin">
-          <label>🏆 Cantidad de ganadores del sorteo</label>
-          <div class="winCtrl">
-            <button id="btnLess">−</button>
-            <b id="nWin">1</b>
-            <button id="btnMore">+</button>
-          </div>
-        </div>
+<div class="pDrop" id="panel">
+  <div class="addRow">
+    <input type="text" id="inp" placeholder="Escribí un nombre..." maxlength="40">
+    <button class="btnAdd" id="btnAdd">AGREGAR</button>
+  </div>
+  <p class="hint">💡 Pegá varios separados por comas. Máximo 250. Se guarda todo solo en tu dispositivo.</p>
 
-        <div class="tools">
-          <button id="btnEx">Cargar ejemplo</button>
-          <button id="btnShuf">🔀 Mezclar</button>
-          <button id="btnClear">Borrar todo</button>
-        </div>
-        <div class="count"><span id="cnt">0 / 250 nombres</span><span id="msg"></span></div>
-        <div class="names" id="names"></div>
-      </div>
-    </aside>
-
-    <main class="stage">
-      <div class="stageRow">
-        <div class="wheelBox">
-          <div class="pointer"></div>
-          <canvas id="cv" width="480" height="480"></canvas>
-          <button class="spinBtn" id="btnSpin">GIRAR</button>
-        </div>
-        <div class="winPanel">
-          <h3>🏆 Ganadores</h3>
-          <p class="prog" id="prog">0 de 1 ganador sorteado</p>
-          <div class="winList" id="winList"></div>
-          <button class="btnNew" id="btnNew" style="display:none">🔄 NUEVO SORTEO</button>
-        </div>
-      </div>
-      <p class="status" id="status">Agregá los nombres en ⚙ Personalización</p>
-    </main>
+  <div class="setWin">
+    <label>🏆 Cantidad de ganadores del sorteo</label>
+    <div class="winCtrl">
+      <button id="btnLess">−</button>
+      <b id="nWin">1</b>
+      <button id="btnMore">+</button>
+    </div>
   </div>
 
-  <footer>Ruleta hecha por Luciano Sala · Tus nombres y ganadores se guardan solos en tu dispositivo · 🔊 Con sonido: girá con el volumen prendido</footer>
+  <div class="tools">
+    <button id="btnEx">Cargar ejemplo</button>
+    <button id="btnShuf">🔀 Mezclar</button>
+    <button id="btnClear">Borrar todo</button>
+  </div>
+  <div class="count"><span id="cnt">0 / 250 nombres</span><span id="msg"></span></div>
+  <div class="names" id="names"></div>
 </div>
+
+<header>
+  <h1>🎡 RULETA DEL SORTEO</h1>
+  <p>Tocá GIRAR y que la suerte decida</p>
+</header>
+
+<main class="stage">
+  <div class="stageRow">
+    <div class="wheelBox">
+      <div class="pointer"></div>
+      <canvas id="cv" width="480" height="480"></canvas>
+      <button class="spinBtn" id="btnSpin">GIRAR</button>
+    </div>
+    <div class="winPanel">
+      <h3>🏆 Ganadores</h3>
+      <p class="prog" id="prog">0 de 1 ganador sorteado</p>
+      <div class="winList" id="winList"></div>
+      <button class="btnNew" id="btnNew" style="display:none">🔄 NUEVO SORTEO</button>
+    </div>
+  </div>
+</main>
+
+<p class="status" id="status">Agregá los nombres en ⚙ Personalización</p>
 
 <div class="overlay" id="ov">
   <div class="modal">
@@ -220,6 +213,14 @@ const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
 const btnSpin=document.getElementById('btnSpin'), statusEl=document.getElementById('status');
 let rot=0, spinning=false, done=false;
 
+/* ---- SIN ZOOM ---- */
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('gesturechange',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>e.preventDefault());
+window.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+let lastTouch=0;
+document.addEventListener('touchend',e=>{const now=Date.now();if(now-lastTouch<=320){e.preventDefault()}lastTouch=now},false);
+
 function save(){localStorage.setItem(KEY,JSON.stringify(names));localStorage.setItem(KEYW,JSON.stringify(winners));localStorage.setItem(KEYT,String(target))}
 function colorAt(i){return PAL[i%PAL.length]}
 function norm(a){a%=Math.PI*2;return a<0?a+Math.PI*2:a}
@@ -244,7 +245,6 @@ function draw(now){
   const n=names.length, R=cv.width/2-8;
   ctx.clearRect(0,0,cv.width,cv.height);
   ctx.save();ctx.translate(cv.width/2,cv.height/2);ctx.rotate(rot);
-  // sombra base
   ctx.beginPath();ctx.arc(0,0,R+10,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.45)';ctx.fill();
   if(n===0){
     ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle='#171335';ctx.fill();
@@ -274,7 +274,6 @@ function draw(now){
     ctx.fillText(names.length+' participantes',0,-cv.width/2+38);ctx.restore();
     ctx.shadowBlur=0;
   }
-  // profundidad: degradado interior hacia el borde
   const grd=ctx.createRadialGradient(0,0,R*.5,0,0,R);
   grd.addColorStop(0,'rgba(0,0,0,0)');grd.addColorStop(1,'rgba(0,0,0,.28)');
   ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
@@ -282,12 +281,10 @@ function draw(now){
   ctx.restore();
 }
 function rimAndLights(R,now){
-  // aro neón
   const g2=ctx.createLinearGradient(-R,-R,R,R);
   g2.addColorStop(0,'#ff4d9d');g2.addColorStop(.5,'#a04fff');g2.addColorStop(1,'#4fe0ff');
   ctx.beginPath();ctx.arc(0,0,R+6,0,Math.PI*2);
   ctx.strokeStyle=g2;ctx.lineWidth=4;ctx.stroke();
-  // luces que titilan alrededor
   const NL=24;
   for(let k=0;k<NL;k++){
     const a=k*(Math.PI*2/NL), x=Math.cos(a)*(R+6), y=Math.sin(a)*(R+6);
@@ -298,7 +295,6 @@ function rimAndLights(R,now){
     ctx.fill();ctx.shadowBlur=0;
   }
 }
-/* bucle suave de animacion (luces siempre vivas) */
 function loop(ts){draw(ts/1000);requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 
@@ -385,7 +381,13 @@ function confetti(){
 }
 
 /* ---- EVENTOS ---- */
-document.getElementById('pToggle').onclick=()=>document.getElementById('panel').classList.toggle('open');
+const pBtn=document.getElementById('pToggle'), pDrop=document.getElementById('panel');
+pBtn.onclick=e=>{const open=pDrop.classList.toggle('open');pBtn.classList.toggle('open',open);e.stopPropagation()};
+document.addEventListener('click',e=>{
+  if(!pDrop.classList.contains('open'))return;
+  if(e.target.closest('#panel')||e.target.closest('#pToggle'))return;
+  pDrop.classList.remove('open');pBtn.classList.remove('open');
+});
 document.getElementById('btnAdd').onclick=addName;
 document.getElementById('inp').addEventListener('keydown',e=>{if(e.key==='Enter')addName()});
 function addName(){
