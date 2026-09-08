@@ -126,6 +126,7 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
 .pNote{font-size:.66rem;color:#4fae83;text-align:center;padding:8px 0 16px;line-height:1.5}
 
 .pStop{margin-top:12px;width:100%;background:#28101a;color:#ffb3c1;border:1px solid rgba(255,45,111,.4);border-radius:10px;padding:10px;font-size:.72rem;font-weight:900;letter-spacing:.06em}
+.pStop.pStart{background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;border-color:transparent}
 
 .gear{margin-left:8px;font-size:.95rem;opacity:.9}
 #miraPanel{position:fixed;inset:0;z-index:43;background:rgba(1,7,4,.94);backdrop-filter:blur(8px);display:flex;flex-direction:column;padding:16px;opacity:0;visibility:hidden;transition:.25s}
@@ -270,7 +271,7 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
     <div class="permRow">
       <div class="pT">📍 Posición — arrastrá el punto</div>
       <div id="mpPad"><canvas id="mpDot" width="56" height="56"></canvas></div>
-      <div class="mRow"><button class="chip" id="mpCenter">🎯 CENTRAR</button>
+      <div class="mRow"><button class="chip" id="mpCenter">🎯 CENTRAR</button><button class="chip" id="mpFreeze">🔒 CONGELAR</button>
         <span style="font-size:.62rem;color:#4fae83;margin-left:6px">La mira se mueve en vivo sobre el juego</span></div>
     </div>
     <div class="permRow">
@@ -318,7 +319,7 @@ setTimeout(()=>document.getElementById('splash').classList.add('out'),3000);
 
 /* ===== estado ===== */
 const KEY='turbo_state_v1';
-let S={perf:false,turbo:false,fps:false,lag:false,mira:false,miraX:50,miraY:50,miraStyle:1,miraColor:0,miraSize:1,game:null,icon:null,pkg:null};
+let S={perf:false,turbo:false,fps:false,lag:false,mira:false,miraX:50,miraY:50,miraStyle:1,miraColor:0,miraSize:1,miraLock:false,game:null,icon:null,pkg:null};
 try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=j}catch(e){}
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
 
@@ -375,6 +376,7 @@ togs.forEach(t=>{
     }else{
       toast(S[t.k]?'✓ '+t.name+' ACTIVADO':'✗ '+t.name+' DESACTIVADO');
     }
+    if(NATIVE)Turbo.syncAll(S.perf?1:0,S.turbo?1:0,S.lag?1:0,S.mira?1:0);
   };
 });
 
@@ -463,11 +465,23 @@ function refreshPerms(){
   setPill(document.getElementById('psOver'),ov,ov?'✓ CONCEDIDO':'⚠ FALTA');
   const sv=Turbo.isServiceRunning()==='1';
   setPill(document.getElementById('psSvc'),sv,sv?'⚡ ACTIVO EN 2º PLANO':'· DETENIDO');
+  svcBtn();
 }
 document.getElementById('pbNotif').onclick=()=>NATIVE&&Turbo.requestNotif();
 document.getElementById('pbBat').onclick=()=>NATIVE&&Turbo.requestBattery();
 document.getElementById('pbOver').onclick=()=>NATIVE&&Turbo.requestOverlay();
-document.getElementById('pbStop').onclick=()=>{if(NATIVE){Turbo.stopService2();toast('🛑 Modo 2º plano detenido');setTimeout(refreshPerms,300)}};
+function svcBtn(){
+  const running=NATIVE&&Turbo.isServiceRunning()==='1';
+  const b=document.getElementById('pbStop');
+  b.textContent=running?'🛑 DETENER MODO EN 2º PLANO':'▶ ACTIVAR MODO EN 2º PLANO';
+  b.className='pStop'+(running?'':' pStart');
+}
+document.getElementById('pbStop').onclick=()=>{
+  if(!NATIVE){toast('🌐 El modo 2º plano funciona en el APK instalado');return}
+  if(Turbo.isServiceRunning()==='1'){Turbo.stopService2();toast('🛑 Modo 2º plano detenido')}
+  else{Turbo.startService2();toast('⚡ Modo 2º plano activado — protege tus modos mientras jugás')}
+  setTimeout(refreshPerms,500);
+};
 document.getElementById('pbWrite').onclick=()=>NATIVE&&Turbo.requestWriteSettings();
 document.getElementById('pbDnd').onclick=()=>NATIVE&&Turbo.requestDnd();
 setInterval(()=>{if(permPanel.classList.contains('open'))refreshPerms()},1200);
@@ -478,6 +492,85 @@ setTimeout(()=>{
     localStorage.setItem('turbo_perm_seen','1');refreshPerms();permPanel.classList.add('open');
   }
 },3400);
+
+/* ===== MIRA FLOTANTE ===== */
+function miraToggle(){
+  if(!NATIVE){toast('🌐 La mira flotante funciona en el APK instalado');return}
+  if(Turbo.hasOverlay()!=='1'){Turbo.requestOverlay();
+    toast('⚙️ Concedé "Mostrar sobre otras apps" para Turbo Hack y volvé a tocar MIRA');return}
+  S.mira=!S.mira;save();paint();
+  if(S.mira){
+    Turbo.setMira(1,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);
+    toast('🎯 Mira flotante activa — la vas a ver sobre cualquier juego');
+    if(!localStorage.getItem('mira_cfg_seen')){localStorage.setItem('mira_cfg_seen','1');openMiraCfg()}
+  }else{
+    Turbo.setMira(0,0,0,0,0,0);
+    toast('Mira desactivada');
+  }
+}
+const mPanel=document.getElementById('miraPanel');
+document.getElementById('miraClose').onclick=()=>mPanel.classList.remove('open');
+document.getElementById('gMira').onclick=(e)=>{e.stopPropagation();openMiraCfg()};
+function openMiraCfg(){mPaint();mPanel.classList.add('open')}
+const mColors=['#00ff9d','#00e5ff','#ffffff','#ff4d6d'];
+let mThrottle=0;
+function syncMira(force){
+  if(!NATIVE)return;
+  const now=Date.now();
+  if(!force&&now-mThrottle<130)return;
+  mThrottle=now;
+  Turbo.setMira(S.mira?1:0,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);
+}
+const mpPad=document.getElementById('mpPad'),mpDot=document.getElementById('mpDot');
+function mPlace(){mpDot.style.left=S.miraX+'%';mpDot.style.top=S.miraY+'%'}
+function mPaint(){
+  mPlace();mChips();
+  const c=mpDot.getContext('2d');c.clearRect(0,0,56,56);
+  const col=mColors[S.miraColor],cx=28,cy=28;
+  c.fillStyle=col;c.strokeStyle=col;c.shadowColor='rgba(0,0,0,.7)';c.shadowBlur=6;
+  if(S.miraStyle===0){c.beginPath();c.arc(cx,cy,10,0,7);c.fill()}
+  else if(S.miraStyle===1){
+    const w=3,gap=9,len=28;
+    c.fillRect(cx-w/2,cy-len,w,len-gap);c.fillRect(cx-w/2,cy+gap,w,len-gap);
+    c.fillRect(cx-len,cy-w/2,len-gap,w);c.fillRect(cx+gap,cy-w/2,len-gap,w);
+    c.beginPath();c.arc(cx,cy,3,0,7);c.fill();
+  }else{
+    c.lineWidth=4;c.beginPath();c.arc(cx,cy,17,0,7);c.stroke();
+    c.beginPath();c.arc(cx,cy,4,0,7);c.fill();
+  }
+}
+function mChips(){
+  ['ms0','ms1','ms2'].forEach((id,i)=>document.getElementById(id).className='chip'+(S.miraStyle===i?' on':''));
+  ['mz0','mz1','mz2'].forEach((id,i)=>document.getElementById(id).className='chip'+(S.miraSize===i?' on':''));
+  document.querySelectorAll('.sw').forEach((s,i)=>s.className='sw'+(S.miraColor===i?' on':''));
+  const fz=document.getElementById('mpFreeze');
+  fz.className='chip'+(S.miraLock?' on':'');
+  fz.textContent=S.miraLock?'🔒 CONGELADA':'🔒 CONGELAR';
+}
+const mcBox=document.getElementById('mColors');
+mColors.forEach((cl,i)=>{const b=document.createElement('button');b.className='sw';b.style.background=cl;
+  b.onclick=()=>{S.miraColor=i;save();mPaint();syncMira(true)};mcBox.appendChild(b)});
+['ms0','ms1','ms2'].forEach((id,i)=>document.getElementById(id).onclick=()=>{S.miraStyle=i;save();mPaint();syncMira(true)});
+['mz0','mz1','mz2'].forEach((id,i)=>document.getElementById(id).onclick=()=>{S.miraSize=i;save();mPaint();syncMira(true)});
+document.getElementById('mpCenter').onclick=()=>{S.miraX=50;S.miraY=50;save();mPaint();syncMira(true)};
+document.getElementById('mpFreeze').onclick=()=>{
+  S.miraLock=!S.miraLock;save();mChips();
+  if(S.miraLock)toast('🔒 Mira congelada en ese punto fijo');
+  else toast('🔓 Mira desbloqueada — podés moverla');
+  if(NATIVE&&S.mira)syncMira(true);
+};
+let mDrag=false;
+mpPad.addEventListener('pointerdown',e=>{
+  if(S.miraLock){toast('🔒 La mira está congelada — tocá 🔒 CONGELAR para liberarla');return}
+  mDrag=true;mpPad.setPointerCapture(e.pointerId);mMove(e)});
+mpPad.addEventListener('pointermove',e=>{if(mDrag)mMove(e)});
+mpPad.addEventListener('pointerup',()=>{mDrag=false;save();syncMira(true)});
+function mMove(e){
+  const r=mpPad.getBoundingClientRect();
+  S.miraX=Math.min(95,Math.max(5,(e.clientX-r.left)/r.width*100));
+  S.miraY=Math.min(95,Math.max(5,(e.clientY-r.top)/r.height*100));
+  mPlace();syncMira(false);
+}
 
 paint();
 </script>
