@@ -145,6 +145,21 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
 
 .hint{font-size:.62rem;color:#4fae83;text-align:center;margin-top:10px;line-height:1.5;padding:0 10px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
+#scriptPanel{position:fixed;inset:0;z-index:44;background:rgba(1,7,4,.94);backdrop-filter:blur(8px);display:flex;flex-direction:column;padding:16px;opacity:0;visibility:hidden;transition:.25s;overflow-y:auto}
+#scriptPanel.open{opacity:1;visibility:visible}
+#scriptPanel input,#scriptPanel textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(0,255,157,.25);color:#eaffe9;border-radius:12px;padding:12px;font-size:.85rem;outline:none;margin-top:8px;font-family:inherit}
+#scriptPanel textarea{min-height:120px;resize:vertical;line-height:1.6}
+#scriptPanel input:focus,#scriptPanel textarea:focus{border-color:#00ff9d}
+.scItem{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.3);border:1px solid rgba(0,255,157,.18);border-radius:12px;padding:10px 12px;margin-top:8px}
+.scItem .nm{flex:1;min-width:0}
+.scItem .nm b{display:block;font-size:.85rem;color:#b8ffd9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scItem .nm small{display:block;font-size:.68rem;color:#4fae83;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scItem button{background:#0a3d28;color:#b8ffd9;border-radius:9px;padding:8px 10px;font-size:.68rem;font-weight:800;flex-shrink:0}
+.scItem button.del{background:#4d0a1f;color:#ff7d97}
+#scSave{margin-top:10px;width:100%;background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;font-size:.85rem!important;padding:13px!important}
+.cmdHelp{font-size:.72rem;color:#7db898;line-height:1.7;background:rgba(0,0,0,.3);border-radius:10px;padding:10px 12px;margin-top:10px}
+.cmdHelp code{color:#00ff9d;font-weight:700}
+
 /* ===== overlay modo juego ===== */
 #gMode{position:fixed;inset:0;z-index:60;background:rgba(1,8,4,.96);display:none;
   flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
@@ -212,6 +227,10 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
     <button class="btn btnOff" id="bMira">
       <span class="ic">🎯</span> ACTIVAR MIRA
       <span class="st">DESACTIVADO</span><span class="gear" id="gMira">⚙</span>
+    </button>
+    <button class="btn" id="bScripts" style="background:#1b0d33;box-shadow:inset 0 0 0 1px rgba(160,79,255,.4)">
+      <span class="ic">📜</span> MIS SCRIPTS
+      <span class="st" style="background:#2a1450;color:#c9a6ff">EDITOR</span>
     </button>
     <button class="btn btnPlay" id="bPlay">
       <span class="ic" style="filter:drop-shadow(0 0 8px #01131d)">▶</span>
@@ -288,6 +307,40 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
       <div class="mRow"><button class="chip" id="mz0">S</button><button class="chip" id="mz1">M</button><button class="chip" id="mz2">L</button></div>
     </div>
     <div class="pNote">La mira es una referencia visual que se dibuja sobre el juego. La sensibilidad real se ajusta con tus modos ⚡ y el Generador Salita.</div>
+  </div>
+</div>
+
+<div id="scriptPanel">
+  <div class="pHead">
+    <h2>📜 Mis Scripts</h2>
+    <button class="pClose" id="scClose">CERRAR</button>
+  </div>
+  <div class="permList">
+    <div class="permRow">
+      <div class="pT">✍️ Crear o editar tu script</div>
+      <input id="scName" placeholder="Nombre del script (ej: MI PARTIDA)" maxlength="18">
+      <textarea id="scBody" placeholder="mira on&#10;turbo on&#10;frio on&#10;limpiar&#10;espera 2&#10;aviso todo listo campeón"></textarea>
+      <button class="pGo" id="scSave">💾 GUARDAR SCRIPT</button>
+    </div>
+    <div class="permRow">
+      <div class="pT">📋 Comandos que funcionan (uno por línea)</div>
+      <div class="cmdHelp">
+        <code>mira on</code> / <code>mira off</code> — mira flotante<br>
+        <code>turbo on</code> / <code>turbo off</code> — rendimiento máximo<br>
+        <code>frio on</code> / <code>frio off</code> — modo frío (brillo bajo)<br>
+        <code>dnd on</code> / <code>dnd off</code> — silenciar notificaciones<br>
+        <code>brillo 50</code> — pone el brillo al 50% (10 a 100)<br>
+        <code>anim 0</code> — animaciones al 0% (0 a 100)<br>
+        <code>limpiar</code> — cierra apps de fondo y libera RAM<br>
+        <code>espera 2</code> — espera 2 segundos (máx. 10)<br>
+        <code>aviso texto</code> — muestra un aviso en pantalla
+      </div>
+    </div>
+    <div class="permRow">
+      <div class="pT">📜 Guardados — aparecen como botones en el menú de 3 dedos</div>
+      <div id="scList"></div>
+      <div class="pNote">Tus scripts controlan TURBO HACK (mira, brillo, rendimiento, RAM) — son tuyos, se ejecutan al toque y no tocan el juego. Máximo 6 scripts.</div>
+    </div>
   </div>
 </div>
 
@@ -585,6 +638,54 @@ function mMove(e){
   S.miraY=Math.min(95,Math.max(5,(e.clientY-r.top)/r.height*100));
   mPlace();syncMira(false);
 }
+
+/* ===== MIS SCRIPTS ===== */
+const SC_KEY='turbo_scripts_v1';
+let scripts=[];
+try{scripts=JSON.parse(localStorage.getItem(SC_KEY))||[]}catch(e){scripts=[]}
+let scEdit=-1;
+const scPanel=document.getElementById('scriptPanel');
+document.getElementById('bScripts').onclick=()=>{scRender();scPanel.classList.add('open')};
+document.getElementById('scClose').onclick=()=>scPanel.classList.remove('open');
+function scSync(){
+  localStorage.setItem(SC_KEY,JSON.stringify(scripts));
+  if(NATIVE)Turbo.saveScripts(JSON.stringify(scripts));
+}
+function scRender(){
+  const list=document.getElementById('scList');
+  if(!scripts.length){list.innerHTML='<p class="empty" style="color:#4fae83;font-size:.78rem;padding:12px 6px">Todavía no guardaste ningún script ✍️</p>';return}
+  list.innerHTML='';
+  scripts.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='scItem';
+    d.innerHTML='<div class="nm"><b>'+esc(s.n)+'</b><small>'+esc(s.b.split('\n')[0].slice(0,40))+'</small></div>'+
+      '<button data-a="e" data-i="'+i+'">EDITAR</button><button class="del" data-a="d" data-i="'+i+'">BORRAR</button>';
+    d.querySelector('[data-a="e"]').onclick=()=>{
+      scEdit=i;document.getElementById('scName').value=s.n;document.getElementById('scBody').value=s.b;
+      document.getElementById('scSave').textContent='💾 ACTUALIZAR SCRIPT';
+    };
+    d.querySelector('[data-a="d"]').onclick=()=>{
+      scripts.splice(i,1);scEdit=-1;scSync();scRender();
+      document.getElementById('scSave').textContent='💾 GUARDAR SCRIPT';
+    };
+    list.appendChild(d);
+  });
+}
+document.getElementById('scSave').onclick=()=>{
+  const n=document.getElementById('scName').value.trim();
+  const b=document.getElementById('scBody').value.trim();
+  if(!n||!b){toast('Poné nombre y al menos una línea al script');return}
+  const lines=b.split('\n').filter(l=>l.trim()).length;
+  if(lines>40){toast('Máximo 40 líneas por script');return}
+  if(scEdit>=0){scripts[scEdit]={n,b};toast('✓ Script actualizado')}
+  else{
+    if(scripts.length>=6){toast('Máximo 6 scripts — borrá uno primero');return}
+    scripts.push({n,b});toast('✓ Script guardado — lo vas a ver en el menú de 3 dedos');
+  }
+  scEdit=-1;scSync();scRender();
+  document.getElementById('scName').value='';document.getElementById('scBody').value='';
+  document.getElementById('scSave').textContent='💾 GUARDAR SCRIPT';
+};
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
 paint();
 </script>
