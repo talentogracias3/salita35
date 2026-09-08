@@ -111,6 +111,20 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
 .appSel{border-color:#00ff9d;box-shadow:0 0 14px rgba(0,255,157,.35)}
 .pEmpty{text-align:center;color:#4fae83;font-size:.8rem;padding:30px 20px;line-height:1.6;grid-column:1/-1}
 
+#bPerm{position:fixed;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:10;width:42px;height:42px;border-radius:12px;border:1px solid rgba(0,255,157,.35);background:#06281a;color:#7dffc8;font-size:1.1rem;box-shadow:0 0 12px rgba(0,255,157,.2)}
+#perms{position:fixed;inset:0;z-index:44;background:rgba(1,7,4,.94);backdrop-filter:blur(8px);display:flex;flex-direction:column;padding:16px;opacity:0;visibility:hidden;transition:.25s}
+#perms.open{opacity:1;visibility:visible}
+.permList{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-top:6px}
+.permRow{background:#06281a;border:1px solid rgba(0,255,157,.2);border-radius:15px;padding:14px}
+.pT{font-size:.85rem;font-weight:900;color:#00ff9d;letter-spacing:.06em}
+.pD{font-size:.72rem;color:#7db898;margin:6px 0 10px;line-height:1.5}
+.pRow2{display:flex;align-items:center;gap:10px}
+.pStat{font-size:.68rem;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:99px}
+.pOk{background:#014d2a;color:#7dffc8}
+.pNo{background:#4d0a1f;color:#ff7d97}
+.pGo{margin-left:auto;background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;border:none;border-radius:10px;padding:8px 16px;font-size:.72rem;font-weight:900;letter-spacing:.06em}
+.pNote{font-size:.66rem;color:#4fae83;text-align:center;padding:8px 0 16px;line-height:1.5}
+
 /* ===== overlay modo juego ===== */
 #gMode{position:fixed;inset:0;z-index:60;background:rgba(1,8,4,.96);display:none;
   flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
@@ -136,6 +150,8 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
   <div class="sBarW"><div class="sBar"></div></div>
   <div class="sTxt">INICIANDO SISTEMA…</div>
 </div>
+
+<button id="bPerm" title="Permisos">🔑</button>
 
 <div class="wrap">
   <header>
@@ -189,6 +205,26 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
   </div>
   <input id="pSearch" type="text" placeholder="Buscar juego o app…" autocomplete="off">
   <div id="pList"></div>
+</div>
+
+<div id="perms">
+  <div class="pHead">
+    <h2>🔑 Permisos del sistema</h2>
+    <button class="pClose" id="permClose">CERRAR</button>
+  </div>
+  <div class="permList">
+    <div class="permRow">
+      <div class="pT">🚀 RENDIMIENTO</div>
+      <div class="pD">Permite acelerar el celular reduciendo las animaciones del sistema. Sin esto, el modo Rendimiento no se puede aplicar.</div>
+      <div class="pRow2"><span class="pStat" id="psWrite">…</span><button class="pGo" id="pbWrite">CONCEDER</button></div>
+    </div>
+    <div class="permRow">
+      <div class="pT">🔥 SUPER TURBO</div>
+      <div class="pD">Permite silenciar las notificaciones y liberar la memoria de las apps en segundo plano mientras jugás.</div>
+      <div class="pRow2"><span class="pStat" id="psDnd">…</span><button class="pGo" id="pbDnd">CONCEDER</button></div>
+    </div>
+    <div class="pNote">🔑 Se piden UNA SOLA VEZ. Después TURBO HACK funciona sin errores, 100% offline.</div>
+  </div>
 </div>
 
 <div id="gMode">
@@ -265,7 +301,7 @@ togs.forEach(t=>{
         else{if(Turbo.hasWriteSettings()==='1')Turbo.perfSet(0);toast('Rendimiento desactivado')}
       }
       if(t.k==='turbo'){
-        if(S.turbo){if(Turbo.hasDnd()==='1'){Turbo.dndSet(1);toast('🔥 Super Turbo: notificaciones silenciadas')}
+        if(S.turbo){if(Turbo.hasDnd()==='1'){Turbo.dndSet(1);Turbo.killBg(S.pkg||'');toast('🔥 Super Turbo: notificaciones silenciadas y memoria liberada')}
           else{Turbo.requestDnd();toast('Concedé el acceso "No molestar" y volvé a tocar')}}
         else{if(Turbo.hasDnd()==='1')Turbo.dndSet(0);toast('Super Turbo desactivado')}
       }
@@ -332,12 +368,36 @@ document.getElementById('bPlay').onclick=()=>{
       if(S.perf&&Turbo.hasWriteSettings()==='1')Turbo.perfSet(1);
       if(S.turbo&&Turbo.hasDnd()==='1')Turbo.dndSet(1);
       if(S.lag)Turbo.cleanNow();
-      Turbo.launchGame(S.pkg);
+      if(S.turbo)Turbo.killBg(S.pkg||'');
+      const r=Turbo.launchGame(S.pkg);
+      if(r!=='ok')toast(r==='notfound'?'⚠️ No se pudo abrir ese juego':'⚠️ Error al abrir el juego');
     }else{
       toast('🌐 Vista previa: en el APK abre tu juego de verdad');
     }
   },2300);
 };
+
+/* ===== permisos del sistema ===== */
+const permPanel=document.getElementById('perms');
+document.getElementById('bPerm').onclick=()=>{refreshPerms();permPanel.classList.add('open')};
+document.getElementById('permClose').onclick=()=>permPanel.classList.remove('open');
+function setPill(el,ok2,txt){el.className='pStat '+(ok2?'pOk':'pNo');el.textContent=txt}
+function refreshPerms(){
+  if(!NATIVE){setPill(document.getElementById('psWrite'),true,'WEB');setPill(document.getElementById('psDnd'),true,'WEB');return}
+  const w=Turbo.hasWriteSettings()==='1', d=Turbo.hasDnd()==='1';
+  setPill(document.getElementById('psWrite'),w,w?'✓ CONCEDIDO':'⚠ FALTA');
+  setPill(document.getElementById('psDnd'),d,d?'✓ CONCEDIDO':'⚠ FALTA');
+}
+document.getElementById('pbWrite').onclick=()=>NATIVE&&Turbo.requestWriteSettings();
+document.getElementById('pbDnd').onclick=()=>NATIVE&&Turbo.requestDnd();
+setInterval(()=>{if(permPanel.classList.contains('open'))refreshPerms()},1200);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshPerms()});
+/* primer uso: abrir panel si falta un permiso */
+setTimeout(()=>{
+  if(NATIVE&&!localStorage.getItem('turbo_perm_seen')&&(Turbo.hasWriteSettings()!=='1'||Turbo.hasDnd()!=='1')){
+    localStorage.setItem('turbo_perm_seen','1');refreshPerms();permPanel.classList.add('open');
+  }
+},3400);
 
 paint();
 </script>
