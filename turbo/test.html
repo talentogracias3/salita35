@@ -88,23 +88,6 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
   animation:tin .25s}
 @keyframes tin{from{opacity:0;transform:translateY(10px)}}
 
-/* ===== ACTIVAR TODO: 5 modos de una, nada se apaga por 2 horas ===== */
-document.getElementById('bAll').onclick=function(){
-  if(!NATIVE){toast('🚀 Activá todo desde el APK instalado en tu celular');return}
-  S.perf=true;S.turbo=true;S.lag=true;S.fps=true;S.mira=true;save();paint();
-  try{
-    if(Turbo.hasOverlay()!=='1'){Turbo.requestOverlay();toast('⚙️ Concedé "Mostrar sobre otras apps" para que quede la mira');}
-    else{Turbo.setMira(1,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);}
-    if(Turbo.hasWriteSettings()==='1'){Turbo.perfSet(1);Turbo.fpsSet(1)}
-    else{Turbo.requestWriteSettings();toast('⚙️ Concedé el permiso de ajustes para el modo S25 ULTRA')}
-    if(Turbo.hasDnd()==='1'){Turbo.dndSet(1)}
-    else{Turbo.requestDnd();toast('🔕 Concedé "No molestar" y tocá ACTIVAR TODO de nuevo')}
-    Turbo.killBg(S.pkg||'');
-    Turbo.cleanNow();
-    Turbo.syncAll(1,1,1,1,1);
-  }catch(e){}
-  toast('🚀 TODO ACTIVO: mira + S25 ULTRA + frío + anti-lag + FPS — quedan prendidos 2 horas');
-};
 
 /* ===== selector de juegos ===== */
 #picker{position:fixed;inset:0;z-index:45;background:rgba(1,7,4,.92);backdrop-filter:blur(8px);
@@ -374,38 +357,16 @@ document.getElementById('bAll').onclick=function(){
 </div>
 
 <script>
-window.onerror=function(msg,src,line,col){
-  try{
-    var d=document.createElement('div');
-    d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#900;color:#fff;padding:10px;font-size:13px;font-family:monospace;white-space:pre-wrap';
-    d.textContent='ERROR: '+msg+' @line '+line+':'+col;
-    (document.body||document.documentElement).appendChild(d);
-  }catch(e){}
-  return false;
-};
-window.addEventListener('unhandledrejection',function(ev){
-  try{
-    var d=document.createElement('div');
-    d.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#a00;color:#fff;padding:10px;font-size:13px;font-family:monospace';
-    d.textContent='PROMISE: '+(ev.reason&&ev.reason.message||String(ev.reason));
-    (document.body||document.documentElement).appendChild(d);
-  }catch(e){}
-});
-</script>
-<script>
-/* MOCK para probar el flujo del APK en navegador */
 window.Turbo = {
   isNative: () => '1',
   listApps: () => JSON.stringify([
     {pkg:'com.dts.freefireth', label:'Free Fire', icon:''},
     {pkg:'com.mobile.legends', label:'Mobile Legends', icon:''},
     {pkg:'com.tencent.tmgp.sgame', label:'Arena of Valor', icon:''},
-    {pkg:'com.supercell.clashofclans', label:'Clash of Clans', icon:''},
-    {pkg:'com.riotgames.league.wildrift', label:'Wild Rift', icon:''},
-    {pkg:'com.gameloft.asphalt9', label:'Asphalt 9', icon:''}
+    {pkg:'com.supercell.clashofclans', label:'Clash of Clans', icon:''}
   ]),
   hasOverlay: () => '1',
-  setMira: (on,x,y,st,co,sz) => { console.log('setMira',on,x,y,st,co,sz) },
+  setMira: () => {},
   hasWriteSettings: () => '1',
   perfSet: () => {},
   hasDnd: () => '1',
@@ -413,8 +374,14 @@ window.Turbo = {
   fpsSet: () => {},
   killBg: () => {},
   cleanNow: () => {},
-  syncAll: (a,b,c,d,e) => { console.log('syncAll',a,b,c,d,e) },
-  launch: (pkg) => { console.log('launch', pkg) }
+  syncAll: () => {},
+  launchGame: () => {}
+};
+window.onerror=function(msg,src,line,col){
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#900;color:#fff;padding:10px;font-size:13px;font-family:monospace';
+  d.textContent='ERROR: '+msg+' @'+line;
+  document.body.appendChild(d);return false;
 };
 </script>
 <script>
@@ -505,6 +472,25 @@ togs.forEach(t=>{
     if(NATIVE)Turbo.syncAll(S.perf?1:0,S.turbo?1:0,S.lag?1:0,S.mira?1:0,S.fps?1:0);
   };
 });
+
+
+/* ===== ACTIVAR TODO: 5 modos de una, nada se apaga por 2 horas ===== */
+document.getElementById('bAll').onclick=function(){
+  if(!NATIVE){toast('🚀 Activá todo desde el APK instalado en tu celular');return}
+  S.perf=true;S.turbo=true;S.lag=true;S.fps=true;S.mira=true;save();paint();
+  try{
+    if(Turbo.hasOverlay()!=='1'){Turbo.requestOverlay();toast('⚙️ Concedé "Mostrar sobre otras apps" para que quede la mira');}
+    else{Turbo.setMira(1,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);}
+    if(Turbo.hasWriteSettings()==='1'){Turbo.perfSet(1);Turbo.fpsSet(1)}
+    else{Turbo.requestWriteSettings();toast('⚙️ Concedé el permiso de ajustes para el modo S25 ULTRA')}
+    if(Turbo.hasDnd()==='1'){Turbo.dndSet(1)}
+    else{Turbo.requestDnd();toast('🔕 Concedé "No molestar" y tocá ACTIVAR TODO de nuevo')}
+    Turbo.killBg(S.pkg||'');
+    Turbo.cleanNow();
+    Turbo.syncAll(1,1,1,1,1);
+  }catch(e){}
+  toast('🚀 TODO ACTIVO: mira + S25 ULTRA + frío + anti-lag + FPS — quedan prendidos 2 horas');
+};
 
 /* ===== selector de juegos ===== */
 document.getElementById('bPick').onclick=openPicker;

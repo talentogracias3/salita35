@@ -88,23 +88,6 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
   animation:tin .25s}
 @keyframes tin{from{opacity:0;transform:translateY(10px)}}
 
-/* ===== ACTIVAR TODO: 5 modos de una, nada se apaga por 2 horas ===== */
-document.getElementById('bAll').onclick=function(){
-  if(!NATIVE){toast('🚀 Activá todo desde el APK instalado en tu celular');return}
-  S.perf=true;S.turbo=true;S.lag=true;S.fps=true;S.mira=true;save();paint();
-  try{
-    if(Turbo.hasOverlay()!=='1'){Turbo.requestOverlay();toast('⚙️ Concedé "Mostrar sobre otras apps" para que quede la mira');}
-    else{Turbo.setMira(1,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);}
-    if(Turbo.hasWriteSettings()==='1'){Turbo.perfSet(1);Turbo.fpsSet(1)}
-    else{Turbo.requestWriteSettings();toast('⚙️ Concedé el permiso de ajustes para el modo S25 ULTRA')}
-    if(Turbo.hasDnd()==='1'){Turbo.dndSet(1)}
-    else{Turbo.requestDnd();toast('🔕 Concedé "No molestar" y tocá ACTIVAR TODO de nuevo')}
-    Turbo.killBg(S.pkg||'');
-    Turbo.cleanNow();
-    Turbo.syncAll(1,1,1,1,1);
-  }catch(e){}
-  toast('🚀 TODO ACTIVO: mira + S25 ULTRA + frío + anti-lag + FPS — quedan prendidos 2 horas');
-};
 
 /* ===== selector de juegos ===== */
 #picker{position:fixed;inset:0;z-index:45;background:rgba(1,7,4,.92);backdrop-filter:blur(8px);
@@ -461,6 +444,25 @@ togs.forEach(t=>{
     if(NATIVE)Turbo.syncAll(S.perf?1:0,S.turbo?1:0,S.lag?1:0,S.mira?1:0,S.fps?1:0);
   };
 });
+
+
+/* ===== ACTIVAR TODO: 5 modos de una, nada se apaga por 2 horas ===== */
+document.getElementById('bAll').onclick=function(){
+  if(!NATIVE){toast('🚀 Activá todo desde el APK instalado en tu celular');return}
+  S.perf=true;S.turbo=true;S.lag=true;S.fps=true;S.mira=true;save();paint();
+  try{
+    if(Turbo.hasOverlay()!=='1'){Turbo.requestOverlay();toast('⚙️ Concedé "Mostrar sobre otras apps" para que quede la mira');}
+    else{Turbo.setMira(1,S.miraX,S.miraY,S.miraStyle,S.miraColor,S.miraSize);}
+    if(Turbo.hasWriteSettings()==='1'){Turbo.perfSet(1);Turbo.fpsSet(1)}
+    else{Turbo.requestWriteSettings();toast('⚙️ Concedé el permiso de ajustes para el modo S25 ULTRA')}
+    if(Turbo.hasDnd()==='1'){Turbo.dndSet(1)}
+    else{Turbo.requestDnd();toast('🔕 Concedé "No molestar" y tocá ACTIVAR TODO de nuevo')}
+    Turbo.killBg(S.pkg||'');
+    Turbo.cleanNow();
+    Turbo.syncAll(1,1,1,1,1);
+  }catch(e){}
+  toast('🚀 TODO ACTIVO: mira + S25 ULTRA + frío + anti-lag + FPS — quedan prendidos 2 horas');
+};
 
 /* ===== selector de juegos ===== */
 document.getElementById('bPick').onclick=openPicker;
