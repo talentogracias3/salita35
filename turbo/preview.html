@@ -32,7 +32,7 @@ body{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
   padding:20px;text-align:center;transition:opacity .6s,visibility .6s}
 #splash.out{opacity:0;visibility:hidden}
-.glitch{position:relative;font-size:clamp(1.7rem,7.5vw,2.4rem);font-weight:900;letter-spacing:.06em;
+.glitch{position:relative;font-size:clamp(1.4rem,6vw,2rem);font-weight:900;letter-spacing:.06em;
   color:#00ff9d;text-transform:uppercase;line-height:1.1;text-align:center;max-width:100%;word-break:keep-all;
   text-shadow:0 0 14px #00ff9d88,0 0 32px #00ff9d44;animation:tglitch 2.4s infinite}
 .glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;overflow:hidden}
@@ -41,39 +41,39 @@ body{
 @keyframes tslide1{0%,86%,100%{transform:translate(0)}88%{transform:translate(-6px,2px)}92%{transform:translate(4px,-2px)}96%{transform:translate(-2px,1px)}}
 @keyframes tslide2{0%,86%,100%{transform:translate(0)}88%{transform:translate(5px,-2px)}92%{transform:translate(-4px,2px)}96%{transform:translate(3px,1px)}}
 @keyframes tglitch{0%,85%,100%{transform:translate(0)}90%{transform:translate(2px,0)}95%{transform:translate(-2px,0)}}
-.sTag{font-size:.66rem;letter-spacing:.32em;color:#00c8ff;text-transform:uppercase;text-shadow:0 0 12px #00c8ff88;text-align:center}
+.sTag{font-size:.58rem;letter-spacing:.32em;color:#00c8ff;text-transform:uppercase;text-shadow:0 0 12px #00c8ff88;text-align:center}
 .sBarW{width:min(72vw,300px);height:4px;border-radius:99px;background:#0a2b1a;overflow:hidden}
 .sBar{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#00ff9d,#00c8ff);
   box-shadow:0 0 14px #00ff9d;animation:sload 3s ease forwards}
 @keyframes sload{to{width:100%}}
-.sTxt{font-size:.64rem;color:#4fae83;letter-spacing:.18em}
+.sTxt{font-size:.56rem;color:#4fae83;letter-spacing:.18em}
 
 /* ===== APP ===== */
 .wrap{position:relative;z-index:2;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 12px calc(14px + env(safe-area-inset-bottom))}
-header{padding:8px 4px 2px;text-align:center}
-h1{font-size:clamp(1.05rem,4.5vw,1.35rem);font-weight:900;letter-spacing:.05em;color:#00ff9d;
+header{padding:6px 4px 2px;text-align:center}
+h1{font-size:clamp(.92rem,3.8vw,1.15rem);font-weight:900;letter-spacing:.05em;color:#00ff9d;
   text-transform:uppercase;text-shadow:0 0 14px #00ff9d66}
-header p{font-size:.54rem;color:#4fae83;letter-spacing:.22em;text-transform:uppercase;margin-top:2px}
+header p{font-size:.5rem;color:#4fae83;letter-spacing:.22em;text-transform:uppercase;margin-top:2px}
 
-.gameCard{margin:4px 0 6px;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:11px;
+.gameCard{margin:3px 0 5px;display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:10px;
   background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.22)}
-.gameCard .gIcon{width:34px;height:34px;border-radius:9px;background:#0a2b1a;display:flex;
+.gameCard .gIcon{width:30px;height:30px;border-radius:8px;background:#0a2b1a;display:flex;
   align-items:center;justify-content:center;font-size:1.25rem;overflow:hidden;flex:none}
 .gameCard .gIcon img{width:100%;height:100%;object-fit:cover}
 .gameCard .gTxt{min-width:0}
-.gameCard .gLbl{font-size:.6rem;color:#4fae83;letter-spacing:.22em;text-transform:uppercase}
-.gameCard .gName{font-size:.84rem;font-weight:800;color:#eafff3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gameCard .gS{margin-left:auto;font-size:.6rem;color:#00c8ff;letter-spacing:.18em;text-align:right}
+.gameCard .gLbl{font-size:.52rem;color:#4fae83;letter-spacing:.22em;text-transform:uppercase}
+.gameCard .gName{font-size:.74rem;font-weight:800;color:#eafff3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gameCard .gS{margin-left:auto;font-size:.52rem;color:#00c8ff;letter-spacing:.18em;text-align:right}
 
-.menu{display:flex;flex-direction:column;gap:7px;padding:2px 0 8px}
-.btn{position:relative;border:none;border-radius:11px;padding:10px 10px;font-size:.72rem;font-weight:800;
+.menu{display:flex;flex-direction:column;gap:6px;padding:2px 0 6px}
+.btn{position:relative;border:none;border-radius:9px;padding:8px 8px;font-size:.64rem;font-weight:800;
   letter-spacing:.02em;text-transform:uppercase;color:#02170d;display:flex;align-items:center;gap:9px;
   background:#06281a;transition:transform .12s;user-select:none;width:100%;min-width:0}
 .btn:active{transform:scale(.97)}
-.btn .ic{font-size:.92rem;width:1.4em;text-align:center;flex:none;filter:drop-shadow(0 0 6px currentColor)}
+.btn .ic{font-size:.8rem;width:1.35em;text-align:center;flex:none;filter:drop-shadow(0 0 6px currentColor)}
 .btn .lb{flex:1;min-width:0;text-align:left;line-height:1.2}
-.btn .lb small{display:block;font-size:.5rem;letter-spacing:.07em;opacity:.8;font-weight:800}
-.btn .st{margin-left:auto;font-size:.48rem;letter-spacing:.08em;padding:3px 7px;border-radius:99px;font-weight:900;white-space:nowrap;flex:none}
+.btn .lb small{display:block;font-size:.44rem;letter-spacing:.07em;opacity:.8;font-weight:800}
+.btn .st{margin-left:auto;font-size:.42rem;letter-spacing:.06em;padding:2px 6px;border-radius:99px;font-weight:900;white-space:nowrap;flex:none}
 
 .btnOn{background:linear-gradient(135deg,#00ff9d,#00d97c);color:#012713;
   box-shadow:0 0 22px rgba(0,255,157,.45),inset 0 1px 0 rgba(255,255,255,.25)}
@@ -87,33 +87,33 @@ header p{font-size:.54rem;color:#4fae83;letter-spacing:.22em;text-transform:uppe
 .btnNeutral .st{background:#062531;color:#7de4ff}
 
 .btnPlay{background:linear-gradient(135deg,#00ff9d,#00c8ff 60%,#00a3ff);color:#01131d;
-  font-size:.78rem;padding:11px 10px;box-shadow:0 0 18px rgba(0,255,157,.45);letter-spacing:.03em}
+  font-size:.7rem;padding:9px 8px;box-shadow:0 0 18px rgba(0,255,157,.45);letter-spacing:.03em}
 
 #toasts{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;
   display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
-.toast{background:#03150c;border:1px solid rgba(0,255,157,.4);color:#b8ffd9;font-size:.8rem;font-weight:600;
-  padding:10px 18px;border-radius:99px;box-shadow:0 0 18px rgba(0,255,157,.25);max-width:88vw;text-align:center;
+.toast{background:#03150c;border:1px solid rgba(0,255,157,.4);color:#b8ffd9;font-size:.7rem;font-weight:600;
+  padding:8px 14px;border-radius:99px;box-shadow:0 0 18px rgba(0,255,157,.25);max-width:88vw;text-align:center;
   animation:tin .25s}
 @keyframes tin{from{opacity:0;transform:translateY(10px)}}
 
 
 /* ===== VPN 1111 — modulo separado (MAS GRANDE Y VISIBLE) ===== */
-#vpnCard{margin:4px 0 4px;padding:10px 12px;border-radius:11px;
+#vpnCard{margin:3px 0 3px;padding:8px 10px;border-radius:9px;
   background:linear-gradient(160deg,#2a1a08,#140d04);border:1.5px solid rgba(246,130,31,.65);
   box-shadow:0 0 22px rgba(246,130,31,.22),inset 0 1px 0 rgba(255,190,120,.12)}
-.vT{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:900;color:#ffc07a;
+.vT{display:flex;align-items:center;gap:7px;font-size:.76rem;font-weight:900;color:#ffc07a;
   letter-spacing:.05em;text-shadow:0 0 12px rgba(246,130,31,.5)}
-.vD{font-size:.62rem;color:#e0a870;line-height:1.4;margin-top:4px}
-.vRow{display:flex;align-items:center;gap:9px;margin-top:8px}
-.vDot{width:12px;height:12px;border-radius:99px;background:#6a4a24;box-shadow:0 0 0 3px rgba(246,130,31,.1);flex:none}
+.vD{font-size:.56rem;color:#e0a870;line-height:1.35;margin-top:3px}
+.vRow{display:flex;align-items:center;gap:8px;margin-top:6px}
+.vDot{width:10px;height:10px;border-radius:99px;background:#6a4a24;box-shadow:0 0 0 3px rgba(246,130,31,.1);flex:none}
 .vDot.on{background:#ffb03a;box-shadow:0 0 13px #ffb03a,0 0 0 3px rgba(246,130,31,.3);animation:vPulse 1.6s infinite}
 @keyframes vPulse{50%{box-shadow:0 0 20px #ffb03a,0 0 0 5px rgba(246,130,31,.22)}}
-.vStat{font-size:.68rem;font-weight:800;letter-spacing:.06em;color:#ffc07a}
-#bVpn{margin-left:auto;border:none;border-radius:9px;padding:8px 13px;font-size:.68rem;font-weight:900;
+.vStat{font-size:.6rem;font-weight:800;letter-spacing:.05em;color:#ffc07a}
+#bVpn{margin-left:auto;border:none;border-radius:8px;padding:7px 11px;font-size:.6rem;font-weight:900;
   letter-spacing:.05em;color:#2b1500;background:linear-gradient(135deg,#ffc07a,#f6821f);
   box-shadow:0 3px 16px rgba(246,130,31,.45);cursor:pointer;font-family:inherit;white-space:nowrap;flex:none}
 #bVpn.on{background:linear-gradient(135deg,#4a5a6e,#232c3a);color:#cfd8e6;box-shadow:0 3px 12px rgba(0,0,0,.5)}
-.vSep{margin-top:6px;font-size:.54rem;color:#b08550;text-align:center;letter-spacing:.04em}
+.vSep{margin-top:5px;font-size:.48rem;color:#b08550;text-align:center;letter-spacing:.04em}
 
 /* ===== selector de juegos ===== */
 #picker{position:fixed;inset:0;z-index:45;background:rgba(1,7,4,.92);backdrop-filter:blur(8px);
@@ -138,7 +138,7 @@ header p{font-size:.54rem;color:#4fae83;letter-spacing:.22em;text-transform:uppe
 .appSel{border-color:#00ff9d;box-shadow:0 0 14px rgba(0,255,157,.35)}
 .pEmpty{text-align:center;color:#4fae83;font-size:.8rem;padding:30px 20px;line-height:1.6;grid-column:1/-1}
 
-#bPerm{position:fixed;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:10;width:42px;height:42px;border-radius:12px;border:1px solid rgba(0,255,157,.35);background:#06281a;color:#7dffc8;font-size:1.1rem;box-shadow:0 0 12px rgba(0,255,157,.2)}
+#bPerm{position:fixed;top:calc(8px + env(safe-area-inset-top));right:10px;z-index:10;width:36px;height:36px;border-radius:10px;border:1px solid rgba(0,255,157,.35);background:#06281a;color:#7dffc8;font-size:1.1rem;box-shadow:0 0 12px rgba(0,255,157,.2)}
 #perms{position:fixed;inset:0;z-index:44;background:rgba(1,7,4,.94);backdrop-filter:blur(8px);display:flex;flex-direction:column;padding:16px;opacity:0;visibility:hidden;transition:.25s}
 #perms.open{opacity:1;visibility:visible}
 .permList{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-top:6px}
@@ -170,7 +170,7 @@ header p{font-size:.54rem;color:#4fae83;letter-spacing:.22em;text-transform:uppe
 .sw{width:34px;height:34px;border-radius:10px;border:2px solid transparent}
 .sw.on{border-color:#fff;box-shadow:0 0 10px rgba(255,255,255,.4)}
 
-.hint{font-size:.55rem;color:#4fae83;text-align:center;margin-top:8px;line-height:1.45;padding:0 6px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.hint{font-size:.5rem;color:#4fae83;text-align:center;margin-top:6px;line-height:1.4;padding:0 4px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
 #scriptPanel{position:fixed;inset:0;z-index:44;background:rgba(1,7,4,.94);backdrop-filter:blur(8px);display:flex;flex-direction:column;padding:16px;opacity:0;visibility:hidden;transition:.25s;overflow-y:auto}
 #scriptPanel.open{opacity:1;visibility:visible}
@@ -533,9 +533,10 @@ if(_bV){_bV.onclick=function(){
     try{Turbo.vpnOff()}catch(e){}
     V.on=false;vSave();toast('🌐 VPN 1111 apagado — tu internet vuelve a la normalidad');
   }else{
-    try{Turbo.vpnOn()}catch(e){}
+    var ask=false;try{ask=(Turbo.vpnOn()==='ASK')}catch(e){}
     V.on=true;vSave();
-    toast('🔒 VPN 1111 prendido — si es la primera vez, aceptá la ventana de CONEXIÓN VPN (aparece una vez sola)');
+    if(ask){toast('👉 EN TU PANTALLA apareció la ventana de CONEXIÓN VPN de Android: tocá ACEPTAR (solo se pide una vez)');}
+    else{toast('🔒 VPN 1111 prendido — internet encriptado con Cloudflare 1.1.1.1');}
   }
 };}
 /* al abrir la app: sincronizar con el servicio real (sigue vivo aunque cierres la app) */
