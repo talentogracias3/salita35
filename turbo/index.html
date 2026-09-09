@@ -89,6 +89,57 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
 @keyframes tin{from{opacity:0;transform:translateY(10px)}}
 
 
+/* ===== VPN 1111 — modulo separado ===== */
+#vpnCard{margin:14px 0 4px;padding:16px 14px;border-radius:16px;
+  background:linear-gradient(160deg,#1c1206,#0d0a04);border:1px solid rgba(246,130,31,.45);
+  box-shadow:0 0 22px rgba(246,130,31,.12),inset 0 1px 0 rgba(255,190,120,.08)}
+.vT{display:flex;align-items:center;gap:10px;font-size:1.02rem;font-weight:900;color:#ffb266;
+  letter-spacing:.05em;text-shadow:0 0 12px rgba(246,130,31,.35)}
+.vD{font-size:.66rem;color:#c9986a;line-height:1.5;margin-top:6px}
+.vRow{display:flex;align-items:center;gap:10px;margin-top:12px}
+.vDot{width:10px;height:10px;border-radius:99px;background:#5a4022;box-shadow:0 0 0 3px rgba(246,130,31,.08)}
+.vDot.on{background:#ff9d2e;box-shadow:0 0 12px #ff9d2e,0 0 0 3px rgba(246,130,31,.25);animation:vPulse 1.6s infinite}
+@keyframes vPulse{50%{box-shadow:0 0 20px #ff9d2e,0 0 0 5px rgba(246,130,31,.18)}}
+.vStat{font-size:.72rem;font-weight:800;letter-spacing:.08em;color:#ffb266}
+#bVpn{margin-left:auto;border:none;border-radius:12px;padding:11px 20px;font-size:.8rem;font-weight:900;
+  letter-spacing:.06em;color:#2b1500;background:linear-gradient(135deg,#ffb266,#f6821f);
+  box-shadow:0 4px 16px rgba(246,130,31,.35);cursor:pointer;font-family:inherit}
+#bVpn.on{background:linear-gradient(135deg,#4a5a6e,#232c3a);color:#cfd8e6;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.vSep{margin-top:10px;font-size:.6rem;color:#8a6a45;text-align:center;letter-spacing:.06em}
+
+/* ===== VPN 1111 (modulo separado: estado propio, no depende de los modos) ===== */
+var V = JSON.parse(localStorage.getItem('turbo_vpn') || '{"on":false}');
+function vSave(){localStorage.setItem('turbo_vpn',JSON.stringify(V));vPaint();}
+function vPaint(){
+  var d=document.getElementById('vDot'),st=document.getElementById('vStat'),b=document.getElementById('bVpn');
+  if(!d)return;
+  d.className='vDot'+(V.on?' on':'');
+  st.textContent=V.on?'ACTIVO — 1.1.1.1':'APAGADO';
+  b.textContent=V.on?'⏹️ APAGAR VPN':'🔌 PRENDER VPN';
+  b.className=V.on?'on':'';
+}
+document.getElementById('bVpn').onclick=function(){
+  if(!NATIVE){toast('🌐 El VPN 1111 funciona desde el APK instalado en tu celular');return}
+  if(V.on){
+    try{Turbo.vpnOff()}catch(e){}
+    V.on=false;vSave();toast('🌐 VPN 1111 apagado — tu internet vuelve a la normalidad');
+  }else{
+    try{Turbo.vpnOn()}catch(e){}
+    V.on=true;vSave();
+    toast('🔒 VPN 1111 prendido — si es la primera vez, aceptá la ventana de CONEXIÓN VPN (aparece una vez sola)');
+  }
+};
+/* al abrir la app: sincronizar con el servicio real (sigue vivo aunque cierres la app) */
+(function(){
+  vPaint();
+  if(!NATIVE)return;
+  var t=setInterval(function(){
+    var r='0';try{r=Turbo.vpnHas()}catch(e){}
+    var run=(r==='1');
+    if(run!==V.on){V.on=run;vSave();}
+  },2000);
+})();
+
 /* ===== selector de juegos ===== */
 #picker{position:fixed;inset:0;z-index:45;background:rgba(1,7,4,.92);backdrop-filter:blur(8px);
   display:flex;flex-direction:column;padding:14px;opacity:0;visibility:hidden;transition:.25s}
@@ -243,6 +294,18 @@ header p{font-size:.68rem;color:#4fae83;letter-spacing:.28em;text-transform:uppe
     </button>
     <p class="hint">👆 DENTRO DEL JUEGO: 3 toques con tus 3 dedos → aparece el MENÚ TURBO TRANSPARENTE (lo arrastrás desde arriba y lo cerrás cuando querés). CERRARLO NO DESACTIVA NADA: los modos quedan prendidos 2 horas y en pantalla queda solo el puntito de la mira 🎯 — solo se apaga todo desde esta app 🔑</p>
   </div>
+</div>
+
+<!-- ===== VPN 1111 — modulo SEPARADO de los modos turbo ===== -->
+<div id="vpnCard">
+  <div class="vT">🌐 VPN 1111</div>
+  <div class="vD">Internet rápido y privado de <b>Cloudflare 1.1.1.1</b> — tu DNS va encriptado, sin que la compañía vea lo que navegás ni te ponga propaganda. Igual que la app de Play Store.</div>
+  <div class="vRow">
+    <div class="vDot" id="vDot"></div>
+    <span class="vStat" id="vStat">APAGADO</span>
+    <button id="bVpn">🔌 PRENDER VPN</button>
+  </div>
+  <div class="vSep">⚡ independiente de los demás modos: prenderlo o apagarlo no cambia nada del turbo, y ACTIVAR TODO no lo toca</div>
 </div>
 
 <div id="toasts"></div>
