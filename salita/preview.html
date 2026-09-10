@@ -6,7 +6,7 @@
 <title>Salita 3.5 — MEGA HACKER</title>
 <style>
 /* APK SALITA: escala compacta 60% para pantalla completa del celular */
-html{font-size:10.5px}
+html{font-size:9.5px}
 body{padding:8px !important}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;padding:12px;touch-action:manipulation}
@@ -22,25 +22,25 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 .pill.danger{border-color:#ff00aa;color:#ff00aa}
 .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:p 1.5s infinite}
 @keyframes p{50%{opacity:.2}}
-.purple-btn{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#6320c9,#9d5cff,#d0aaff);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(157,92,255,.4);position:relative;overflow:hidden}
+.purple-btn{display:block;width:100%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#6320c9,#9d5cff,#d0aaff);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(157,92,255,.4);position:relative;overflow:hidden}
 .purple-btn:active{transform:scale(.97)}
-.cfg{background:rgba(18,11,34,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 6px 25px rgba(0,0,0,.4)}
+.cfg{background:rgba(18,11,34,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;margin-bottom:12px;box-shadow:0 6px 25px rgba(0,0,0,.4)}
 .cfg h2{color:#ff00d4;font-size:1.1rem;margin-bottom:12px;border-bottom:1px solid #2e0640;padding-bottom:6px}
 .cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:480px){.cg{grid-template-columns:1fr}}
 .f{display:flex;flex-direction:column;gap:3px}
 .f label{font-size:.82rem;color:#ff9ded;text-transform:uppercase;letter-spacing:1px}
-.f input,.f select{background:rgba(10,7,20,.9);border:1px solid rgba(255,0,212,.25);color:#ff9ded;padding:11px 12px;border-radius:10px;font-family:inherit;font-size:1.05rem;outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
+.f input,.f select{background:rgba(10,7,20,.9);border:1px solid rgba(255,0,212,.25);color:#ff9ded;padding:9px 10px;border-radius:10px;font-family:inherit;font-size:1.05rem;outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
 .f input:focus,.f select:focus{border-color:#ff00c8;box-shadow:0 0 12px rgba(255,0,212,.3)}
 .f select option{background:#0d0819}
-.tabs{display:flex;gap:8px;margin-bottom:12px}
-.tab{flex:1;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(14,9,26,.7);color:#9988bb;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;touch-action:manipulation;transition:all .2s}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tab{flex:1;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(14,9,26,.7);color:#9988bb;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;touch-action:manipulation;transition:all .2s}
 .tab.act.red{border-color:#ff00c8;color:#ff00c8;background:rgba(255,0,200,.1)}
 .tab.act.grn{border-color:#00ffa3;color:#00ffa3;background:rgba(0,255,163,.08)}
 .tab .ic{font-size:1.2rem;display:block;margin-bottom:4px}
 .tab .ds{font-size:.75rem;font-weight:normal;opacity:.7;text-transform:none}
-.warn-box{background:rgba(255,0,170,.08);border:1px solid #ff00aa;border-radius:8px;padding:10px;margin-top:10px;font-size:.88rem;color:#ff8ef5;text-align:center}
-.gbtn{width:100%;padding:16px;background:linear-gradient(135deg,#8b1cc9,#ff00d4,#ff3ef0);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:1rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 20px rgba(255,0,212,.35),0 0 30px rgba(139,28,201,.25);position:relative;overflow:hidden}
+.warn-box{background:rgba(255,0,170,.08);border:1px solid #ff00aa;border-radius:8px;padding:8px;margin-top:8px;font-size:.88rem;color:#ff8ef5;text-align:center}
+.gbtn{width:100%;padding:14px;background:linear-gradient(135deg,#8b1cc9,#ff00d4,#ff3ef0);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:1rem;font-weight:bold;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 20px rgba(255,0,212,.35),0 0 30px rgba(139,28,201,.25);position:relative;overflow:hidden}
 .gbtn::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 2.8s infinite}
 @keyframes shine{to{left:130%}}
 .gbtn:active{transform:scale(.98)}
@@ -214,7 +214,7 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 <div id="hackAlert" style="text-align:center;color:#ff2222;font-size:1.6rem;font-weight:bold;text-shadow:0 0 15px #ff0000,0 0 35px rgba(255,0,0,.5);animation:hkPulse .5s infinite alternate;letter-spacing:1px">&#9888; VIRUS DETECTADO &#9888;</div>
 <div style="text-align:center;color:#ff6666;font-size:1rem;margin-top:8px;letter-spacing:1px">TU CELULAR ESTA SIENDO HACKEADO...</div>
 <div id="hackTerm" style="background:#050505;border:1px solid #00ffa3;border-radius:8px;padding:12px;margin-top:14px;height:36vh;overflow:hidden;font-size:.8rem;color:#00ffa3;line-height:1.7;text-shadow:0 0 6px rgba(0,255,163,.5)"></div>
-<div style="margin-top:14px">
+<div style="margin-top:10px">
 <div style="display:flex;justify-content:space-between;font-size:.9rem;color:#ff4444;font-weight:bold"><span>HACKEANDO DISPOSITIVO</span><span id="hackPct">1%</span></div>
 <div style="width:100%;height:12px;background:#111;border-radius:6px;margin-top:6px;overflow:hidden"><div id="hackBar" style="height:100%;width:1%;background:linear-gradient(90deg,#ff0000,#ff00c8,#b45cff);border-radius:6px;box-shadow:0 0 12px #ff0044"></div></div>
 </div>
@@ -274,13 +274,13 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 <div class="f"><label>Modelo</label><input type="text" id="model" placeholder="Ej: Moto G20" value="Moto G20"></div>
 <div class="f"><label>Refresh Rate</label><select id="hz"><option value="60">60 Hz</option><option value="90" selected>90 Hz</option><option value="120">120 Hz</option><option value="144">144 Hz</option><option value="165">165 Hz</option></select></div>
 </div>
-<div style="margin-top:14px">
+<div style="margin-top:10px">
 <h2 style="font-size:.82rem;color:#ff8ef5;margin-bottom:8px">🎯 MODO DE JUEGO</h2>
 <div class="tabs">
 <div class="tab act red" id="tabPVP"><span class="ic">🔴</span>PVP TODO ROJO<div class="ds">Deagle·Shotgun·M1014</div></div>
 <div class="tab grn" id="tabBR"><span class="ic">🟢</span>BR+DECLA<div class="ds">Larga/Corta distancia</div></div>
+<div class="tab" id="tabDual" style="border:2px solid #ffe14d;background:rgba(255,230,0,.05);color:#ffe14d;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER<div class="ds">Los 2 juntos</div></div>
 </div>
-<div class="tab" id="tabDual" style="border:2px solid #ffe14d;background:rgba(255,230,0,.05);color:#ffe14d;display:none"><span class="ic">⚡</span>AMBOS — DUAL HACKER</div>
 </div>
 <div class="warn-box">⚠ ZONA HACKER — SENSIBILIDAD CALIBRADA POR DISPOSITIVO ⚠</div>
 <button class="gbtn" id="genBtn">⚡ GENERAR UNIVERSAL — TODAS LAS ARMAS ⚡</button>
