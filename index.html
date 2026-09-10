@@ -622,7 +622,7 @@ if(m==='pvp'){
 var pb=118;
 var tremorAdj=1+(1-b.antiTremor)*0.18;
 var precisionAdj=b.precisionCurve*0.96;
-var antiOver=0.91; // recorte anti-overshoot reforzado: frena justo en la cabeza, calibrado viendo gameplay real de flick-a-cabeza
+var antiOver=0.90; // v2026-09-09: FRENAZO MAS FIRME — la mira sube al craneo y se CLAVA ahi, nunca se pasa
 r={
 general:clamp(Math.round(jit(pb*mult*1.04*tremorAdj*antiOver,SPREAD_MAIN*0.45)),72,160),
 redDot:clamp(Math.round(jit(pb*mult*1.10*tremorAdj*antiOver,SPREAD_MAIN*0.45)),75,168),
@@ -646,7 +646,7 @@ var tremorBr=1+(1-b.antiTremor)*0.06;
 var precisionBr=b.precisionCurve;
 var longRange=Math.min(1.0,0.90+b.precisionCurve*0.06);
 var shortRange=1.02+b.procBoost*0.02;
-var antiOverBr=0.93; // frena en la cabeza tambien en BR+DECLA, calibrado con gameplay real
+var antiOverBr=0.92; // v2026-09-09: frena mas firme en BR+DECLA — craneanos sin rebasar
 r={
 general:clamp(Math.round(jit(bb*mult*1.06*shortRange*antiOverBr,SPREAD_MAIN*0.75)),60,185),
 redDot:clamp(Math.round(jit(bb*mult*1.02*shortRange*antiOverBr,SPREAD_MAIN*0.75)),60,185),
@@ -694,7 +694,7 @@ playHackSequence(function(){
 ld.classList.remove('on');
 if(mode==='dual'){res.innerHTML=renderMain(calcMain('pvp'))+renderMain(calcMain('brdecla'))}
 else{res.innerHTML=renderMain(calcMain(mode==='pvp'?'pvp':'brdecla'))}
-res.classList.add('on');
+res.classList.add('on');try{saveSensiFromDom(res)}catch(e){};
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
 for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
@@ -946,7 +946,7 @@ var tremorStab=1+(1-b.antiTremor)*0.14;
 var precCurve=b.precisionCurve;
 var headBoost=1.20;
 // PRECISION REFORZADA — frena exacto en el craneo + fluidez de disparo
-var antiOverH=0.94; // el headBoost no se pasa de la cabeza
+var antiOverH=0.93; // v2026-09-09: frenado mas firme — el headBoost aterriza EN la cabeza
 var fluidFireH=1.04; // fluidez de disparo al tracking del enemigo
 var r={
 weapon:w.name,type:w.type,range:w.range,recoil:w.recoil,fireRate:w.fireRate,tip:w.tip,
@@ -967,7 +967,7 @@ fbSizeLabel:fbSize==='small'?'Chico':fbSize==='big'?'Grande':'Normal'
 var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:'CALIBRADO'},{l:'Mira 2x',v:r.scope2x,t:'CALIBRADO'},{l:'Mira 4x',v:r.scope4x,t:'CALIBRADO'},{l:'Mira Sniper',v:r.sniper,t:'CALIBRADO'},{l:'Vista Libre',v:r.freeLook,t:'CALIBRADO'},{l:'Boton Disparo',v:r.fireBtn,t:'RECOMENDADO',h:'crit-fire'},{l:'Drag Head',v:r.dragHead,t:'MAXIMO',h:'hl'}];
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
 res.innerHTML='<div class="rc red" style="border-color:#ff00c8;box-shadow:0 0 25px rgba(255,0,200,.4)"><div class="rh"><h3>\u{1f3af} UN TOQUE = CRANEO — '+r.weapon+'</h3><span class="badge red">'+r.id+'</span></div><div class="pinfo">\u{1f4f1} <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc red">Tipo: '+r.type+'</span><span class="wc red">Rango: '+r.range+'</span><span class="wc red">Recoil: '+r.recoil+'</span><span class="wc red">Fire: '+r.fireRate+'</span></div>'+(hs100On?'<div class="hs-tag" style="font-size:.95rem;padding:10px 12px;border-color:#ff00c8;box-shadow:0 0 15px rgba(255,0,200,.6)">\u{1f3af} 100% HEADSHOT ACTIVADO — TODO AL CRANEO — MAXIMO NIVEL</div>':'<div class="hs-tag" style="font-size:.92rem;padding:8px 12px">\u{1f3af} UN TOQUE AL BOTON Y VA AL CRANEO — MAXIMA PUNTERIA — TODO ROJO</div>')+'<div class="hs-tag" style="border-color:#2bd6ff;color:#7fdcff;box-shadow:0 0 15px rgba(43,214,255,.35);font-size:.92rem;padding:8px 12px">🤖 IA AL 100% ACTIVADA — FRENADO EN EL CRANEO — MODO HACKER</div>'+'<div class="pm"><div class="pm-label">NIVEL PUNTERIA MAXIMA</div><div class="pm-bar"><div class="pm-fill"></div></div><div class="pm-val">'+r.weapon.toUpperCase()+' HEADSHOT</div></div><div class="sg">'+sH+'</div><div class="ai"><b>\u{1f3af} PUNTERIA:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">UN TOQUE = CRANEO — Calibrado para maxima punteria a la cabeza</span></div>'+getPhoneAdjustments(r.brand,r.model,r.hz)+'<button class="cp" id="wpnCopyBtn">\u{1f4cb} COPIAR</button></div>';
-res.classList.add('on');
+res.classList.add('on');try{saveSensiFromDom(res)}catch(e){};
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
 for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
@@ -1041,11 +1041,11 @@ iaMode='UN TIRO = UNA CABEZA';
 iaNote='IA UN-TIRO: analizo el arma, freno la mira en el craneo y no la dejo rebasar. Cada generacion es casi identica — confiá en el valor que te dé.';
 }else{
 // IA ARMA RAPIDA (MP40/AK/M4A1/etc): flick a cabeza + tracking fluido mientras tiras
-antiOverW=0.92;  // frena JUSTO en la cabeza, sin pasarse ni un pelo
+antiOverW=0.91;  // v2026-09-09: frena JUSTO en la cabeza, sin pasarse NI UN PELO
 spreadIA=0.55;   // variacion minima por click
-headPrec=1.03;   // IA AL 100%: el flick pega fuerte en el craneo, frenando justo ahi
+headPrec=1.02;   // v2026-09-09: el flick pega FUERTE en el craneo y frena exacto ahi
 fluidMove=1.03;  // FLUIDEZ DE MOVIMIENTO: giro suave y continuo, sin trabas al perseguir al enemigo
-fluidFire=1.04;  // FLUIDEZ DE DISPARO: el dedo dispara sin frenar la mira, tracking continuo
+fluidFire=1.03;  // v2026-09-09: disparo fluido que NO empuja la mira mas alla del craneo
 iaMode='FLICK A CABEZA + TRACKING FLUIDO';
 iaNote='IA TRACKING: la mira sube al craneo, frena ahi y sigue al enemigo mientras disparas. Matas en segundos sin que se te escape.';
 }
@@ -1071,7 +1071,7 @@ var items=[{l:'General',v:r.general,t:'CALIBRADO'},{l:'Punto Rojo',v:r.redDot,t:
 var sH=items.map(function(s){return '<div class="si '+(s.h||'')+'"><div class="sl">'+s.l+'</div><div class="sv">'+s.v+'</div><div class="sb"><div class="sbf" data-val="'+s.v+'"></div></div><span class="st">'+s.t+'</span></div>'}).join('');
 var recoilColor=r.recoil==='Alto'?'#ff00c8':r.recoil==='Medio'?'#ffaa00':'#00ffa3';
 res.innerHTML='<div class="rc purple"><div class="rh"><h3>🎯 '+r.weapon+'</h3><span class="badge purple">'+r.id+'</span></div><div class="pinfo">📱 <span class="sp">'+r.brand.toUpperCase()+'</span><span class="sp">'+r.model+'</span><span class="sp">'+r.hz+'Hz</span></div><div class="wi"><span class="wc purple">Tipo: '+r.type+'</span><span class="wc purple">Rango: '+r.range+'</span><span class="wc purple" style="border-color:'+recoilColor+';color:'+recoilColor+'">Recoil: '+r.recoil+'</span><span class="wc purple">Fire: '+r.fireRate+'</span></div><div class="hs-tag">🔴 MAXIMA PUNTERIA — UN TOQUE AL BOTON = CRANEO — TODO ROJO</div><div class="hs-tag" style="border-color:#2bd6ff;color:#7fdcff;box-shadow:0 0 15px rgba(43,214,255,.35);font-size:.95rem;padding:10px 12px">🤖 IA AL 100% ACTIVADA — ANTI-OVERSHOOT: '+iaMode+' — NO SE PASA DE LA CABEZA — MODO HACKER</div><div class="pm" style="border-color:#b45cff"><div class="pm-label" style="color:#d0aaff">CALIBRACION PRECISA</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#6320c9,#b45cff)"></div></div><div class="pm-val" style="color:#b45cff">'+r.weapon.toUpperCase()+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🎯 HACKER:</b> '+r.tip+'<span class="fm">Arma='+r.weapon+' Hz('+r.hz+') Brand('+r.brand+') Mult:'+r.mult+'</span><span class="fm">Calibrado para TODO ROJO sin temblar</span><span class="fm">🤖 '+r.iaNote+'</span></div><button class="cp" id="wpnCopyBtn">📋 COPIAR</button></div>';
-res.classList.add('on');
+res.classList.add('on');try{saveSensiFromDom(res)}catch(e){};
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
 for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
@@ -1329,7 +1329,7 @@ var modeName=calibMode==='pvp'?'PVP TODO ROJO':'BR+DECLA';
 var mult=computeMult(brand,hz,calibMode);
 
 res.innerHTML='<div class="rc amber"><div class="rh"><h3>🇧🇷 0800 CALIBRADO: '+modeName+'</h3><span class="badge">CAL-'+Math.random().toString(36).substr(2,5).toUpperCase()+'</span></div><div class="pinfo">📱 <span class="sp">'+b.name.toUpperCase()+'</span><span class="sp">'+model+'</span><span class="sp">'+hz+'Hz</span></div><div class="pinfo" style="margin-top:4px"><span class="sp" style="background:#8a3000;color:#ff9500">⚠ Sobre 0800: '+overshootCount+'</span><span class="sp" style="background:#1a3300;color:#00e05a">⬆ Bajo 0800: '+undershootCount+'</span><span class="sp" style="background:#2d1a05;color:#ffcc33">✓ En 0800: '+inZoneCount+'</span></div><div class="pm" style="border-color:#ff9500"><div class="pm-label" style="color:#ffcc33">PRECISION ANTI-OVERSHOOT</div><div class="pm-bar"><div class="pm-fill" style="background:linear-gradient(90deg,#8a3000,#ff6a00,#ff9500)"></div></div><div class="pm-val" style="color:#ff9500">'+(calibMode==='pvp'?'HEADSHOT LEGAL HACKER':'CORTA AGRESIVA + LARGA ESTABLE')+'</div></div><div class="sg">'+sH+'</div><div class="ai"><b>🇧🇷 0800 BRASIL:</b> Tu sensibilidad fue calibrada al patron 0800 brasilero. '+overshootCount+' valores estaban sobre el 0800 (se pasaban de la cabeza) y fueron bajados. '+undershootCount+' estaban bajo el 0800 y fueron subidos. '+inZoneCount+' ya estaban en zona 0800 y recibieron ajuste fino.<span class="fm">Mult='+mult.toFixed(3)+' [Latency('+b.touchLatency+'ms) Sample('+b.touchSample+'Hz) AntiTremor('+b.antiTremor+') Precision('+b.precisionCurve+')] Sweet spot calculado por dispositivo</span></div>'+getPhoneAdjustments(brand,model,hz)+'<button class="cp" id="calibCopyBtn" style="border-color:#ff9500;color:#ff9500">📋 COPIAR SENSI 0800</button></div>';
-res.classList.add('on');
+res.classList.add('on');try{saveSensiFromDom(res)}catch(e){};
 setTimeout(function(){
 var bars=res.querySelectorAll('.sbf');
 for(var i=0;i<bars.length;i++)bars[i].style.width=(bars[i].getAttribute('data-val')/200*100)+'%';
@@ -1676,7 +1676,7 @@ done();
 },60);
 }
 // === ANUNCIO ACTUALIZADO — SOLO UNA VEZ POR ACTUALIZACION ===
-var APP_VERSION='v2026-09-07-ia-100-hacker';
+var APP_VERSION='v2026-09-09-sensi-clavada-cabeza';
 var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
@@ -1722,6 +1722,28 @@ isFrozen=false;
 // Prevent zoom
 document.addEventListener('gesturestart',function(e){e.preventDefault()});
 document.addEventListener('dblclick',function(e){e.preventDefault()});
+
+/* ===== APK SALITA: guardar la sensi generada para verla EN EL JUEGO ===== */
+function saveSensiFromDom(res){
+  if(!res)return;
+  try{
+    var rcs=res.querySelectorAll('.rc');
+    if(!rcs||!rcs.length)return;
+    var last=rcs[rcs.length-1];
+    var hd=last.querySelector('h3');
+    var vals={};
+    var sis=last.querySelectorAll('.si');
+    for(var i=0;i<sis.length;i++){
+      var l=sis[i].querySelector('.sl'),v=sis[i].querySelector('.sv');
+      if(l&&v)vals[l.textContent]=v.textContent;
+    }
+    if(!Object.keys(vals).length)return;
+    var o={m:hd?hd.textContent:'SENSI SALITA',v:vals};
+    if(typeof Salita!=='undefined'&&Salita&&Salita.saveSensi){
+      Salita.saveSensi(JSON.stringify(o));
+    }
+  }catch(e){}
+}
 </script>
 </body>
 </html>
