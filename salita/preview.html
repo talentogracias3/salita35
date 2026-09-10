@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 <title>Salita 3.5 — MEGA HACKER</title>
 <style>
-/* APK SALITA: escala compacta 60% para pantalla completa del celular */
-html{font-size:9.5px}
-body{padding:8px !important}
+/* APK SALITA: escala compacta + pantalla completa del celular */
+html{font-size:8.5px}
+html,body{height:auto;min-height:100%}
+body{padding:8px !important;overflow-y:auto !important;overflow-x:hidden !important;touch-action:pan-y !important}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;padding:12px;touch-action:manipulation}
+body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;padding:12px;touch-action:pan-y}
 #matrixCanvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;opacity:.55;pointer-events:none}
 .page{position:relative;z-index:1}
 .hdr{text-align:center;padding:22px 14px;border:1px solid rgba(255,0,212,.45);border-radius:16px;background:linear-gradient(135deg,rgba(50,10,80,.6),rgba(10,7,20,.85));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 0 35px rgba(255,0,212,.25),inset 0 1px 0 rgba(255,255,255,.1);margin-bottom:12px}
@@ -22,7 +23,7 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 .pill.danger{border-color:#ff00aa;color:#ff00aa}
 .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:p 1.5s infinite}
 @keyframes p{50%{opacity:.2}}
-.purple-btn{display:block;width:100%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#6320c9,#9d5cff,#d0aaff);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(157,92,255,.4);position:relative;overflow:hidden}
+.purple-btn{display:block;width:100%;max-width:400px;margin:0 auto 6px;padding:11px 16px;background:linear-gradient(135deg,#6320c9,#9d5cff,#d0aaff);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.72rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(157,92,255,.4);position:relative;overflow:hidden}
 .purple-btn:active{transform:scale(.97)}
 .cfg{background:rgba(18,11,34,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;margin-bottom:12px;box-shadow:0 6px 25px rgba(0,0,0,.4)}
 .cfg h2{color:#ff00d4;font-size:1.1rem;margin-bottom:12px;border-bottom:1px solid #2e0640;padding-bottom:6px}
@@ -158,7 +159,7 @@ body{background:#08040f;color:#ff6ee0;font-family:'Courier New',monospace;paddin
 .rc.purple .phone-adjust .pa-section{color:#b45cff}
 
 
-.btn-calib{display:block;width:90%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#8a3000,#ff6a00,#ffcc33);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(255,106,0,.4)}
+.btn-calib{display:block;width:100%;max-width:400px;margin:0 auto 12px;padding:11px 16px;background:linear-gradient(135deg,#8a3000,#ff6a00,#ffcc33);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:.92rem;font-weight:bold;letter-spacing:1px;cursor:pointer;text-transform:uppercase;touch-action:manipulation;-webkit-appearance:button;appearance:button;box-shadow:0 4px 18px rgba(255,106,0,.4)}
 .btn-calib:active{transform:scale(.97)}
 .ov-calib{background:#120a04;border:2px solid #8a3000;border-radius:12px;padding:14px;margin-bottom:12px}
 .ov-calib h2{color:#ff9500;font-size:1.1rem;margin-bottom:10px;border-bottom:1px solid #8a3000;padding-bottom:6px}
@@ -1684,7 +1685,7 @@ var isFrozen=true;
 var updOverlay=document.getElementById('updOverlay');
 var updCount=document.getElementById('updCount');
 var updSeen=false;
-try{updSeen=(localStorage.getItem('salita35_upd')===APP_VERSION);}catch(e){}
+updSeen=true; /* APK: sin anuncio ACTUALIZADO — solo la animacion del LOGO SALITA */
 if(updSeen){
 // ya vio esta actualizacion — SPLASH del LOGO OFICIAL SALITA FF (5 segundos)
 updOverlay.style.display='none';
