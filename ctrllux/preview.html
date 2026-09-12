@@ -6,55 +6,53 @@
 <title>Control Lux</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#141417;color:#e6e6ec;font-family:Arial,Helvetica,sans-serif;height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent;text-align:center}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 42%,#232329 0%,#141417 55%,#0c0c0f 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99;transition:opacity .5s}
-#splash img{width:132px;height:132px;margin-bottom:14px;filter:drop-shadow(0 0 26px rgba(150,180,255,.6))}
-.lx{font-size:2.1rem;font-weight:900;letter-spacing:3px;background:linear-gradient(110deg,#ffffff,#c9c9d4,#8f8f9c,#ffffff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 2s linear infinite}
-.rmx{margin-top:8px;font-size:.7rem;letter-spacing:10px;color:#9a9aa4}
-.ringS{margin-top:26px;width:54px;height:54px;border-radius:50%;border:3px solid transparent;border-top-color:#ececf2;border-right-color:#8f8f9c;animation:spin 1s linear infinite}
+html,body{background:#0e0b16;color:#e9e6f7;font-family:Arial,Helvetica,sans-serif;height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent;text-align:center}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 42%,#1e1830 0%,#0e0b16 58%,#080610 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99;transition:opacity .5s}
+#splash img{width:118px;height:118px;margin-bottom:12px;filter:drop-shadow(0 0 24px rgba(180,120,255,.6))}
+.lx{font-size:1.9rem;font-weight:900;letter-spacing:3px;background:linear-gradient(110deg,#e879f9,#22d3ee,#a78bfa,#e879f9);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 2s linear infinite;filter:drop-shadow(0 0 16px rgba(200,120,255,.5))}
+.rmx{margin-top:7px;font-size:.62rem;letter-spacing:9px;color:#8f8aa3}
+.ringS{margin-top:22px;width:46px;height:46px;border-radius:50%;border:3px solid transparent;border-top-color:#22d3ee;border-right-color:#e879f9;animation:spin 1s linear infinite}
 @keyframes shine{0%{background-position:0% 0}100%{background-position:200% 0}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.scr{display:none;height:100%;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px}
-h1{font-size:1.02rem;letter-spacing:4px;color:#f2f2f6;text-shadow:0 0 14px rgba(230,230,240,.4);margin:0 0 4px;text-align:center}
-.sub{font-size:.56rem;color:#9a9aa4;letter-spacing:2px;margin-bottom:14px;text-align:center}
-.hdr{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
-.dot{width:9px;height:9px;border-radius:50%;background:#6e6e78;box-shadow:0 0 8px #6e6e78;flex:0 0 auto}
-.dot.on{background:#f4f4f8;box-shadow:0 0 12px rgba(255,255,255,.95);animation:pl 1.2s infinite alternate}
-@keyframes pl{from{box-shadow:0 0 6px rgba(255,255,255,.6)}to{box-shadow:0 0 18px rgba(255,255,255,1)}}
-.stx{font-size:.58rem;letter-spacing:1.5px;color:#b8b8c2;text-align:center}
-.gbtn{width:100%;max-width:300px;padding:13px;border:none;border-radius:13px;font-size:.8rem;font-weight:bold;letter-spacing:1px;color:#17171a;background:linear-gradient(135deg,#ececf2,#c9c9d4,#a8a8b4);box-shadow:0 0 24px rgba(220,220,232,.3);text-align:center}
+.scr{display:none;height:100%;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px}
+h1{font-size:.92rem;letter-spacing:3px;background:linear-gradient(110deg,#f0abfc,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(200,120,255,.4));margin:0 0 3px;text-align:center}
+.sub{font-size:.5rem;color:#8f8aa3;letter-spacing:2px;margin-bottom:12px;text-align:center}
+.hdr{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:5px}
+.dot{width:8px;height:8px;border-radius:50%;background:#6e6884;box-shadow:0 0 8px #6e6884;flex:0 0 auto}
+.dot.on{background:#34d399;box-shadow:0 0 12px #34d399;animation:pl 1.2s infinite alternate}
+@keyframes pl{from{box-shadow:0 0 5px #34d399}to{box-shadow:0 0 15px #34d399}}
+.stx{font-size:.5rem;letter-spacing:1.5px;color:#c9c4e0;text-align:center}
+.gbtn{width:100%;max-width:280px;padding:11px;border:none;border-radius:11px;font-size:.72rem;font-weight:bold;letter-spacing:1px;color:#fff;background:linear-gradient(135deg,#e879f9,#8b5cf6,#22d3ee);box-shadow:0 0 22px rgba(180,110,255,.35);text-align:center}
 .gbtn:active{transform:scale(.96)}
-.hint{margin-top:12px;font-size:.55rem;color:#77777f;line-height:1.8;max-width:300px;text-align:center}
-/* buscador */
-#sStatus{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;font-size:.64rem;color:#c9c9d2;letter-spacing:.5px;min-height:20px;text-align:center;max-width:300px}
-.pulse{width:9px;height:9px;border-radius:50%;background:#ececf2;animation:pl .9s infinite alternate;flex:0 0 auto}
-#tvlist{width:100%;max-width:300px;display:flex;flex-direction:column;gap:9px;max-height:44vh;overflow-y:auto}
-.tvitem{padding:13px;border-radius:14px;border:1px solid #3a3a42;background:linear-gradient(180deg,#232329,#1b1b20);color:#e6e6ec;text-align:center}
-.tvitem:active{background:linear-gradient(135deg,#ececf2,#b8b8c4);color:#17171a;transform:scale(.97)}
-.tvn{font-size:.78rem;font-weight:bold;letter-spacing:.5px;text-align:center}
-.tvi{font-size:.56rem;color:#9a9aa4;margin-top:3px;text-align:center}
-.tvitem:active .tvi{color:#3a3a42}
-#manualBox{display:none;width:100%;max-width:300px;margin-top:12px;flex-direction:column;align-items:center}
-input{width:100%;max-width:300px;padding:12px;border:1px solid #4a4a54;border-radius:12px;background:#1b1b20;color:#e6e6ec;font-size:.88rem;text-align:center;letter-spacing:1px;margin-bottom:9px;box-shadow:inset 0 0 18px rgba(255,255,255,.04)}
-input:focus{outline:none;border-color:#c9c9d4;box-shadow:0 0 18px rgba(220,220,232,.25)}
-#errbar{display:none;margin:10px 0;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid #4a4a54;color:#d9d9e0;font-size:.6rem;max-width:300px;line-height:1.6;text-align:center}
-#okbar{display:none;margin:10px 0;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid #6e6e78;color:#f2f2f6;font-size:.62rem;max-width:300px;line-height:1.6;text-align:center}
-/* remote */
-#remote{justify-content:flex-start;padding-top:6px}
-.row{display:flex;gap:8px;justify-content:center;margin:5px 0;width:100%}
-.rk{flex:1;max-width:88px;padding:12px 4px;border:1px solid #3a3a42;border-radius:13px;background:linear-gradient(180deg,#26262c,#1b1b20);color:#dcdce4;font-size:.62rem;font-weight:bold;letter-spacing:1px;box-shadow:0 0 12px rgba(255,255,255,.05);text-align:center}
-.rk:active{background:linear-gradient(180deg,#ececf2,#b8b8c4);color:#17171a;transform:scale(.95);box-shadow:0 0 20px rgba(230,230,240,.55)}
-.rk.big{font-size:.9rem;padding:14px 4px}
-.dpad{position:relative;width:210px;height:210px;margin:6px auto 4px}
-.dring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#f0f0f6,#8f8f9c,#f0f0f6,#8f8f9c,#f0f0f6);animation:spin 6s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));opacity:.8}
-.din{position:absolute;inset:5px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#232329,#131316);box-shadow:inset 0 0 34px rgba(255,255,255,.05)}
-.dbtn{position:absolute;width:64px;height:64px;border-radius:50%;border:none;background:transparent;color:#ececf2;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
-.dbtn:active{background:rgba(230,230,240,.25);box-shadow:0 0 18px rgba(230,230,240,.5)}
-.dok{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;border:none;background:linear-gradient(135deg,#f2f2f6,#b8b8c4);color:#17171a;font-size:.68rem;font-weight:bold;letter-spacing:1px;box-shadow:0 0 22px rgba(230,230,240,.4)}
+.hint{margin-top:10px;font-size:.48rem;color:#77728c;line-height:1.75;max-width:280px;text-align:center}
+#sStatus{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:10px;font-size:.56rem;color:#c9c4e0;letter-spacing:.5px;min-height:17px;text-align:center;max-width:280px}
+.pulse{width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee;animation:pl .9s infinite alternate;flex:0 0 auto}
+#tvlist{width:100%;max-width:280px;display:flex;flex-direction:column;gap:8px;max-height:40vh;overflow-y:auto}
+.tvitem{padding:11px;border-radius:12px;border:1px solid #4c3f7a;background:linear-gradient(180deg,#1b1730,#141125);color:#e9e6f7;text-align:center;box-shadow:0 0 14px rgba(139,92,246,.12)}
+.tvitem:active{background:linear-gradient(135deg,#67e8f9,#a78bfa);color:#0e0b16;transform:scale(.97);box-shadow:0 0 20px rgba(103,232,249,.5)}
+.tvn{font-size:.72rem;font-weight:bold;letter-spacing:.5px;text-align:center}
+.tvi{font-size:.5rem;color:#8f8aa3;margin-top:2px;text-align:center}
+.tvitem:active .tvi{color:#2e2a45}
+#manualBox{display:none;width:100%;max-width:280px;margin-top:10px;flex-direction:column;align-items:center}
+input{width:100%;max-width:280px;padding:10px;border:1px solid #6d5fa8;border-radius:10px;background:#1b1730;color:#e9e6f7;font-size:.8rem;text-align:center;letter-spacing:1px;margin-bottom:8px;box-shadow:inset 0 0 14px rgba(167,139,250,.08)}
+input:focus{outline:none;border-color:#22d3ee;box-shadow:0 0 16px rgba(34,211,238,.3)}
+#errbar{display:none;margin:8px 0;padding:9px 10px;border-radius:9px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.4);color:#fca5a5;font-size:.54rem;max-width:280px;line-height:1.55;text-align:center}
+#okbar{display:none;margin:8px 0;padding:9px 10px;border-radius:9px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.35);color:#a7f3d0;font-size:.56rem;max-width:280px;line-height:1.55;text-align:center}
+#remote{justify-content:flex-start;padding-top:4px}
+.row{display:flex;gap:6px;justify-content:center;margin:3px 0;width:100%}
+.rk{flex:1;max-width:80px;padding:9px 2px;border:1px solid #4c3f7a;border-radius:11px;background:linear-gradient(180deg,#221c3a,#171329);color:#e9e6f7;font-size:.54rem;font-weight:bold;letter-spacing:.5px;box-shadow:0 0 10px rgba(139,92,246,.1);text-align:center}
+.rk:active{background:linear-gradient(180deg,#e879f9,#8b5cf6);color:#fff;transform:scale(.95);box-shadow:0 0 18px rgba(232,121,249,.55)}
+.rk.big{font-size:.78rem;padding:11px 2px}
+.dpad{position:relative;width:170px;height:170px;margin:4px auto 2px}
+.dring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#22d3ee,#a78bfa,#e879f9,#34d399,#22d3ee);animation:spin 5s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));opacity:.85}
+.din{position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#1b1730,#0f0c1d);box-shadow:inset 0 0 26px rgba(167,139,250,.12)}
+.dbtn{position:absolute;width:52px;height:52px;border-radius:50%;border:none;background:transparent;color:#e9e6f7;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.dbtn:active{background:rgba(103,232,249,.25);box-shadow:0 0 16px rgba(34,211,238,.5)}
+.dok{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#22d3ee,#a78bfa);color:#0e0b16;font-size:.6rem;font-weight:bold;letter-spacing:1px;box-shadow:0 0 18px rgba(139,92,246,.45)}
 .dok:active{transform:translate(-50%,-50%) scale(.93)}
-.apk{flex:1;max-width:78px;padding:10px 4px;border:1px solid #3a3a42;border-radius:12px;background:#1b1b20;color:#c9c9d4;font-size:.56rem;font-weight:bold;letter-spacing:1px;text-align:center}
-.apk:active{background:#dcdce4;color:#17171a;transform:scale(.94)}
-.linkish{margin-top:14px;font-size:.6rem;color:#9a9aa4;text-decoration:underline;text-align:center}
+.apk{flex:1;max-width:70px;padding:8px 2px;border:1px solid #4c3f7a;border-radius:10px;background:#171329;color:#c9c4e0;font-size:.5rem;font-weight:bold;letter-spacing:.5px;text-align:center}
+.apk:active{background:linear-gradient(135deg,#34d399,#22d3ee);color:#0e0b16;transform:scale(.94)}
+.linkish{margin-top:8px;font-size:.52rem;color:#a78bfa;text-decoration:underline;text-align:center}
 </style>
 </head>
 <body>
@@ -77,7 +75,7 @@ input:focus{outline:none;border-color:#c9c9d4;box-shadow:0 0 18px rgba(220,220,2
 <input id="mip" placeholder="IP de tu TV (ej: 192.168.1.50)" inputmode="decimal" autocapitalize="off" autocomplete="off">
 <button class="gbtn" id="mgo">CONECTAR CON ESTA IP</button>
 </div>
-<div class="row" style="max-width:300px;margin-top:12px">
+<div class="row" style="max-width:280px;margin-top:10px">
 <button class="gbtn" id="again">🔄 BUSCAR OTRA VEZ</button>
 </div>
 <div class="linkish" id="mlink">➕ ¿No aparece tu TV? Conectar manual con la IP</div>
@@ -89,7 +87,7 @@ input:focus{outline:none;border-color:#c9c9d4;box-shadow:0 0 18px rgba(220,220,2
 <h1>🔐 VINCULAR CON LA TV</h1>
 <div class="sub">MIRÁ LA PANTALLA DE TU TV</div>
 <div id="okbar">📡 Conectando con tu TV... cuando aparezca el <b>código de 6 letras/números</b> en la pantalla de la TV, escribilo acá 👇</div>
-<div class="row" style="width:54px;margin:14px auto"><div class="pulse" id="pinDot" style="margin:auto"></div></div>
+<div class="row" style="width:46px;margin:12px auto"><div class="pulse" id="pinDot" style="margin:auto"></div></div>
 <input id="code" placeholder="Código de la TV (6 letras/números)" maxlength="6" autocapitalize="characters" autocomplete="off">
 <button class="gbtn" id="bind">✅ VINCULAR</button>
 <div class="hint">Si tarda mucho o sale un error, tocá BUSCAR OTRA VEZ<br>— el código vuelve a aparecer en la TV.</div>
@@ -107,11 +105,11 @@ input:focus{outline:none;border-color:#c9c9d4;box-shadow:0 0 18px rgba(220,220,2
 <div class="dpad">
 <div class="dring"></div>
 <div class="din"></div>
-<button class="dbtn" data-k="UP" style="left:73px;top:2px">▲</button>
-<button class="dbtn" data-k="LEFT" style="left:2px;top:73px">◀</button>
+<button class="dbtn" data-k="UP" style="left:59px;top:2px">▲</button>
+<button class="dbtn" data-k="LEFT" style="left:2px;top:59px">◀</button>
 <button class="dok" data-k="OK">OK</button>
-<button class="dbtn" data-k="RIGHT" style="left:144px;top:73px">▶</button>
-<button class="dbtn" data-k="DOWN" style="left:73px;top:144px">▼</button>
+<button class="dbtn" data-k="RIGHT" style="left:116px;top:59px">▶</button>
+<button class="dbtn" data-k="DOWN" style="left:59px;top:116px">▼</button>
 </div>
 <div class="row">
 <button class="rk" data-k="VOLUP">🔊 VOL+</button>
@@ -136,8 +134,8 @@ input:focus{outline:none;border-color:#c9c9d4;box-shadow:0 0 18px rgba(220,220,2
 <button class="apk" data-a="prime">PRIME</button>
 </div>
 <div class="row" style="margin-top:2px">
-<button class="rk" data-k="SLEEP" style="max-width:120px">🌙 APAGAR TV</button>
-<button class="rk" id="disc" style="max-width:120px">✕ DESCONECTAR</button>
+<button class="rk" data-k="SLEEP" style="max-width:110px">🌙 APAGAR TV</button>
+<button class="rk" id="disc" style="max-width:110px">✕ DESCONECTAR</button>
 </div>
 <div class="linkish" id="changeTv">↩ CAMBIAR DE TV</div>
 </div>
